@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_wildcard_pattern.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_wildcard_pattern.cpp<span style="font-size: 80%;"> (source / <a href="catch_wildcard_pattern.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Martin on 19/07/2017.
+<span class="lineNum">       3 </span>            :  *
+<span class="lineNum">       4 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       5 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &quot;catch_wildcard_pattern.h&quot;
+<span class="lineNum">       9 </span>            : #include &quot;catch_enforce.h&quot;
+<span class="lineNum">      10 </span>            : #include &quot;catch_string_manip.h&quot;
+<span class="lineNum">      11 </span>            : 
+<a name="12"><span class="lineNum">      12 </span>            : namespace Catch {</a>
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span><span class="lineNoCov">          0 :     WildcardPattern::WildcardPattern( std::string const&amp; pattern,</span>
+<span class="lineNum">      15 </span><span class="lineNoCov">          0 :                                       CaseSensitive::Choice caseSensitivity )</span>
+<span class="lineNum">      16 </span>            :     :   m_caseSensitivity( caseSensitivity ),
+<span class="lineNum">      17 </span><span class="lineNoCov">          0 :         m_pattern( normaliseString( pattern ) )</span>
+<span class="lineNum">      18 </span>            :     {
+<span class="lineNum">      19 </span><span class="lineNoCov">          0 :         if( startsWith( m_pattern, '*' ) ) {</span>
+<span class="lineNum">      20 </span><span class="lineNoCov">          0 :             m_pattern = m_pattern.substr( 1 );</span>
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :             m_wildcard = WildcardAtStart;</span>
+<span class="lineNum">      22 </span>            :         }
+<span class="lineNum">      23 </span><span class="lineNoCov">          0 :         if( endsWith( m_pattern, '*' ) ) {</span>
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 :             m_pattern = m_pattern.substr( 0, m_pattern.size()-1 );</span>
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :             m_wildcard = static_cast&lt;WildcardPosition&gt;( m_wildcard | WildcardAtEnd );</span>
+<span class="lineNum">      26 </span>            :         }
+<a name="27"><span class="lineNum">      27 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span><span class="lineNoCov">          0 :     bool WildcardPattern::matches( std::string const&amp; str ) const {</span>
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :         switch( m_wildcard ) {</span>
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 :             case NoWildcard:</span>
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :                 return m_pattern == normaliseString( str );</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :             case WildcardAtStart:</span>
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :                 return endsWith( normaliseString( str ), m_pattern );</span>
+<span class="lineNum">      35 </span><span class="lineNoCov">          0 :             case WildcardAtEnd:</span>
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :                 return startsWith( normaliseString( str ), m_pattern );</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :             case WildcardAtBothEnds:</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :                 return contains( normaliseString( str ), m_pattern );</span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :             default:</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :                 CATCH_INTERNAL_ERROR( &quot;Unknown enum&quot; );</span>
+<span class="lineNum">      41 </span>            :         }
+<a name="42"><span class="lineNum">      42 </span>            :     }</a>
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :     std::string WildcardPattern::normaliseString( std::string const&amp; str ) const {</span>
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 :         return trim( m_caseSensitivity == CaseSensitive::No ? toLower( str ) : str );</span>
+<span class="lineNum">      46 </span>            :     }
+<span class="lineNum">      47 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

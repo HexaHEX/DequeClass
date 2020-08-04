@@ -1,0 +1,410 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_xmlwriter.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_xmlwriter.cpp<span style="font-size: 80%;"> (source / <a href="catch_xmlwriter.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">194</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">30</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 19/07/2017.
+<span class="lineNum">       3 </span>            :  *
+<span class="lineNum">       4 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       5 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &quot;catch_xmlwriter.h&quot;
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #include &quot;catch_enforce.h&quot;
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            : #include &lt;iomanip&gt;
+<span class="lineNum">      13 </span>            : #include &lt;type_traits&gt;
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : namespace Catch {
+<span class="lineNum">      16 </span>            : 
+<a name="17"><span class="lineNum">      17 </span>            : namespace {</a>
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span><span class="lineNoCov">          0 :     size_t trailingBytes(unsigned char c) {</span>
+<span class="lineNum">      20 </span><span class="lineNoCov">          0 :         if ((c &amp; 0xE0) == 0xC0) {</span>
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :             return 2;</span>
+<span class="lineNum">      22 </span>            :         }
+<span class="lineNum">      23 </span><span class="lineNoCov">          0 :         if ((c &amp; 0xF0) == 0xE0) {</span>
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 :             return 3;</span>
+<span class="lineNum">      25 </span>            :         }
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :         if ((c &amp; 0xF8) == 0xF0) {</span>
+<span class="lineNum">      27 </span><span class="lineNoCov">          0 :             return 4;</span>
+<span class="lineNum">      28 </span>            :         }
+<span class="lineNum">      29 </span><span class="lineNoCov">          0 :         CATCH_INTERNAL_ERROR(&quot;Invalid multibyte utf-8 start byte encountered&quot;);</span>
+<a name="30"><span class="lineNum">      30 </span>            :     }</a>
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :     uint32_t headerValue(unsigned char c) {</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :         if ((c &amp; 0xE0) == 0xC0) {</span>
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :             return c &amp; 0x1F;</span>
+<span class="lineNum">      35 </span>            :         }
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :         if ((c &amp; 0xF0) == 0xE0) {</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :             return c &amp; 0x0F;</span>
+<span class="lineNum">      38 </span>            :         }
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :         if ((c &amp; 0xF8) == 0xF0) {</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :             return c &amp; 0x07;</span>
+<span class="lineNum">      41 </span>            :         }
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :         CATCH_INTERNAL_ERROR(&quot;Invalid multibyte utf-8 start byte encountered&quot;);</span>
+<a name="43"><span class="lineNum">      43 </span>            :     }</a>
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 :     void hexEscapeChar(std::ostream&amp; os, unsigned char c) {</span>
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :         std::ios_base::fmtflags f(os.flags());</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :         os &lt;&lt; &quot;\\x&quot;</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :             &lt;&lt; std::uppercase &lt;&lt; std::hex &lt;&lt; std::setfill('0') &lt;&lt; std::setw(2)</span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :             &lt;&lt; static_cast&lt;int&gt;(c);</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :         os.flags(f);</span>
+<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :     bool shouldNewline(XmlFormatting fmt) {</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :         return !!(static_cast&lt;std::underlying_type&lt;XmlFormatting&gt;::type&gt;(fmt &amp; XmlFormatting::Newline));</span>
+<a name="55"><span class="lineNum">      55 </span>            :     }</a>
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :     bool shouldIndent(XmlFormatting fmt) {</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         return !!(static_cast&lt;std::underlying_type&lt;XmlFormatting&gt;::type&gt;(fmt &amp; XmlFormatting::Indent));</span>
+<span class="lineNum">      59 </span>            :     }
+<span class="lineNum">      60 </span>            : 
+<a name="61"><span class="lineNum">      61 </span>            : } // anonymous namespace</a>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :     XmlFormatting operator | (XmlFormatting lhs, XmlFormatting rhs) {</span>
+<span class="lineNum">      64 </span>            :         return static_cast&lt;XmlFormatting&gt;(
+<span class="lineNum">      65 </span>            :             static_cast&lt;std::underlying_type&lt;XmlFormatting&gt;::type&gt;(lhs) |
+<span class="lineNum">      66 </span>            :             static_cast&lt;std::underlying_type&lt;XmlFormatting&gt;::type&gt;(rhs)
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         );</span>
+<a name="68"><span class="lineNum">      68 </span>            :     }</a>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     XmlFormatting operator &amp; (XmlFormatting lhs, XmlFormatting rhs) {</span>
+<span class="lineNum">      71 </span>            :         return static_cast&lt;XmlFormatting&gt;(
+<span class="lineNum">      72 </span>            :             static_cast&lt;std::underlying_type&lt;XmlFormatting&gt;::type&gt;(lhs) &amp;
+<span class="lineNum">      73 </span>            :             static_cast&lt;std::underlying_type&lt;XmlFormatting&gt;::type&gt;(rhs)
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :         );</span>
+<span class="lineNum">      75 </span>            :     }
+<a name="76"><span class="lineNum">      76 </span>            : </a>
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     XmlEncode::XmlEncode( std::string const&amp; str, ForWhat forWhat )</span>
+<span class="lineNum">      79 </span>            :     :   m_str( str ),
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :         m_forWhat( forWhat )</span>
+<a name="81"><span class="lineNum">      81 </span><span class="lineNoCov">          0 :     {}</span></a>
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :     void XmlEncode::encodeTo( std::ostream&amp; os ) const {</span>
+<span class="lineNum">      84 </span>            :         // Apostrophe escaping not necessary if we always use &quot; to write attributes
+<span class="lineNum">      85 </span>            :         // (see: http://www.w3.org/TR/xml/#syntax)
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         for( std::size_t idx = 0; idx &lt; m_str.size(); ++ idx ) {</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :             unsigned char c = m_str[idx];</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :             switch (c) {</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :             case '&lt;':   os &lt;&lt; &quot;&amp;lt;&quot;; break;</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             case '&amp;':   os &lt;&lt; &quot;&amp;amp;&quot;; break;</span>
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :             case '&gt;':</span>
+<span class="lineNum">      94 </span>            :                 // See: http://www.w3.org/TR/xml/#syntax
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :                 if (idx &gt; 2 &amp;&amp; m_str[idx - 1] == ']' &amp;&amp; m_str[idx - 2] == ']')</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :                     os &lt;&lt; &quot;&amp;gt;&quot;;</span>
+<span class="lineNum">      97 </span>            :                 else
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :                     os &lt;&lt; c;</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :             case '\&quot;':</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :                 if (m_forWhat == ForAttributes)</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :                     os &lt;&lt; &quot;&amp;quot;&quot;;</span>
+<span class="lineNum">     104 </span>            :                 else
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :                     os &lt;&lt; c;</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :             default:</span>
+<span class="lineNum">     109 </span>            :                 // Check for control characters and invalid utf-8
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span>            :                 // Escape control characters in standard ascii
+<span class="lineNum">     112 </span>            :                 // see http://stackoverflow.com/questions/404107/why-are-control-characters-illegal-in-xml-1-0
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :                 if (c &lt; 0x09 || (c &gt; 0x0D &amp;&amp; c &lt; 0x20) || c == 0x7F) {</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :                     hexEscapeChar(os, c);</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     116 </span>            :                 }
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span>            :                 // Plain ASCII: Write it to stream
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :                 if (c &lt; 0x7F) {</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :                     os &lt;&lt; c;</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     122 </span>            :                 }
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span>            :                 // UTF-8 territory
+<span class="lineNum">     125 </span>            :                 // Check if the encoding is valid and if it is not, hex escape bytes.
+<span class="lineNum">     126 </span>            :                 // Important: We do not check the exact decoded values for validity, only the encoding format
+<span class="lineNum">     127 </span>            :                 // First check that this bytes is a valid lead byte:
+<span class="lineNum">     128 </span>            :                 // This means that it is not encoded as 1111 1XXX
+<span class="lineNum">     129 </span>            :                 // Or as 10XX XXXX
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :                 if (c &lt;  0xC0 ||</span>
+<span class="lineNum">     131 </span>            :                     c &gt;= 0xF8) {
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :                     hexEscapeChar(os, c);</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     134 </span>            :                 }
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :                 auto encBytes = trailingBytes(c);</span>
+<span class="lineNum">     137 </span>            :                 // Are there enough bytes left to avoid accessing out-of-bounds memory?
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :                 if (idx + encBytes - 1 &gt;= m_str.size()) {</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :                     hexEscapeChar(os, c);</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     141 </span>            :                 }
+<span class="lineNum">     142 </span>            :                 // The header is valid, check data
+<span class="lineNum">     143 </span>            :                 // The next encBytes bytes must together be a valid utf-8
+<span class="lineNum">     144 </span>            :                 // This means: bitpattern 10XX XXXX and the extracted value is sane (ish)
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :                 bool valid = true;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :                 uint32_t value = headerValue(c);</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :                 for (std::size_t n = 1; n &lt; encBytes; ++n) {</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :                     unsigned char nc = m_str[idx + n];</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :                     valid &amp;= ((nc &amp; 0xC0) == 0x80);</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :                     value = (value &lt;&lt; 6) | (nc &amp; 0x3F);</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :                 }</span>
+<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :                 if (</span>
+<span class="lineNum">     154 </span>            :                     // Wrong bit pattern of following bytes
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :                     (!valid) ||</span>
+<span class="lineNum">     156 </span>            :                     // Overlong encodings
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :                     (value &lt; 0x80) ||</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :                     (0x80 &lt;= value &amp;&amp; value &lt; 0x800   &amp;&amp; encBytes &gt; 2) ||</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :                     (0x800 &lt; value &amp;&amp; value &lt; 0x10000 &amp;&amp; encBytes &gt; 3) ||</span>
+<span class="lineNum">     160 </span>            :                     // Encoded value out of range
+<span class="lineNum">     161 </span>            :                     (value &gt;= 0x110000)
+<span class="lineNum">     162 </span>            :                     ) {
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :                     hexEscapeChar(os, c);</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     165 </span>            :                 }
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            :                 // If we got here, this is in fact a valid(ish) utf-8 sequence
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :                 for (std::size_t n = 0; n &lt; encBytes; ++n) {</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :                     os &lt;&lt; m_str[idx + n];</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :                 }</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :                 idx += encBytes - 1;</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     173 </span>            :             }
+<span class="lineNum">     174 </span>            :         }
+<a name="175"><span class="lineNum">     175 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :     std::ostream&amp; operator &lt;&lt; ( std::ostream&amp; os, XmlEncode const&amp; xmlEncode ) {</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :         xmlEncode.encodeTo( os );</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :         return os;</span>
+<a name="180"><span class="lineNum">     180 </span>            :     }</a>
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     XmlWriter::ScopedElement::ScopedElement( XmlWriter* writer, XmlFormatting fmt )</span>
+<span class="lineNum">     183 </span>            :     :   m_writer( writer ),
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         m_fmt(fmt)</span>
+<a name="185"><span class="lineNum">     185 </span><span class="lineNoCov">          0 :     {}</span></a>
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     XmlWriter::ScopedElement::ScopedElement( ScopedElement&amp;&amp; other ) noexcept</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :     :   m_writer( other.m_writer ),</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :         m_fmt(other.m_fmt)</span>
+<span class="lineNum">     190 </span>            :     {
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         other.m_writer = nullptr;</span>
+<a name="192"><span class="lineNum">     192 </span><span class="lineNoCov">          0 :         other.m_fmt = XmlFormatting::None;</span></a>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     XmlWriter::ScopedElement&amp; XmlWriter::ScopedElement::operator=( ScopedElement&amp;&amp; other ) noexcept {</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :         if ( m_writer ) {</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :             m_writer-&gt;endElement();</span>
+<span class="lineNum">     197 </span>            :         }
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         m_writer = other.m_writer;</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         other.m_writer = nullptr;</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :         m_fmt = other.m_fmt;</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :         other.m_fmt = XmlFormatting::None;</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :         return *this;</span>
+<span class="lineNum">     203 </span>            :     }
+<a name="204"><span class="lineNum">     204 </span>            : </a>
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :     XmlWriter::ScopedElement::~ScopedElement() {</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         if (m_writer) {</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :             m_writer-&gt;endElement(m_fmt);</span>
+<span class="lineNum">     209 </span>            :         }
+<a name="210"><span class="lineNum">     210 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :     XmlWriter::ScopedElement&amp; XmlWriter::ScopedElement::writeText( std::string const&amp; text, XmlFormatting fmt ) {</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :         m_writer-&gt;writeText( text, fmt );</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :         return *this;</span>
+<a name="215"><span class="lineNum">     215 </span>            :     }</a>
+<span class="lineNum">     216 </span>            : 
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :     XmlWriter::XmlWriter( std::ostream&amp; os ) : m_os( os )</span>
+<span class="lineNum">     218 </span>            :     {
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         writeDeclaration();</span>
+<a name="220"><span class="lineNum">     220 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :     XmlWriter::~XmlWriter() {</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :         while (!m_tags.empty()) {</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :             endElement();</span>
+<span class="lineNum">     225 </span>            :         }
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :         newlineIfNecessary();</span>
+<a name="227"><span class="lineNum">     227 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :     XmlWriter&amp; XmlWriter::startElement( std::string const&amp; name, XmlFormatting fmt ) {</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         ensureTagClosed();</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :         newlineIfNecessary();</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :         if (shouldIndent(fmt)) {</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :             m_os &lt;&lt; m_indent;</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :             m_indent += &quot;  &quot;;</span>
+<span class="lineNum">     235 </span>            :         }
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :         m_os &lt;&lt; '&lt;' &lt;&lt; name;</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         m_tags.push_back( name );</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :         m_tagIsOpen = true;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :         applyFormatting(fmt);</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         return *this;</span>
+<a name="241"><span class="lineNum">     241 </span>            :     }</a>
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :     XmlWriter::ScopedElement XmlWriter::scopedElement( std::string const&amp; name, XmlFormatting fmt ) {</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :         ScopedElement scoped( this, fmt );</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         startElement( name, fmt );</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         return scoped;</span>
+<a name="247"><span class="lineNum">     247 </span>            :     }</a>
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :     XmlWriter&amp; XmlWriter::endElement(XmlFormatting fmt) {</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :         m_indent = m_indent.substr(0, m_indent.size() - 2);</span>
+<span class="lineNum">     251 </span>            : 
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :         if( m_tagIsOpen ) {</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :             m_os &lt;&lt; &quot;/&gt;&quot;;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :             m_tagIsOpen = false;</span>
+<span class="lineNum">     255 </span>            :         } else {
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :             newlineIfNecessary();</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :             if (shouldIndent(fmt)) {</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :                 m_os &lt;&lt; m_indent;</span>
+<span class="lineNum">     259 </span>            :             }
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :             m_os &lt;&lt; &quot;&lt;/&quot; &lt;&lt; m_tags.back() &lt;&lt; &quot;&gt;&quot;;</span>
+<span class="lineNum">     261 </span>            :         }
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         m_os &lt;&lt; std::flush;</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :         applyFormatting(fmt);</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         m_tags.pop_back();</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :         return *this;</span>
+<a name="266"><span class="lineNum">     266 </span>            :     }</a>
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :     XmlWriter&amp; XmlWriter::writeAttribute( std::string const&amp; name, std::string const&amp; attribute ) {</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         if( !name.empty() &amp;&amp; !attribute.empty() )</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :             m_os &lt;&lt; ' ' &lt;&lt; name &lt;&lt; &quot;=\&quot;&quot; &lt;&lt; XmlEncode( attribute, XmlEncode::ForAttributes ) &lt;&lt; '&quot;';</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         return *this;</span>
+<a name="272"><span class="lineNum">     272 </span>            :     }</a>
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :     XmlWriter&amp; XmlWriter::writeAttribute( std::string const&amp; name, bool attribute ) {</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :         m_os &lt;&lt; ' ' &lt;&lt; name &lt;&lt; &quot;=\&quot;&quot; &lt;&lt; ( attribute ? &quot;true&quot; : &quot;false&quot; ) &lt;&lt; '&quot;';</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         return *this;</span>
+<a name="277"><span class="lineNum">     277 </span>            :     }</a>
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :     XmlWriter&amp; XmlWriter::writeText( std::string const&amp; text, XmlFormatting fmt) {</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :         if( !text.empty() ){</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :             bool tagWasOpen = m_tagIsOpen;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :             ensureTagClosed();</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :             if (tagWasOpen &amp;&amp; shouldIndent(fmt)) {</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :                 m_os &lt;&lt; m_indent;</span>
+<span class="lineNum">     285 </span>            :             }
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :             m_os &lt;&lt; XmlEncode( text );</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :             applyFormatting(fmt);</span>
+<span class="lineNum">     288 </span>            :         }
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :         return *this;</span>
+<a name="290"><span class="lineNum">     290 </span>            :     }</a>
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :     XmlWriter&amp; XmlWriter::writeComment( std::string const&amp; text, XmlFormatting fmt) {</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :         ensureTagClosed();</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :         if (shouldIndent(fmt)) {</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :             m_os &lt;&lt; m_indent;</span>
+<span class="lineNum">     296 </span>            :         }
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :         m_os &lt;&lt; &quot;&lt;!--&quot; &lt;&lt; text &lt;&lt; &quot;--&gt;&quot;;</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         applyFormatting(fmt);</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :         return *this;</span>
+<a name="300"><span class="lineNum">     300 </span>            :     }</a>
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :     void XmlWriter::writeStylesheetRef( std::string const&amp; url ) {</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :         m_os &lt;&lt; &quot;&lt;?xml-stylesheet type=\&quot;text/xsl\&quot; href=\&quot;&quot; &lt;&lt; url &lt;&lt; &quot;\&quot;?&gt;\n&quot;;</span>
+<a name="304"><span class="lineNum">     304 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     305 </span>            : 
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :     XmlWriter&amp; XmlWriter::writeBlankLine() {</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :         ensureTagClosed();</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         m_os &lt;&lt; '\n';</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :         return *this;</span>
+<a name="310"><span class="lineNum">     310 </span>            :     }</a>
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :     void XmlWriter::ensureTagClosed() {</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :         if( m_tagIsOpen ) {</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :             m_os &lt;&lt; '&gt;' &lt;&lt; std::flush;</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :             newlineIfNecessary();</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :             m_tagIsOpen = false;</span>
+<span class="lineNum">     317 </span>            :         }
+<a name="318"><span class="lineNum">     318 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     319 </span>            : 
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :     void XmlWriter::applyFormatting(XmlFormatting fmt) {</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :         m_needsNewline = shouldNewline(fmt);</span>
+<a name="322"><span class="lineNum">     322 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     323 </span>            : 
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :     void XmlWriter::writeDeclaration() {</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :         m_os &lt;&lt; &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;\n&quot;;</span>
+<a name="326"><span class="lineNum">     326 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     327 </span>            : 
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :     void XmlWriter::newlineIfNecessary() {</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :         if( m_needsNewline ) {</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :             m_os &lt;&lt; std::endl;</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :             m_needsNewline = false;</span>
+<span class="lineNum">     332 </span>            :         }
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     334 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

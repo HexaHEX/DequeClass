@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_totals.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_totals.h<span style="font-size: 80%;"> (source / <a href="catch_totals.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil Nash on 23/02/2012.
+<span class="lineNum">       3 </span>            :  *  Copyright (c) 2012 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : #ifndef TWOBLUECUBES_CATCH_TOTALS_HPP_INCLUDED
+<span class="lineNum">       9 </span>            : #define TWOBLUECUBES_CATCH_TOTALS_HPP_INCLUDED
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &lt;cstddef&gt;
+<span class="lineNum">      12 </span>            : 
+<a name="13"><span class="lineNum">      13 </span>            : namespace Catch {</a>
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span><span class="lineCov">        573 :     struct Counts {</span>
+<span class="lineNum">      16 </span>            :         Counts operator - ( Counts const&amp; other ) const;
+<span class="lineNum">      17 </span>            :         Counts&amp; operator += ( Counts const&amp; other );
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :         std::size_t total() const;
+<span class="lineNum">      20 </span>            :         bool allPassed() const;
+<span class="lineNum">      21 </span>            :         bool allOk() const;
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            :         std::size_t passed = 0;
+<span class="lineNum">      24 </span>            :         std::size_t failed = 0;
+<span class="lineNum">      25 </span>            :         std::size_t failedButOk = 0;
+<a name="26"><span class="lineNum">      26 </span>            :     };</a>
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span><span class="lineCov">          3 :     struct Totals {</span>
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            :         Totals operator - ( Totals const&amp; other ) const;
+<span class="lineNum">      31 </span>            :         Totals&amp; operator += ( Totals const&amp; other );
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            :         Totals delta( Totals const&amp; prevTotals ) const;
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            :         int error = 0;
+<span class="lineNum">      36 </span>            :         Counts assertions;
+<span class="lineNum">      37 </span>            :         Counts testCases;
+<span class="lineNum">      38 </span>            :     };
+<span class="lineNum">      39 </span>            : }
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : #endif // TWOBLUECUBES_CATCH_TOTALS_HPP_INCLUDED
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
