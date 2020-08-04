@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_interfaces_capture.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_interfaces_capture.h<span style="font-size: 80%;"> (source / <a href="catch_interfaces_capture.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">66.7 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 07/01/2011.
+<span class="lineNum">       3 </span>            :  *  Copyright 2011 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : #ifndef TWOBLUECUBES_CATCH_INTERFACES_CAPTURE_H_INCLUDED
+<span class="lineNum">       9 </span>            : #define TWOBLUECUBES_CATCH_INTERFACES_CAPTURE_H_INCLUDED
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &lt;string&gt;
+<span class="lineNum">      12 </span>            : #include &lt;chrono&gt;
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : #include &quot;catch_stringref.h&quot;
+<span class="lineNum">      15 </span>            : #include &quot;catch_result_type.h&quot;
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : namespace Catch {
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :     class AssertionResult;
+<span class="lineNum">      20 </span>            :     struct AssertionInfo;
+<span class="lineNum">      21 </span>            :     struct SectionInfo;
+<span class="lineNum">      22 </span>            :     struct SectionEndInfo;
+<span class="lineNum">      23 </span>            :     struct MessageInfo;
+<span class="lineNum">      24 </span>            :     struct MessageBuilder;
+<span class="lineNum">      25 </span>            :     struct Counts;
+<span class="lineNum">      26 </span>            :     struct AssertionReaction;
+<span class="lineNum">      27 </span>            :     struct SourceLineInfo;
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            :     struct ITransientExpression;
+<span class="lineNum">      30 </span>            :     struct IGeneratorTracker;
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : #if defined(CATCH_CONFIG_ENABLE_BENCHMARKING)
+<span class="lineNum">      33 </span>            :     struct BenchmarkInfo;
+<span class="lineNum">      34 </span>            :     template &lt;typename Duration = std::chrono::duration&lt;double, std::nano&gt;&gt;
+<span class="lineNum">      35 </span>            :     struct BenchmarkStats;
+<a name="36"><span class="lineNum">      36 </span>            : #endif // CATCH_CONFIG_ENABLE_BENCHMARKING</a>
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span><span class="lineCov">          6 :     struct IResultCapture {</span>
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            :         virtual ~IResultCapture();
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            :         virtual bool sectionStarted(    SectionInfo const&amp; sectionInfo,
+<span class="lineNum">      43 </span>            :                                         Counts&amp; assertions ) = 0;
+<span class="lineNum">      44 </span>            :         virtual void sectionEnded( SectionEndInfo const&amp; endInfo ) = 0;
+<span class="lineNum">      45 </span>            :         virtual void sectionEndedEarly( SectionEndInfo const&amp; endInfo ) = 0;
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            :         virtual auto acquireGeneratorTracker( SourceLineInfo const&amp; lineInfo ) -&gt; IGeneratorTracker&amp; = 0;
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            : #if defined(CATCH_CONFIG_ENABLE_BENCHMARKING)
+<span class="lineNum">      50 </span>            :         virtual void benchmarkPreparing( std::string const&amp; name ) = 0;
+<span class="lineNum">      51 </span>            :         virtual void benchmarkStarting( BenchmarkInfo const&amp; info ) = 0;
+<span class="lineNum">      52 </span>            :         virtual void benchmarkEnded( BenchmarkStats&lt;&gt; const&amp; stats ) = 0;
+<span class="lineNum">      53 </span>            :         virtual void benchmarkFailed( std::string const&amp; error ) = 0;
+<span class="lineNum">      54 </span>            : #endif // CATCH_CONFIG_ENABLE_BENCHMARKING
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            :         virtual void pushScopedMessage( MessageInfo const&amp; message ) = 0;
+<span class="lineNum">      57 </span>            :         virtual void popScopedMessage( MessageInfo const&amp; message ) = 0;
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            :         virtual void emplaceUnscopedMessage( MessageBuilder const&amp; builder ) = 0;
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            :         virtual void handleFatalErrorCondition( StringRef message ) = 0;
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            :         virtual void handleExpr
+<span class="lineNum">      64 </span>            :                 (   AssertionInfo const&amp; info,
+<span class="lineNum">      65 </span>            :                     ITransientExpression const&amp; expr,
+<span class="lineNum">      66 </span>            :                     AssertionReaction&amp; reaction ) = 0;
+<span class="lineNum">      67 </span>            :         virtual void handleMessage
+<span class="lineNum">      68 </span>            :                 (   AssertionInfo const&amp; info,
+<span class="lineNum">      69 </span>            :                     ResultWas::OfType resultType,
+<span class="lineNum">      70 </span>            :                     StringRef const&amp; message,
+<span class="lineNum">      71 </span>            :                     AssertionReaction&amp; reaction ) = 0;
+<span class="lineNum">      72 </span>            :         virtual void handleUnexpectedExceptionNotThrown
+<span class="lineNum">      73 </span>            :                 (   AssertionInfo const&amp; info,
+<span class="lineNum">      74 </span>            :                     AssertionReaction&amp; reaction ) = 0;
+<span class="lineNum">      75 </span>            :         virtual void handleUnexpectedInflightException
+<span class="lineNum">      76 </span>            :                 (   AssertionInfo const&amp; info,
+<span class="lineNum">      77 </span>            :                     std::string const&amp; message,
+<span class="lineNum">      78 </span>            :                     AssertionReaction&amp; reaction ) = 0;
+<span class="lineNum">      79 </span>            :         virtual void handleIncomplete
+<span class="lineNum">      80 </span>            :                 (   AssertionInfo const&amp; info ) = 0;
+<span class="lineNum">      81 </span>            :         virtual void handleNonExpr
+<span class="lineNum">      82 </span>            :                 (   AssertionInfo const &amp;info,
+<span class="lineNum">      83 </span>            :                     ResultWas::OfType resultType,
+<span class="lineNum">      84 </span>            :                     AssertionReaction &amp;reaction ) = 0;
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span>            :         virtual bool lastAssertionPassed() = 0;
+<span class="lineNum">      89 </span>            :         virtual void assertionPassed() = 0;
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span>            :         // Deprecated, do not use:
+<span class="lineNum">      92 </span>            :         virtual std::string getCurrentTestName() const = 0;
+<span class="lineNum">      93 </span>            :         virtual const AssertionResult* getLastResult() const = 0;
+<span class="lineNum">      94 </span>            :         virtual void exceptionEarlyReported() = 0;
+<span class="lineNum">      95 </span>            :     };
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span>            :     IResultCapture&amp; getResultCapture();
+<span class="lineNum">      98 </span>            : }
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span>            : #endif // TWOBLUECUBES_CATCH_INTERFACES_CAPTURE_H_INCLUDED
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

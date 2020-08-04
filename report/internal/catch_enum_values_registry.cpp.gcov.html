@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_enum_values_registry.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_enum_values_registry.cpp<span style="font-size: 80%;"> (source / <a href="catch_enum_values_registry.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">32</td>
+            <td class="headerCovTableEntryLo">6.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryLo">12.5 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 4/4/2019.
+<span class="lineNum">       3 </span>            :  *  Copyright 2019 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : #include &quot;catch_enum_values_registry.h&quot;
+<span class="lineNum">       9 </span>            : #include &quot;catch_string_manip.h&quot;
+<span class="lineNum">      10 </span>            : #include &quot;catch_stream.h&quot;
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            : #include &lt;map&gt;
+<span class="lineNum">      13 </span>            : #include &lt;cassert&gt;
+<span class="lineNum">      14 </span>            : 
+<a name="15"><span class="lineNum">      15 </span>            : namespace Catch {</a>
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span><span class="lineCov">          3 :     IMutableEnumValuesRegistry::~IMutableEnumValuesRegistry() {}</span>
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :     namespace Detail {
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            :         namespace {
+<a name="22"><span class="lineNum">      22 </span>            :             // Extracts the actual name part of an enum instance</a>
+<span class="lineNum">      23 </span>            :             // In other words, it returns the Blue part of Bikeshed::Colour::Blue
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 :             StringRef extractInstanceName(StringRef enumInstance) {</span>
+<span class="lineNum">      25 </span>            :                 // Find last occurence of &quot;:&quot;
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :                 size_t name_start = enumInstance.size();</span>
+<span class="lineNum">      27 </span><span class="lineNoCov">          0 :                 while (name_start &gt; 0 &amp;&amp; enumInstance[name_start - 1] != ':') {</span>
+<span class="lineNum">      28 </span><span class="lineNoCov">          0 :                     --name_start;</span>
+<span class="lineNum">      29 </span>            :                 }
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :                 return enumInstance.substr(name_start, enumInstance.size() - name_start);</span>
+<span class="lineNum">      31 </span>            :             }
+<a name="32"><span class="lineNum">      32 </span>            :         }</a>
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :         std::vector&lt;StringRef&gt; parseEnums( StringRef enums ) {</span>
+<span class="lineNum">      35 </span><span class="lineNoCov">          0 :             auto enumValues = splitStringRef( enums, ',' );</span>
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :             std::vector&lt;StringRef&gt; parsed;</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :             parsed.reserve( enumValues.size() );</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :             for( auto const&amp; enumValue : enumValues ) {</span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :                 parsed.push_back(trim(extractInstanceName(enumValue)));</span>
+<span class="lineNum">      40 </span>            :             }
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :             return parsed;</span>
+<a name="42"><span class="lineNum">      42 </span>            :         }</a>
+<span class="lineNum">      43 </span>            : 
+<a name="44"><span class="lineNum">      44 </span><span class="lineNoCov">          0 :         EnumInfo::~EnumInfo() {}</span></a>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :         StringRef EnumInfo::lookup( int value ) const {</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :             for( auto const&amp; valueToName : m_values ) {</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :                 if( valueToName.first == value )</span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :                     return valueToName.second;</span>
+<span class="lineNum">      50 </span>            :             }
+<span class="lineNum">      51 </span><span class="lineCov">        546 :             return &quot;{** unexpected enum value **}&quot;_sr;</span>
+<a name="52"><span class="lineNum">      52 </span>            :         }</a>
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :         std::unique_ptr&lt;EnumInfo&gt; makeEnumInfo( StringRef enumName, StringRef allValueNames, std::vector&lt;int&gt; const&amp; values ) {</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :             std::unique_ptr&lt;EnumInfo&gt; enumInfo( new EnumInfo );</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :             enumInfo-&gt;m_name = enumName;</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :             enumInfo-&gt;m_values.reserve( values.size() );</span>
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :             const auto valueNames = Catch::Detail::parseEnums( allValueNames );</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :             assert( valueNames.size() == values.size() );</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :             std::size_t i = 0;</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :             for( auto value : values )</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :                 enumInfo-&gt;m_values.emplace_back(value, valueNames[i++]);</span>
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :             return enumInfo;</span>
+<a name="66"><span class="lineNum">      66 </span>            :         }</a>
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         EnumInfo const&amp; EnumValuesRegistry::registerEnum( StringRef enumName, StringRef allValueNames, std::vector&lt;int&gt; const&amp; values ) {</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :             m_enumInfos.push_back(makeEnumInfo(enumName, allValueNames, values));</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :             return *m_enumInfos.back();</span>
+<span class="lineNum">      71 </span>            :         }
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            :     } // Detail
+<span class="lineNum">      74 </span>            : } // Catch
+<span class="lineNum">      75 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

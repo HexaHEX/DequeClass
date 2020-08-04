@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_commandline.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_commandline.cpp<span style="font-size: 80%;"> (source / <a href="catch_commandline.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">101</td>
+            <td class="headerCovTableEntry">182</td>
+            <td class="headerCovTableEntryLo">55.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntryLo">7.7 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 02/11/2010.
+<span class="lineNum">       3 </span>            :  *  Copyright 2010 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &quot;catch_commandline.h&quot;
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &quot;catch_string_manip.h&quot;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            : #include &quot;catch_interfaces_registry_hub.h&quot;
+<span class="lineNum">      14 </span>            : #include &quot;catch_interfaces_reporter.h&quot;
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : #include &lt;fstream&gt;
+<span class="lineNum">      17 </span>            : #include &lt;ctime&gt;
+<span class="lineNum">      18 </span>            : 
+<a name="19"><span class="lineNum">      19 </span>            : namespace Catch {</a>
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span><span class="lineCov">          3 :     clara::Parser makeCommandLineParser( ConfigData&amp; config ) {</span>
+<span class="lineNum">      22 </span>            : 
+<a name="23"><span class="lineNum">      23 </span>            :         using namespace clara;</a>
+<a name="24"><span class="lineNum">      24 </span>            : </a>
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :         auto const setWarning = [&amp;]( std::string const&amp; warning ) {</span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :                 auto warningSet = [&amp;]() {</span>
+<span class="lineNum">      27 </span><span class="lineNoCov">          0 :                     if( warning == &quot;NoAssertions&quot; )</span>
+<span class="lineNum">      28 </span><span class="lineNoCov">          0 :                         return WarnAbout::NoAssertions;</span>
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :                     if ( warning == &quot;NoTests&quot; )</span>
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 :                         return WarnAbout::NoTests;</span>
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :                     return WarnAbout::Nothing;</span>
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :                 }();</span>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :                 if (warningSet == WarnAbout::Nothing)</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :                     return ParserResult::runtimeError( &quot;Unrecognised warning: '&quot; + warning + &quot;'&quot; );</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :                 config.warnings = static_cast&lt;WarnAbout::What&gt;( config.warnings | warningSet );</span>
+<a name="39"><span class="lineNum">      39 </span><span class="lineNoCov">          0 :                 return ParserResult::ok( ParseResultType::Matched );</span></a>
+<span class="lineNum">      40 </span><span class="lineCov">          3 :             };</span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :         auto const loadTestNamesFromFile = [&amp;]( std::string const&amp; filename ) {</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :                 std::ifstream f( filename.c_str() );</span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :                 if( !f.is_open() )</span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :                     return ParserResult::runtimeError( &quot;Unable to load input file: '&quot; + filename + &quot;'&quot; );</span>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :                 std::string line;</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :                 while( std::getline( f, line ) ) {</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :                     line = trim(line);</span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :                     if( !line.empty() &amp;&amp; !startsWith( line, '#' ) ) {</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :                         if( !startsWith( line, '&quot;' ) )</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :                             line = '&quot;' + line + '&quot;';</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :                         config.testsOrTags.push_back( line );</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :                         config.testsOrTags.emplace_back( &quot;,&quot; );</span>
+<span class="lineNum">      54 </span>            :                     }
+<span class="lineNum">      55 </span>            :                 }
+<span class="lineNum">      56 </span>            :                 //Remove comma in the end
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :                 if(!config.testsOrTags.empty())</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :                     config.testsOrTags.erase( config.testsOrTags.end()-1 );</span>
+<span class="lineNum">      59 </span>            : 
+<a name="60"><span class="lineNum">      60 </span><span class="lineNoCov">          0 :                 return ParserResult::ok( ParseResultType::Matched );</span></a>
+<span class="lineNum">      61 </span><span class="lineCov">          3 :             };</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :         auto const setTestOrder = [&amp;]( std::string const&amp; order ) {</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :                 if( startsWith( &quot;declared&quot;, order ) )</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :                     config.runOrder = RunTests::InDeclarationOrder;</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :                 else if( startsWith( &quot;lexical&quot;, order ) )</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :                     config.runOrder = RunTests::InLexicographicalOrder;</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :                 else if( startsWith( &quot;random&quot;, order ) )</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :                     config.runOrder = RunTests::InRandomOrder;</span>
+<span class="lineNum">      69 </span>            :                 else
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :                     return clara::ParserResult::runtimeError( &quot;Unrecognised ordering: '&quot; + order + &quot;'&quot; );</span>
+<a name="71"><span class="lineNum">      71 </span><span class="lineNoCov">          0 :                 return ParserResult::ok( ParseResultType::Matched );</span></a>
+<span class="lineNum">      72 </span><span class="lineCov">          3 :             };</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         auto const setRngSeed = [&amp;]( std::string const&amp; seed ) {</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :                 if( seed != &quot;time&quot; )</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :                     return clara::detail::convertInto( seed, config.rngSeed );</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :                 config.rngSeed = static_cast&lt;unsigned int&gt;( std::time(nullptr) );</span>
+<a name="77"><span class="lineNum">      77 </span><span class="lineNoCov">          0 :                 return ParserResult::ok( ParseResultType::Matched );</span></a>
+<span class="lineNum">      78 </span><span class="lineCov">          3 :             };</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :         auto const setColourUsage = [&amp;]( std::string const&amp; useColour ) {</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :                     auto mode = toLower( useColour );</span>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :                     if( mode == &quot;yes&quot; )</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :                         config.useColour = UseColour::Yes;</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :                     else if( mode == &quot;no&quot; )</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :                         config.useColour = UseColour::No;</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :                     else if( mode == &quot;auto&quot; )</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :                         config.useColour = UseColour::Auto;</span>
+<span class="lineNum">      88 </span>            :                     else
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :                         return ParserResult::runtimeError( &quot;colour mode must be one of: auto, yes or no. '&quot; + useColour + &quot;' not recognised&quot; );</span>
+<a name="90"><span class="lineNum">      90 </span><span class="lineNoCov">          0 :                 return ParserResult::ok( ParseResultType::Matched );</span></a>
+<span class="lineNum">      91 </span><span class="lineCov">          3 :             };</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :         auto const setWaitForKeypress = [&amp;]( std::string const&amp; keypress ) {</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :                 auto keypressLc = toLower( keypress );</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :                 if (keypressLc == &quot;never&quot;)</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :                     config.waitForKeypress = WaitForKeypress::Never;</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :                 else if( keypressLc == &quot;start&quot; )</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :                     config.waitForKeypress = WaitForKeypress::BeforeStart;</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :                 else if( keypressLc == &quot;exit&quot; )</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :                     config.waitForKeypress = WaitForKeypress::BeforeExit;</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :                 else if( keypressLc == &quot;both&quot; )</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :                     config.waitForKeypress = WaitForKeypress::BeforeStartAndExit;</span>
+<span class="lineNum">     102 </span>            :                 else
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :                     return ParserResult::runtimeError( &quot;keypress argument must be one of: never, start, exit or both. '&quot; + keypress + &quot;' not recognised&quot; );</span>
+<a name="104"><span class="lineNum">     104 </span><span class="lineNoCov">          0 :             return ParserResult::ok( ParseResultType::Matched );</span></a>
+<span class="lineNum">     105 </span><span class="lineCov">          3 :             };</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         auto const setVerbosity = [&amp;]( std::string const&amp; verbosity ) {</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :             auto lcVerbosity = toLower( verbosity );</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :             if( lcVerbosity == &quot;quiet&quot; )</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :                 config.verbosity = Verbosity::Quiet;</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :             else if( lcVerbosity == &quot;normal&quot; )</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :                 config.verbosity = Verbosity::Normal;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :             else if( lcVerbosity == &quot;high&quot; )</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :                 config.verbosity = Verbosity::High;</span>
+<span class="lineNum">     114 </span>            :             else
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :                 return ParserResult::runtimeError( &quot;Unrecognised verbosity, '&quot; + verbosity + &quot;'&quot; );</span>
+<a name="116"><span class="lineNum">     116 </span><span class="lineNoCov">          0 :             return ParserResult::ok( ParseResultType::Matched );</span></a>
+<span class="lineNum">     117 </span><span class="lineCov">          3 :         };</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         auto const setReporter = [&amp;]( std::string const&amp; reporter ) {</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :             IReporterRegistry::FactoryMap const&amp; factories = getRegistryHub().getReporterRegistry().getFactories();</span>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :             auto lcReporter = toLower( reporter );</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :             auto result = factories.find( lcReporter );</span>
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :             if( factories.end() != result )</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :                 config.reporterName = lcReporter;</span>
+<span class="lineNum">     126 </span>            :             else
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :                 return ParserResult::runtimeError( &quot;Unrecognized reporter, '&quot; + reporter + &quot;'. Check available with --list-reporters&quot; );</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :             return ParserResult::ok( ParseResultType::Matched );</span>
+<span class="lineNum">     129 </span><span class="lineCov">          3 :         };</span>
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            :         auto cli
+<span class="lineNum">     132 </span><span class="lineCov">          6 :             = ExeName( config.processName )</span>
+<span class="lineNum">     133 </span><span class="lineCov">         12 :             | Help( config.showHelp )</span>
+<span class="lineNum">     134 </span><span class="lineCov">         12 :             | Opt( config.listTests )</span>
+<span class="lineNum">     135 </span><span class="lineCov">          9 :                 [&quot;-l&quot;][&quot;--list-tests&quot;]</span>
+<span class="lineNum">     136 </span><span class="lineCov">          6 :                 ( &quot;list all/matching test cases&quot; )</span>
+<span class="lineNum">     137 </span><span class="lineCov">         12 :             | Opt( config.listTags )</span>
+<span class="lineNum">     138 </span><span class="lineCov">          9 :                 [&quot;-t&quot;][&quot;--list-tags&quot;]</span>
+<span class="lineNum">     139 </span><span class="lineCov">          6 :                 ( &quot;list all/matching tags&quot; )</span>
+<span class="lineNum">     140 </span><span class="lineCov">         12 :             | Opt( config.showSuccessfulTests )</span>
+<span class="lineNum">     141 </span><span class="lineCov">          9 :                 [&quot;-s&quot;][&quot;--success&quot;]</span>
+<span class="lineNum">     142 </span><span class="lineCov">          6 :                 ( &quot;include successful tests in output&quot; )</span>
+<span class="lineNum">     143 </span><span class="lineCov">         12 :             | Opt( config.shouldDebugBreak )</span>
+<span class="lineNum">     144 </span><span class="lineCov">          9 :                 [&quot;-b&quot;][&quot;--break&quot;]</span>
+<span class="lineNum">     145 </span><span class="lineCov">          6 :                 ( &quot;break into debugger on failure&quot; )</span>
+<span class="lineNum">     146 </span><span class="lineCov">         12 :             | Opt( config.noThrow )</span>
+<span class="lineNum">     147 </span><span class="lineCov">          9 :                 [&quot;-e&quot;][&quot;--nothrow&quot;]</span>
+<span class="lineNum">     148 </span><span class="lineCov">          6 :                 ( &quot;skip exception tests&quot; )</span>
+<span class="lineNum">     149 </span><span class="lineCov">         12 :             | Opt( config.showInvisibles )</span>
+<span class="lineNum">     150 </span><span class="lineCov">          9 :                 [&quot;-i&quot;][&quot;--invisibles&quot;]</span>
+<span class="lineNum">     151 </span><span class="lineCov">          6 :                 ( &quot;show invisibles (tabs, newlines)&quot; )</span>
+<span class="lineNum">     152 </span><span class="lineCov">         12 :             | Opt( config.outputFilename, &quot;filename&quot; )</span>
+<span class="lineNum">     153 </span><span class="lineCov">          9 :                 [&quot;-o&quot;][&quot;--out&quot;]</span>
+<span class="lineNum">     154 </span><span class="lineCov">          6 :                 ( &quot;output filename&quot; )</span>
+<span class="lineNum">     155 </span><span class="lineCov">         12 :             | Opt( setReporter, &quot;name&quot; )</span>
+<span class="lineNum">     156 </span><span class="lineCov">          9 :                 [&quot;-r&quot;][&quot;--reporter&quot;]</span>
+<span class="lineNum">     157 </span><span class="lineCov">          6 :                 ( &quot;reporter to use (defaults to console)&quot; )</span>
+<span class="lineNum">     158 </span><span class="lineCov">         12 :             | Opt( config.name, &quot;name&quot; )</span>
+<a name="159"><span class="lineNum">     159 </span><span class="lineCov">          9 :                 [&quot;-n&quot;][&quot;--name&quot;]</span></a>
+<span class="lineNum">     160 </span><span class="lineCov">          6 :                 ( &quot;suite name&quot; )</span>
+<span class="lineNum">     161 </span><span class="lineCov">         12 :             | Opt( [&amp;]( bool ){ config.abortAfter = 1; } )</span>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          9 :                 [&quot;-a&quot;][&quot;--abort&quot;]</span></a>
+<span class="lineNum">     163 </span><span class="lineCov">          6 :                 ( &quot;abort at first failure&quot; )</span>
+<span class="lineNum">     164 </span><span class="lineCov">         12 :             | Opt( [&amp;]( int x ){ config.abortAfter = x; }, &quot;no. failures&quot; )</span>
+<span class="lineNum">     165 </span><span class="lineCov">          9 :                 [&quot;-x&quot;][&quot;--abortx&quot;]</span>
+<span class="lineNum">     166 </span><span class="lineCov">          6 :                 ( &quot;abort after x failures&quot; )</span>
+<span class="lineNum">     167 </span><span class="lineCov">         12 :             | Opt( setWarning, &quot;warning name&quot; )</span>
+<a name="168"><span class="lineNum">     168 </span><span class="lineCov">          9 :                 [&quot;-w&quot;][&quot;--warn&quot;]</span></a>
+<span class="lineNum">     169 </span><span class="lineCov">          6 :                 ( &quot;enable warnings&quot; )</span>
+<span class="lineNum">     170 </span><span class="lineCov">         12 :             | Opt( [&amp;]( bool flag ) { config.showDurations = flag ? ShowDurations::Always : ShowDurations::Never; }, &quot;yes|no&quot; )</span>
+<span class="lineNum">     171 </span><span class="lineCov">          9 :                 [&quot;-d&quot;][&quot;--durations&quot;]</span>
+<span class="lineNum">     172 </span><span class="lineCov">          6 :                 ( &quot;show test durations&quot; )</span>
+<span class="lineNum">     173 </span><span class="lineCov">         12 :             | Opt( loadTestNamesFromFile, &quot;filename&quot; )</span>
+<span class="lineNum">     174 </span><span class="lineCov">          9 :                 [&quot;-f&quot;][&quot;--input-file&quot;]</span>
+<span class="lineNum">     175 </span><span class="lineCov">          6 :                 ( &quot;load test names to run from a file&quot; )</span>
+<span class="lineNum">     176 </span><span class="lineCov">         12 :             | Opt( config.filenamesAsTags )</span>
+<span class="lineNum">     177 </span><span class="lineCov">          9 :                 [&quot;-#&quot;][&quot;--filenames-as-tags&quot;]</span>
+<span class="lineNum">     178 </span><span class="lineCov">          6 :                 ( &quot;adds a tag for the filename&quot; )</span>
+<span class="lineNum">     179 </span><span class="lineCov">         12 :             | Opt( config.sectionsToRun, &quot;section name&quot; )</span>
+<span class="lineNum">     180 </span><span class="lineCov">          9 :                 [&quot;-c&quot;][&quot;--section&quot;]</span>
+<span class="lineNum">     181 </span><span class="lineCov">          6 :                 ( &quot;specify section to run&quot; )</span>
+<span class="lineNum">     182 </span><span class="lineCov">         12 :             | Opt( setVerbosity, &quot;quiet|normal|high&quot; )</span>
+<span class="lineNum">     183 </span><span class="lineCov">          9 :                 [&quot;-v&quot;][&quot;--verbosity&quot;]</span>
+<span class="lineNum">     184 </span><span class="lineCov">          6 :                 ( &quot;set output verbosity&quot; )</span>
+<span class="lineNum">     185 </span><span class="lineCov">         12 :             | Opt( config.listTestNamesOnly )</span>
+<span class="lineNum">     186 </span><span class="lineCov">          9 :                 [&quot;--list-test-names-only&quot;]</span>
+<span class="lineNum">     187 </span><span class="lineCov">          6 :                 ( &quot;list all/matching test cases names only&quot; )</span>
+<span class="lineNum">     188 </span><span class="lineCov">         12 :             | Opt( config.listReporters )</span>
+<span class="lineNum">     189 </span><span class="lineCov">          9 :                 [&quot;--list-reporters&quot;]</span>
+<span class="lineNum">     190 </span><span class="lineCov">          6 :                 ( &quot;list all reporters&quot; )</span>
+<span class="lineNum">     191 </span><span class="lineCov">         12 :             | Opt( setTestOrder, &quot;decl|lex|rand&quot; )</span>
+<span class="lineNum">     192 </span><span class="lineCov">          9 :                 [&quot;--order&quot;]</span>
+<span class="lineNum">     193 </span><span class="lineCov">          6 :                 ( &quot;test case order (defaults to decl)&quot; )</span>
+<span class="lineNum">     194 </span><span class="lineCov">         12 :             | Opt( setRngSeed, &quot;'time'|number&quot; )</span>
+<span class="lineNum">     195 </span><span class="lineCov">          9 :                 [&quot;--rng-seed&quot;]</span>
+<span class="lineNum">     196 </span><span class="lineCov">          6 :                 ( &quot;set a specific seed for random numbers&quot; )</span>
+<span class="lineNum">     197 </span><span class="lineCov">         12 :             | Opt( setColourUsage, &quot;yes|no&quot; )</span>
+<span class="lineNum">     198 </span><span class="lineCov">          9 :                 [&quot;--use-colour&quot;]</span>
+<span class="lineNum">     199 </span><span class="lineCov">          6 :                 ( &quot;should output be colourised&quot; )</span>
+<span class="lineNum">     200 </span><span class="lineCov">         12 :             | Opt( config.libIdentify )</span>
+<span class="lineNum">     201 </span><span class="lineCov">          9 :                 [&quot;--libidentify&quot;]</span>
+<span class="lineNum">     202 </span><span class="lineCov">          6 :                 ( &quot;report name and version according to libidentify standard&quot; )</span>
+<span class="lineNum">     203 </span><span class="lineCov">         12 :             | Opt( setWaitForKeypress, &quot;never|start|exit|both&quot; )</span>
+<span class="lineNum">     204 </span><span class="lineCov">          9 :                 [&quot;--wait-for-keypress&quot;]</span>
+<span class="lineNum">     205 </span><span class="lineCov">          6 :                 ( &quot;waits for a keypress before exiting&quot; )</span>
+<span class="lineNum">     206 </span><span class="lineCov">         12 :             | Opt( config.benchmarkSamples, &quot;samples&quot; )</span>
+<span class="lineNum">     207 </span><span class="lineCov">          9 :                 [&quot;--benchmark-samples&quot;]</span>
+<span class="lineNum">     208 </span><span class="lineCov">          6 :                 ( &quot;number of samples to collect (default: 100)&quot; )</span>
+<span class="lineNum">     209 </span><span class="lineCov">         12 :             | Opt( config.benchmarkResamples, &quot;resamples&quot; )</span>
+<span class="lineNum">     210 </span><span class="lineCov">          9 :                 [&quot;--benchmark-resamples&quot;]</span>
+<span class="lineNum">     211 </span><span class="lineCov">          6 :                 ( &quot;number of resamples for the bootstrap (default: 100000)&quot; )</span>
+<span class="lineNum">     212 </span><span class="lineCov">         12 :             | Opt( config.benchmarkConfidenceInterval, &quot;confidence interval&quot; )</span>
+<span class="lineNum">     213 </span><span class="lineCov">          9 :                 [&quot;--benchmark-confidence-interval&quot;]</span>
+<span class="lineNum">     214 </span><span class="lineCov">          6 :                 ( &quot;confidence interval for the bootstrap (between 0 and 1, default: 0.95)&quot; )</span>
+<span class="lineNum">     215 </span><span class="lineCov">         12 :             | Opt( config.benchmarkNoAnalysis )</span>
+<span class="lineNum">     216 </span><span class="lineCov">          9 :                 [&quot;--benchmark-no-analysis&quot;]</span>
+<span class="lineNum">     217 </span><span class="lineCov">          6 :                 ( &quot;perform only measurements; do not perform any analysis&quot; )</span>
+<span class="lineNum">     218 </span><span class="lineCov">         12 :             | Opt( config.benchmarkWarmupTime, &quot;benchmarkWarmupTime&quot; )</span>
+<span class="lineNum">     219 </span><span class="lineCov">          9 :                 [&quot;--benchmark-warmup-time&quot;]</span>
+<span class="lineNum">     220 </span><span class="lineCov">          6 :                 ( &quot;amount of time in milliseconds spent on warming up each test (default: 100)&quot; )</span>
+<span class="lineNum">     221 </span><span class="lineCov">          6 :             | Arg( config.testsOrTags, &quot;test name|pattern|tags&quot; )</span>
+<span class="lineNum">     222 </span><span class="lineCov">          9 :                 ( &quot;which test or tests to use&quot; );</span>
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span><span class="lineCov">          3 :         return cli;</span>
+<span class="lineNum">     225 </span>            :     }
+<span class="lineNum">     226 </span>            : 
+<span class="lineNum">     227 </span>            : } // end namespace Catch
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

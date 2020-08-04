@@ -1,0 +1,288 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_generators.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_generators.hpp<span style="font-size: 80%;"> (source / <a href="catch_generators.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil Nash on 15/6/2018.
+<span class="lineNum">       3 </span>            :  *
+<span class="lineNum">       4 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       5 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : #ifndef TWOBLUECUBES_CATCH_GENERATORS_HPP_INCLUDED
+<span class="lineNum">       8 </span>            : #define TWOBLUECUBES_CATCH_GENERATORS_HPP_INCLUDED
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #include &quot;catch_interfaces_generatortracker.h&quot;
+<span class="lineNum">      11 </span>            : #include &quot;catch_common.h&quot;
+<span class="lineNum">      12 </span>            : #include &quot;catch_enforce.h&quot;
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : #include &lt;memory&gt;
+<span class="lineNum">      15 </span>            : #include &lt;vector&gt;
+<span class="lineNum">      16 </span>            : #include &lt;cassert&gt;
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            : #include &lt;utility&gt;
+<span class="lineNum">      19 </span>            : #include &lt;exception&gt;
+<span class="lineNum">      20 </span>            : 
+<a name="21"><span class="lineNum">      21 </span>            : namespace Catch {</a>
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span><span class="lineNoCov">          0 : class GeneratorException : public std::exception {</span>
+<span class="lineNum">      24 </span>            :     const char* const m_msg = &quot;&quot;;
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            : public:
+<span class="lineNum">      27 </span>            :     GeneratorException(const char* msg):
+<span class="lineNum">      28 </span>            :         m_msg(msg)
+<span class="lineNum">      29 </span>            :     {}
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            :     const char* what() const noexcept override final;
+<span class="lineNum">      32 </span>            : };
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : namespace Generators {
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            :     // !TBD move this into its own location?
+<span class="lineNum">      37 </span>            :     namespace pf{
+<span class="lineNum">      38 </span>            :         template&lt;typename T, typename... Args&gt;
+<span class="lineNum">      39 </span>            :         std::unique_ptr&lt;T&gt; make_unique( Args&amp;&amp;... args ) {
+<span class="lineNum">      40 </span>            :             return std::unique_ptr&lt;T&gt;(new T(std::forward&lt;Args&gt;(args)...));
+<span class="lineNum">      41 </span>            :         }
+<span class="lineNum">      42 </span>            :     }
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">      45 </span>            :     struct IGenerator : GeneratorUntypedBase {
+<span class="lineNum">      46 </span>            :         virtual ~IGenerator() = default;
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            :         // Returns the current element of the generator
+<span class="lineNum">      49 </span>            :         //
+<span class="lineNum">      50 </span>            :         // \Precondition The generator is either freshly constructed,
+<span class="lineNum">      51 </span>            :         // or the last call to `next()` returned true
+<span class="lineNum">      52 </span>            :         virtual T const&amp; get() const = 0;
+<span class="lineNum">      53 </span>            :         using type = T;
+<span class="lineNum">      54 </span>            :     };
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">      57 </span>            :     class SingleValueGenerator final : public IGenerator&lt;T&gt; {
+<span class="lineNum">      58 </span>            :         T m_value;
+<span class="lineNum">      59 </span>            :     public:
+<span class="lineNum">      60 </span>            :         SingleValueGenerator(T&amp;&amp; value) : m_value(std::move(value)) {}
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            :         T const&amp; get() const override {
+<span class="lineNum">      63 </span>            :             return m_value;
+<span class="lineNum">      64 </span>            :         }
+<span class="lineNum">      65 </span>            :         bool next() override {
+<span class="lineNum">      66 </span>            :             return false;
+<span class="lineNum">      67 </span>            :         }
+<span class="lineNum">      68 </span>            :     };
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">      71 </span>            :     class FixedValuesGenerator final : public IGenerator&lt;T&gt; {
+<span class="lineNum">      72 </span>            :         static_assert(!std::is_same&lt;T, bool&gt;::value,
+<span class="lineNum">      73 </span>            :             &quot;FixedValuesGenerator does not support bools because of std::vector&lt;bool&gt;&quot;
+<span class="lineNum">      74 </span>            :             &quot;specialization, use SingleValue Generator instead.&quot;);
+<span class="lineNum">      75 </span>            :         std::vector&lt;T&gt; m_values;
+<span class="lineNum">      76 </span>            :         size_t m_idx = 0;
+<span class="lineNum">      77 </span>            :     public:
+<span class="lineNum">      78 </span>            :         FixedValuesGenerator( std::initializer_list&lt;T&gt; values ) : m_values( values ) {}
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :         T const&amp; get() const override {
+<span class="lineNum">      81 </span>            :             return m_values[m_idx];
+<span class="lineNum">      82 </span>            :         }
+<span class="lineNum">      83 </span>            :         bool next() override {
+<span class="lineNum">      84 </span>            :             ++m_idx;
+<span class="lineNum">      85 </span>            :             return m_idx &lt; m_values.size();
+<span class="lineNum">      86 </span>            :         }
+<span class="lineNum">      87 </span>            :     };
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            :     template &lt;typename T&gt;
+<span class="lineNum">      90 </span>            :     class GeneratorWrapper final {
+<span class="lineNum">      91 </span>            :         std::unique_ptr&lt;IGenerator&lt;T&gt;&gt; m_generator;
+<span class="lineNum">      92 </span>            :     public:
+<span class="lineNum">      93 </span>            :         GeneratorWrapper(std::unique_ptr&lt;IGenerator&lt;T&gt;&gt; generator):
+<span class="lineNum">      94 </span>            :             m_generator(std::move(generator))
+<span class="lineNum">      95 </span>            :         {}
+<span class="lineNum">      96 </span>            :         T const&amp; get() const {
+<span class="lineNum">      97 </span>            :             return m_generator-&gt;get();
+<span class="lineNum">      98 </span>            :         }
+<span class="lineNum">      99 </span>            :         bool next() {
+<span class="lineNum">     100 </span>            :             return m_generator-&gt;next();
+<span class="lineNum">     101 </span>            :         }
+<span class="lineNum">     102 </span>            :     };
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span>            :     template &lt;typename T&gt;
+<span class="lineNum">     105 </span>            :     GeneratorWrapper&lt;T&gt; value(T&amp;&amp; value) {
+<span class="lineNum">     106 </span>            :         return GeneratorWrapper&lt;T&gt;(pf::make_unique&lt;SingleValueGenerator&lt;T&gt;&gt;(std::forward&lt;T&gt;(value)));
+<span class="lineNum">     107 </span>            :     }
+<span class="lineNum">     108 </span>            :     template &lt;typename T&gt;
+<span class="lineNum">     109 </span>            :     GeneratorWrapper&lt;T&gt; values(std::initializer_list&lt;T&gt; values) {
+<span class="lineNum">     110 </span>            :         return GeneratorWrapper&lt;T&gt;(pf::make_unique&lt;FixedValuesGenerator&lt;T&gt;&gt;(values));
+<span class="lineNum">     111 </span>            :     }
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     114 </span>            :     class Generators : public IGenerator&lt;T&gt; {
+<span class="lineNum">     115 </span>            :         std::vector&lt;GeneratorWrapper&lt;T&gt;&gt; m_generators;
+<span class="lineNum">     116 </span>            :         size_t m_current = 0;
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span>            :         void populate(GeneratorWrapper&lt;T&gt;&amp;&amp; generator) {
+<span class="lineNum">     119 </span>            :             m_generators.emplace_back(std::move(generator));
+<span class="lineNum">     120 </span>            :         }
+<span class="lineNum">     121 </span>            :         void populate(T&amp;&amp; val) {
+<span class="lineNum">     122 </span>            :             m_generators.emplace_back(value(std::forward&lt;T&gt;(val)));
+<span class="lineNum">     123 </span>            :         }
+<span class="lineNum">     124 </span>            :         template&lt;typename U&gt;
+<span class="lineNum">     125 </span>            :         void populate(U&amp;&amp; val) {
+<span class="lineNum">     126 </span>            :             populate(T(std::forward&lt;U&gt;(val)));
+<span class="lineNum">     127 </span>            :         }
+<span class="lineNum">     128 </span>            :         template&lt;typename U, typename... Gs&gt;
+<span class="lineNum">     129 </span>            :         void populate(U&amp;&amp; valueOrGenerator, Gs &amp;&amp;... moreGenerators) {
+<span class="lineNum">     130 </span>            :             populate(std::forward&lt;U&gt;(valueOrGenerator));
+<span class="lineNum">     131 </span>            :             populate(std::forward&lt;Gs&gt;(moreGenerators)...);
+<span class="lineNum">     132 </span>            :         }
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            :     public:
+<span class="lineNum">     135 </span>            :         template &lt;typename... Gs&gt;
+<span class="lineNum">     136 </span>            :         Generators(Gs &amp;&amp;... moreGenerators) {
+<span class="lineNum">     137 </span>            :             m_generators.reserve(sizeof...(Gs));
+<span class="lineNum">     138 </span>            :             populate(std::forward&lt;Gs&gt;(moreGenerators)...);
+<span class="lineNum">     139 </span>            :         }
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span>            :         T const&amp; get() const override {
+<span class="lineNum">     142 </span>            :             return m_generators[m_current].get();
+<span class="lineNum">     143 </span>            :         }
+<span class="lineNum">     144 </span>            : 
+<span class="lineNum">     145 </span>            :         bool next() override {
+<span class="lineNum">     146 </span>            :             if (m_current &gt;= m_generators.size()) {
+<span class="lineNum">     147 </span>            :                 return false;
+<span class="lineNum">     148 </span>            :             }
+<span class="lineNum">     149 </span>            :             const bool current_status = m_generators[m_current].next();
+<span class="lineNum">     150 </span>            :             if (!current_status) {
+<span class="lineNum">     151 </span>            :                 ++m_current;
+<span class="lineNum">     152 </span>            :             }
+<span class="lineNum">     153 </span>            :             return m_current &lt; m_generators.size();
+<span class="lineNum">     154 </span>            :         }
+<span class="lineNum">     155 </span>            :     };
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span>            :     template&lt;typename... Ts&gt;
+<span class="lineNum">     159 </span>            :     GeneratorWrapper&lt;std::tuple&lt;Ts...&gt;&gt; table( std::initializer_list&lt;std::tuple&lt;typename std::decay&lt;Ts&gt;::type...&gt;&gt; tuples ) {
+<span class="lineNum">     160 </span>            :         return values&lt;std::tuple&lt;Ts...&gt;&gt;( tuples );
+<span class="lineNum">     161 </span>            :     }
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            :     // Tag type to signal that a generator sequence should convert arguments to a specific type
+<span class="lineNum">     164 </span>            :     template &lt;typename T&gt;
+<span class="lineNum">     165 </span>            :     struct as {};
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            :     template&lt;typename T, typename... Gs&gt;
+<span class="lineNum">     168 </span>            :     auto makeGenerators( GeneratorWrapper&lt;T&gt;&amp;&amp; generator, Gs &amp;&amp;... moreGenerators ) -&gt; Generators&lt;T&gt; {
+<span class="lineNum">     169 </span>            :         return Generators&lt;T&gt;(std::move(generator), std::forward&lt;Gs&gt;(moreGenerators)...);
+<span class="lineNum">     170 </span>            :     }
+<span class="lineNum">     171 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     172 </span>            :     auto makeGenerators( GeneratorWrapper&lt;T&gt;&amp;&amp; generator ) -&gt; Generators&lt;T&gt; {
+<span class="lineNum">     173 </span>            :         return Generators&lt;T&gt;(std::move(generator));
+<span class="lineNum">     174 </span>            :     }
+<span class="lineNum">     175 </span>            :     template&lt;typename T, typename... Gs&gt;
+<span class="lineNum">     176 </span>            :     auto makeGenerators( T&amp;&amp; val, Gs &amp;&amp;... moreGenerators ) -&gt; Generators&lt;T&gt; {
+<span class="lineNum">     177 </span>            :         return makeGenerators( value( std::forward&lt;T&gt;( val ) ), std::forward&lt;Gs&gt;( moreGenerators )... );
+<span class="lineNum">     178 </span>            :     }
+<span class="lineNum">     179 </span>            :     template&lt;typename T, typename U, typename... Gs&gt;
+<span class="lineNum">     180 </span>            :     auto makeGenerators( as&lt;T&gt;, U&amp;&amp; val, Gs &amp;&amp;... moreGenerators ) -&gt; Generators&lt;T&gt; {
+<span class="lineNum">     181 </span>            :         return makeGenerators( value( T( std::forward&lt;U&gt;( val ) ) ), std::forward&lt;Gs&gt;( moreGenerators )... );
+<span class="lineNum">     182 </span>            :     }
+<span class="lineNum">     183 </span>            : 
+<span class="lineNum">     184 </span>            :     auto acquireGeneratorTracker( SourceLineInfo const&amp; lineInfo ) -&gt; IGeneratorTracker&amp;;
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span>            :     template&lt;typename L&gt;
+<span class="lineNum">     187 </span>            :     // Note: The type after -&gt; is weird, because VS2015 cannot parse
+<span class="lineNum">     188 </span>            :     //       the expression used in the typedef inside, when it is in
+<span class="lineNum">     189 </span>            :     //       return type. Yeah.
+<span class="lineNum">     190 </span>            :     auto generate( SourceLineInfo const&amp; lineInfo, L const&amp; generatorExpression ) -&gt; decltype(std::declval&lt;decltype(generatorExpression())&gt;().get()) {
+<span class="lineNum">     191 </span>            :         using UnderlyingType = typename decltype(generatorExpression())::type;
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span>            :         IGeneratorTracker&amp; tracker = acquireGeneratorTracker( lineInfo );
+<span class="lineNum">     194 </span>            :         if (!tracker.hasGenerator()) {
+<span class="lineNum">     195 </span>            :             tracker.setGenerator(pf::make_unique&lt;Generators&lt;UnderlyingType&gt;&gt;(generatorExpression()));
+<span class="lineNum">     196 </span>            :         }
+<span class="lineNum">     197 </span>            : 
+<span class="lineNum">     198 </span>            :         auto const&amp; generator = static_cast&lt;IGenerator&lt;UnderlyingType&gt; const&amp;&gt;( *tracker.getGenerator() );
+<span class="lineNum">     199 </span>            :         return generator.get();
+<span class="lineNum">     200 </span>            :     }
+<span class="lineNum">     201 </span>            : 
+<span class="lineNum">     202 </span>            : } // namespace Generators
+<span class="lineNum">     203 </span>            : } // namespace Catch
+<span class="lineNum">     204 </span>            : 
+<span class="lineNum">     205 </span>            : #define GENERATE( ... ) \
+<span class="lineNum">     206 </span>            :     Catch::Generators::generate( CATCH_INTERNAL_LINEINFO, [ ]{ using namespace Catch::Generators; return makeGenerators( __VA_ARGS__ ); } ) //NOLINT(google-build-using-namespace)
+<span class="lineNum">     207 </span>            : #define GENERATE_COPY( ... ) \
+<span class="lineNum">     208 </span>            :     Catch::Generators::generate( CATCH_INTERNAL_LINEINFO, [=]{ using namespace Catch::Generators; return makeGenerators( __VA_ARGS__ ); } ) //NOLINT(google-build-using-namespace)
+<span class="lineNum">     209 </span>            : #define GENERATE_REF( ... ) \
+<span class="lineNum">     210 </span>            :     Catch::Generators::generate( CATCH_INTERNAL_LINEINFO, [&amp;]{ using namespace Catch::Generators; return makeGenerators( __VA_ARGS__ ); } ) //NOLINT(google-build-using-namespace)
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span>            : #endif // TWOBLUECUBES_CATCH_GENERATORS_HPP_INCLUDED
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

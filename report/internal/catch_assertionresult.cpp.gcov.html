@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_assertionresult.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_assertionresult.cpp<span style="font-size: 80%;"> (source / <a href="catch_assertionresult.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">52</td>
+            <td class="headerCovTableEntryLo">21.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryLo">33.3 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 8/8/12
+<span class="lineNum">       3 </span>            :  *  Copyright 2012 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &quot;catch_assertionresult.h&quot;
+<a name="10"><span class="lineNum">      10 </span>            : </a>
+<span class="lineNum">      11 </span>            : namespace Catch {
+<span class="lineNum">      12 </span><span class="lineCov">         27 :     AssertionResultData::AssertionResultData(ResultWas::OfType _resultType, LazyExpression const &amp; _lazyExpression):</span>
+<span class="lineNum">      13 </span>            :         lazyExpression(_lazyExpression),
+<a name="14"><span class="lineNum">      14 </span><span class="lineCov">         27 :         resultType(_resultType) {}</span></a>
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span><span class="lineNoCov">          0 :     std::string AssertionResultData::reconstructExpression() const {</span>
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span><span class="lineNoCov">          0 :         if( reconstructedExpression.empty() ) {</span>
+<span class="lineNum">      19 </span><span class="lineNoCov">          0 :             if( lazyExpression ) {</span>
+<span class="lineNum">      20 </span><span class="lineNoCov">          0 :                 ReusableStringStream rss;</span>
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :                 rss &lt;&lt; lazyExpression;</span>
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 :                 reconstructedExpression = rss.str();</span>
+<span class="lineNum">      23 </span>            :             }
+<span class="lineNum">      24 </span>            :         }
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :         return reconstructedExpression;</span>
+<a name="26"><span class="lineNum">      26 </span>            :     }</a>
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span><span class="lineCov">         27 :     AssertionResult::AssertionResult( AssertionInfo const&amp; info, AssertionResultData const&amp; data )</span>
+<span class="lineNum">      29 </span>            :     :   m_info( info ),
+<span class="lineNum">      30 </span><span class="lineCov">         27 :         m_resultData( data )</span>
+<span class="lineNum">      31 </span><span class="lineCov">         27 :     {}</span>
+<a name="32"><span class="lineNum">      32 </span>            : </a>
+<span class="lineNum">      33 </span>            :     // Result was a success
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :     bool AssertionResult::succeeded() const {</span>
+<span class="lineNum">      35 </span><span class="lineNoCov">          0 :         return Catch::isOk( m_resultData.resultType );</span>
+<span class="lineNum">      36 </span>            :     }
+<a name="37"><span class="lineNum">      37 </span>            : </a>
+<span class="lineNum">      38 </span>            :     // Result was a success, or failure is suppressed
+<span class="lineNum">      39 </span><span class="lineCov">         54 :     bool AssertionResult::isOk() const {</span>
+<span class="lineNum">      40 </span><span class="lineCov">         54 :         return Catch::isOk( m_resultData.resultType ) || shouldSuppressFailure( m_info.resultDisposition );</span>
+<a name="41"><span class="lineNum">      41 </span>            :     }</a>
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span><span class="lineCov">         81 :     ResultWas::OfType AssertionResult::getResultType() const {</span>
+<span class="lineNum">      44 </span><span class="lineCov">         81 :         return m_resultData.resultType;</span>
+<a name="45"><span class="lineNum">      45 </span>            :     }</a>
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :     bool AssertionResult::hasExpression() const {</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :         return !m_info.capturedExpression.empty();</span>
+<a name="49"><span class="lineNum">      49 </span>            :     }</a>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineCov">         27 :     bool AssertionResult::hasMessage() const {</span>
+<span class="lineNum">      52 </span><span class="lineCov">         27 :         return !m_resultData.message.empty();</span>
+<a name="53"><span class="lineNum">      53 </span>            :     }</a>
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :     std::string AssertionResult::getExpression() const {</span>
+<span class="lineNum">      56 </span>            :         // Possibly overallocating by 3 characters should be basically free
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :         std::string expr; expr.reserve(m_info.capturedExpression.size() + 3);</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         if (isFalseTest(m_info.resultDisposition)) {</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :             expr += &quot;!(&quot;;</span>
+<span class="lineNum">      60 </span>            :         }
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :         expr += m_info.capturedExpression;</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :         if (isFalseTest(m_info.resultDisposition)) {</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :             expr += ')';</span>
+<span class="lineNum">      64 </span>            :         }
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :         return expr;</span>
+<a name="66"><span class="lineNum">      66 </span>            :     }</a>
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     std::string AssertionResult::getExpressionInMacro() const {</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         std::string expr;</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :         if( m_info.macroName.empty() )</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :             expr = static_cast&lt;std::string&gt;(m_info.capturedExpression);</span>
+<span class="lineNum">      72 </span>            :         else {
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :             expr.reserve( m_info.macroName.size() + m_info.capturedExpression.size() + 4 );</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :             expr += m_info.macroName;</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :             expr += &quot;( &quot;;</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :             expr += m_info.capturedExpression;</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :             expr += &quot; )&quot;;</span>
+<span class="lineNum">      78 </span>            :         }
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :         return expr;</span>
+<a name="80"><span class="lineNum">      80 </span>            :     }</a>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :     bool AssertionResult::hasExpandedExpression() const {</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :         return hasExpression() &amp;&amp; getExpandedExpression() != getExpression();</span>
+<a name="84"><span class="lineNum">      84 </span>            :     }</a>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     std::string AssertionResult::getExpandedExpression() const {</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         std::string expr = m_resultData.reconstructExpression();</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :         return expr.empty()</span>
+<span class="lineNum">      89 </span>            :                 ? getExpression()
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :                 : expr;</span>
+<a name="91"><span class="lineNum">      91 </span>            :     }</a>
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :     std::string AssertionResult::getMessage() const {</span>
+<a name="94"><span class="lineNum">      94 </span><span class="lineNoCov">          0 :         return m_resultData.message;</span></a>
+<span class="lineNum">      95 </span>            :     }
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     SourceLineInfo AssertionResult::getSourceInfo() const {</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :         return m_info.lineInfo;</span>
+<a name="98"><span class="lineNum">      98 </span>            :     }</a>
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :     StringRef AssertionResult::getTestMacroName() const {</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         return m_info.macroName;</span>
+<span class="lineNum">     102 </span>            :     }
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span>            : } // end namespace Catch
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

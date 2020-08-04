@@ -1,0 +1,335 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_decomposer.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_decomposer.h<span style="font-size: 80%;"> (source / <a href="catch_decomposer.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">23</td>
+            <td class="headerCovTableEntry">27</td>
+            <td class="headerCovTableEntryMed">85.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">42</td>
+            <td class="headerCovTableEntry">58</td>
+            <td class="headerCovTableEntryLo">72.4 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil Nash on 8/8/2017.
+<span class="lineNum">       3 </span>            :  *  Copyright 2017 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : #ifndef TWOBLUECUBES_CATCH_DECOMPOSER_H_INCLUDED
+<span class="lineNum">       9 </span>            : #define TWOBLUECUBES_CATCH_DECOMPOSER_H_INCLUDED
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &quot;catch_tostring.h&quot;
+<span class="lineNum">      12 </span>            : #include &quot;catch_stringref.h&quot;
+<span class="lineNum">      13 </span>            : #include &quot;catch_meta.hpp&quot;
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : #include &lt;iosfwd&gt;
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : #ifdef _MSC_VER
+<span class="lineNum">      18 </span>            : #pragma warning(push)
+<span class="lineNum">      19 </span>            : #pragma warning(disable:4389) // '==' : signed/unsigned mismatch
+<span class="lineNum">      20 </span>            : #pragma warning(disable:4018) // more &quot;signed/unsigned mismatch&quot;
+<span class="lineNum">      21 </span>            : #pragma warning(disable:4312) // Converting int to T* using reinterpret_cast (issue on x64 platform)
+<span class="lineNum">      22 </span>            : #pragma warning(disable:4180) // qualifier applied to function type has no meaning
+<span class="lineNum">      23 </span>            : #pragma warning(disable:4800) // Forcing result to true or false
+<span class="lineNum">      24 </span>            : #endif
+<span class="lineNum">      25 </span>            : 
+<a name="26"><span class="lineNum">      26 </span>            : namespace Catch {</a>
+<a name="27"><span class="lineNum">      27 </span>            : </a>
+<a name="28"><span class="lineNum">      28 </span><span class="lineCov">        519 :     struct ITransientExpression {</span></a>
+<span class="lineNum">      29 </span><span class="lineNoCov">          0 :         auto isBinaryExpression() const -&gt; bool { return m_isBinaryExpression; }</span>
+<span class="lineNum">      30 </span><span class="lineCov">        519 :         auto getResult() const -&gt; bool { return m_result; }</span>
+<a name="31"><span class="lineNum">      31 </span>            :         virtual void streamReconstructedExpression( std::ostream &amp;os ) const = 0;</a>
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span><span class="lineCov">        519 :         ITransientExpression( bool isBinaryExpression, bool result )</span>
+<span class="lineNum">      34 </span><span class="lineCov">        519 :         :   m_isBinaryExpression( isBinaryExpression ),</span>
+<span class="lineNum">      35 </span><span class="lineCov">        519 :             m_result( result )</span>
+<span class="lineNum">      36 </span><span class="lineCov">        519 :         {}</span>
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            :         // We don't actually need a virtual destructor, but many static analysers
+<span class="lineNum">      39 </span>            :         // complain if it's not here :-(
+<span class="lineNum">      40 </span>            :         virtual ~ITransientExpression();
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            :         bool m_isBinaryExpression;
+<span class="lineNum">      43 </span>            :         bool m_result;
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            :     };
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            :     void formatReconstructedExpression( std::ostream &amp;os, std::string const&amp; lhs, StringRef op, std::string const&amp; rhs );
+<a name="48"><span class="lineNum">      48 </span>            : </a>
+<span class="lineNum">      49 </span>            :     template&lt;typename LhsT, typename RhsT&gt;
+<span class="lineNum">      50 </span><span class="lineCov">        519 :     class BinaryExpr  : public ITransientExpression {</span>
+<span class="lineNum">      51 </span>            :         LhsT m_lhs;
+<span class="lineNum">      52 </span>            :         StringRef m_op;
+<a name="53"><span class="lineNum">      53 </span>            :         RhsT m_rhs;</a>
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :         void streamReconstructedExpression( std::ostream &amp;os ) const override {</span>
+<span class="lineNum">      56 </span>            :             formatReconstructedExpression
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :                     ( os, Catch::Detail::stringify( m_lhs ), m_op, Catch::Detail::stringify( m_rhs ) );</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         }</span>
+<a name="59"><span class="lineNum">      59 </span>            : </a>
+<span class="lineNum">      60 </span>            :     public:
+<span class="lineNum">      61 </span><span class="lineCov">        519 :         BinaryExpr( bool comparisonResult, LhsT lhs, StringRef op, RhsT rhs )</span>
+<span class="lineNum">      62 </span>            :         :   ITransientExpression{ true, comparisonResult },
+<span class="lineNum">      63 </span>            :             m_lhs( lhs ),
+<span class="lineNum">      64 </span>            :             m_op( op ),
+<span class="lineNum">      65 </span><span class="lineCov">        519 :             m_rhs( rhs )</span>
+<span class="lineNum">      66 </span><span class="lineCov">        519 :         {}</span>
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">      69 </span>            :         auto operator &amp;&amp; ( T ) const -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">      70 </span>            :             static_assert(always_false&lt;T&gt;::value,
+<span class="lineNum">      71 </span>            :             &quot;chained comparisons are not supported inside assertions, &quot;
+<span class="lineNum">      72 </span>            :             &quot;wrap the expression inside parentheses, or decompose it&quot;);
+<span class="lineNum">      73 </span>            :         }
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">      76 </span>            :         auto operator || ( T ) const -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">      77 </span>            :             static_assert(always_false&lt;T&gt;::value,
+<span class="lineNum">      78 </span>            :             &quot;chained comparisons are not supported inside assertions, &quot;
+<span class="lineNum">      79 </span>            :             &quot;wrap the expression inside parentheses, or decompose it&quot;);
+<span class="lineNum">      80 </span>            :         }
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">      83 </span>            :         auto operator == ( T ) const -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">      84 </span>            :             static_assert(always_false&lt;T&gt;::value,
+<span class="lineNum">      85 </span>            :             &quot;chained comparisons are not supported inside assertions, &quot;
+<span class="lineNum">      86 </span>            :             &quot;wrap the expression inside parentheses, or decompose it&quot;);
+<span class="lineNum">      87 </span>            :         }
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">      90 </span>            :         auto operator != ( T ) const -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">      91 </span>            :             static_assert(always_false&lt;T&gt;::value,
+<span class="lineNum">      92 </span>            :             &quot;chained comparisons are not supported inside assertions, &quot;
+<span class="lineNum">      93 </span>            :             &quot;wrap the expression inside parentheses, or decompose it&quot;);
+<span class="lineNum">      94 </span>            :         }
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">      97 </span>            :         auto operator &gt; ( T ) const -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">      98 </span>            :             static_assert(always_false&lt;T&gt;::value,
+<span class="lineNum">      99 </span>            :             &quot;chained comparisons are not supported inside assertions, &quot;
+<span class="lineNum">     100 </span>            :             &quot;wrap the expression inside parentheses, or decompose it&quot;);
+<span class="lineNum">     101 </span>            :         }
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">     104 </span>            :         auto operator &lt; ( T ) const -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     105 </span>            :             static_assert(always_false&lt;T&gt;::value,
+<span class="lineNum">     106 </span>            :             &quot;chained comparisons are not supported inside assertions, &quot;
+<span class="lineNum">     107 </span>            :             &quot;wrap the expression inside parentheses, or decompose it&quot;);
+<span class="lineNum">     108 </span>            :         }
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">     111 </span>            :         auto operator &gt;= ( T ) const -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     112 </span>            :             static_assert(always_false&lt;T&gt;::value,
+<span class="lineNum">     113 </span>            :             &quot;chained comparisons are not supported inside assertions, &quot;
+<span class="lineNum">     114 </span>            :             &quot;wrap the expression inside parentheses, or decompose it&quot;);
+<span class="lineNum">     115 </span>            :         }
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">     118 </span>            :         auto operator &lt;= ( T ) const -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     119 </span>            :             static_assert(always_false&lt;T&gt;::value,
+<span class="lineNum">     120 </span>            :             &quot;chained comparisons are not supported inside assertions, &quot;
+<span class="lineNum">     121 </span>            :             &quot;wrap the expression inside parentheses, or decompose it&quot;);
+<span class="lineNum">     122 </span>            :         }
+<span class="lineNum">     123 </span>            :     };
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            :     template&lt;typename LhsT&gt;
+<span class="lineNum">     126 </span>            :     class UnaryExpr : public ITransientExpression {
+<span class="lineNum">     127 </span>            :         LhsT m_lhs;
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span>            :         void streamReconstructedExpression( std::ostream &amp;os ) const override {
+<span class="lineNum">     130 </span>            :             os &lt;&lt; Catch::Detail::stringify( m_lhs );
+<span class="lineNum">     131 </span>            :         }
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :     public:
+<span class="lineNum">     134 </span>            :         explicit UnaryExpr( LhsT lhs )
+<span class="lineNum">     135 </span>            :         :   ITransientExpression{ false, static_cast&lt;bool&gt;(lhs) },
+<span class="lineNum">     136 </span>            :             m_lhs( lhs )
+<span class="lineNum">     137 </span>            :         {}
+<span class="lineNum">     138 </span>            :     };
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span>            : 
+<a name="141"><span class="lineNum">     141 </span>            :     // Specialised comparison functions to handle equality comparisons between ints and pointers (NULL deduces as an int)</a>
+<span class="lineNum">     142 </span>            :     template&lt;typename LhsT, typename RhsT&gt;
+<span class="lineNum">     143 </span><span class="lineCov">        474 :     auto compareEqual( LhsT const&amp; lhs, RhsT const&amp; rhs ) -&gt; bool { return static_cast&lt;bool&gt;(lhs == rhs); }</span>
+<span class="lineNum">     144 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     145 </span>            :     auto compareEqual( T* const&amp; lhs, int rhs ) -&gt; bool { return lhs == reinterpret_cast&lt;void const*&gt;( rhs ); }
+<span class="lineNum">     146 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     147 </span>            :     auto compareEqual( T* const&amp; lhs, long rhs ) -&gt; bool { return lhs == reinterpret_cast&lt;void const*&gt;( rhs ); }
+<span class="lineNum">     148 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     149 </span>            :     auto compareEqual( int lhs, T* const&amp; rhs ) -&gt; bool { return reinterpret_cast&lt;void const*&gt;( lhs ) == rhs; }
+<span class="lineNum">     150 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     151 </span>            :     auto compareEqual( long lhs, T* const&amp; rhs ) -&gt; bool { return reinterpret_cast&lt;void const*&gt;( lhs ) == rhs; }
+<a name="152"><span class="lineNum">     152 </span>            : </a>
+<span class="lineNum">     153 </span>            :     template&lt;typename LhsT, typename RhsT&gt;
+<span class="lineNum">     154 </span><span class="lineCov">          3 :     auto compareNotEqual( LhsT const&amp; lhs, RhsT&amp;&amp; rhs ) -&gt; bool { return static_cast&lt;bool&gt;(lhs != rhs); }</span>
+<span class="lineNum">     155 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     156 </span>            :     auto compareNotEqual( T* const&amp; lhs, int rhs ) -&gt; bool { return lhs != reinterpret_cast&lt;void const*&gt;( rhs ); }
+<span class="lineNum">     157 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     158 </span>            :     auto compareNotEqual( T* const&amp; lhs, long rhs ) -&gt; bool { return lhs != reinterpret_cast&lt;void const*&gt;( rhs ); }
+<span class="lineNum">     159 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     160 </span>            :     auto compareNotEqual( int lhs, T* const&amp; rhs ) -&gt; bool { return reinterpret_cast&lt;void const*&gt;( lhs ) != rhs; }
+<span class="lineNum">     161 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     162 </span>            :     auto compareNotEqual( long lhs, T* const&amp; rhs ) -&gt; bool { return reinterpret_cast&lt;void const*&gt;( lhs ) != rhs; }
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span>            :     template&lt;typename LhsT&gt;
+<span class="lineNum">     166 </span>            :     class ExprLhs {
+<a name="167"><span class="lineNum">     167 </span>            :         LhsT m_lhs;</a>
+<span class="lineNum">     168 </span>            :     public:
+<span class="lineNum">     169 </span><span class="lineCov">        519 :         explicit ExprLhs( LhsT lhs ) : m_lhs( lhs ) {}</span>
+<a name="170"><span class="lineNum">     170 </span>            : </a>
+<span class="lineNum">     171 </span>            :         template&lt;typename RhsT&gt;
+<span class="lineNum">     172 </span><span class="lineCov">        474 :         auto operator == ( RhsT const&amp; rhs ) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {</span>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">        474 :             return { compareEqual( m_lhs, rhs ), m_lhs, &quot;==&quot;, rhs };</span></a>
+<span class="lineNum">     174 </span>            :         }
+<span class="lineNum">     175 </span><span class="lineCov">         42 :         auto operator == ( bool rhs ) -&gt; BinaryExpr&lt;LhsT, bool&gt; const {</span>
+<span class="lineNum">     176 </span><span class="lineCov">         42 :             return { m_lhs == rhs, m_lhs, &quot;==&quot;, rhs };</span>
+<span class="lineNum">     177 </span>            :         }
+<a name="178"><span class="lineNum">     178 </span>            : </a>
+<span class="lineNum">     179 </span>            :         template&lt;typename RhsT&gt;
+<span class="lineNum">     180 </span><span class="lineCov">          3 :         auto operator != ( RhsT const&amp; rhs ) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {</span>
+<span class="lineNum">     181 </span><span class="lineCov">          3 :             return { compareNotEqual( m_lhs, rhs ), m_lhs, &quot;!=&quot;, rhs };</span>
+<span class="lineNum">     182 </span>            :         }
+<span class="lineNum">     183 </span>            :         auto operator != ( bool rhs ) -&gt; BinaryExpr&lt;LhsT, bool&gt; const {
+<span class="lineNum">     184 </span>            :             return { m_lhs != rhs, m_lhs, &quot;!=&quot;, rhs };
+<span class="lineNum">     185 </span>            :         }
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span>            :         template&lt;typename RhsT&gt;
+<span class="lineNum">     188 </span>            :         auto operator &gt; ( RhsT const&amp; rhs ) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     189 </span>            :             return { static_cast&lt;bool&gt;(m_lhs &gt; rhs), m_lhs, &quot;&gt;&quot;, rhs };
+<span class="lineNum">     190 </span>            :         }
+<span class="lineNum">     191 </span>            :         template&lt;typename RhsT&gt;
+<span class="lineNum">     192 </span>            :         auto operator &lt; ( RhsT const&amp; rhs ) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     193 </span>            :             return { static_cast&lt;bool&gt;(m_lhs &lt; rhs), m_lhs, &quot;&lt;&quot;, rhs };
+<span class="lineNum">     194 </span>            :         }
+<span class="lineNum">     195 </span>            :         template&lt;typename RhsT&gt;
+<span class="lineNum">     196 </span>            :         auto operator &gt;= ( RhsT const&amp; rhs ) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     197 </span>            :             return { static_cast&lt;bool&gt;(m_lhs &gt;= rhs), m_lhs, &quot;&gt;=&quot;, rhs };
+<span class="lineNum">     198 </span>            :         }
+<span class="lineNum">     199 </span>            :         template&lt;typename RhsT&gt;
+<span class="lineNum">     200 </span>            :         auto operator &lt;= ( RhsT const&amp; rhs ) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     201 </span>            :             return { static_cast&lt;bool&gt;(m_lhs &lt;= rhs), m_lhs, &quot;&lt;=&quot;, rhs };
+<span class="lineNum">     202 </span>            :         }
+<span class="lineNum">     203 </span>            :         template &lt;typename RhsT&gt;
+<span class="lineNum">     204 </span>            :         auto operator | (RhsT const&amp; rhs) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     205 </span>            :             return { static_cast&lt;bool&gt;(m_lhs | rhs), m_lhs, &quot;|&quot;, rhs };
+<span class="lineNum">     206 </span>            :         }
+<span class="lineNum">     207 </span>            :         template &lt;typename RhsT&gt;
+<span class="lineNum">     208 </span>            :         auto operator &amp; (RhsT const&amp; rhs) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     209 </span>            :             return { static_cast&lt;bool&gt;(m_lhs &amp; rhs), m_lhs, &quot;&amp;&quot;, rhs };
+<span class="lineNum">     210 </span>            :         }
+<span class="lineNum">     211 </span>            :         template &lt;typename RhsT&gt;
+<span class="lineNum">     212 </span>            :         auto operator ^ (RhsT const&amp; rhs) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     213 </span>            :             return { static_cast&lt;bool&gt;(m_lhs ^ rhs), m_lhs, &quot;^&quot;, rhs };
+<span class="lineNum">     214 </span>            :         }
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span>            :         template&lt;typename RhsT&gt;
+<span class="lineNum">     217 </span>            :         auto operator &amp;&amp; ( RhsT const&amp; ) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     218 </span>            :             static_assert(always_false&lt;RhsT&gt;::value,
+<span class="lineNum">     219 </span>            :             &quot;operator&amp;&amp; is not supported inside assertions, &quot;
+<span class="lineNum">     220 </span>            :             &quot;wrap the expression inside parentheses, or decompose it&quot;);
+<span class="lineNum">     221 </span>            :         }
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span>            :         template&lt;typename RhsT&gt;
+<span class="lineNum">     224 </span>            :         auto operator || ( RhsT const&amp; ) -&gt; BinaryExpr&lt;LhsT, RhsT const&amp;&gt; const {
+<span class="lineNum">     225 </span>            :             static_assert(always_false&lt;RhsT&gt;::value,
+<span class="lineNum">     226 </span>            :             &quot;operator|| is not supported inside assertions, &quot;
+<span class="lineNum">     227 </span>            :             &quot;wrap the expression inside parentheses, or decompose it&quot;);
+<span class="lineNum">     228 </span>            :         }
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span>            :         auto makeUnaryExpr() const -&gt; UnaryExpr&lt;LhsT&gt; {
+<span class="lineNum">     231 </span>            :             return UnaryExpr&lt;LhsT&gt;{ m_lhs };
+<span class="lineNum">     232 </span>            :         }
+<span class="lineNum">     233 </span>            :     };
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span>            :     void handleExpression( ITransientExpression const&amp; expr );
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     238 </span>            :     void handleExpression( ExprLhs&lt;T&gt; const&amp; expr ) {
+<span class="lineNum">     239 </span>            :         handleExpression( expr.makeUnaryExpr() );
+<span class="lineNum">     240 </span>            :     }
+<span class="lineNum">     241 </span>            : 
+<a name="242"><span class="lineNum">     242 </span>            :     struct Decomposer {</a>
+<span class="lineNum">     243 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">     244 </span><span class="lineCov">        477 :         auto operator &lt;= ( T const&amp; lhs ) -&gt; ExprLhs&lt;T const&amp;&gt; {</span>
+<span class="lineNum">     245 </span><span class="lineCov">        477 :             return ExprLhs&lt;T const&amp;&gt;{ lhs };</span>
+<a name="246"><span class="lineNum">     246 </span>            :         }</a>
+<span class="lineNum">     247 </span>            : 
+<span class="lineNum">     248 </span><span class="lineCov">         42 :         auto operator &lt;=( bool value ) -&gt; ExprLhs&lt;bool&gt; {</span>
+<span class="lineNum">     249 </span><span class="lineCov">         42 :             return ExprLhs&lt;bool&gt;{ value };</span>
+<span class="lineNum">     250 </span>            :         }
+<span class="lineNum">     251 </span>            :     };
+<span class="lineNum">     252 </span>            : 
+<span class="lineNum">     253 </span>            : } // end namespace Catch
+<span class="lineNum">     254 </span>            : 
+<span class="lineNum">     255 </span>            : #ifdef _MSC_VER
+<span class="lineNum">     256 </span>            : #pragma warning(pop)
+<span class="lineNum">     257 </span>            : #endif
+<span class="lineNum">     258 </span>            : 
+<span class="lineNum">     259 </span>            : #endif // TWOBLUECUBES_CATCH_DECOMPOSER_H_INCLUDED
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

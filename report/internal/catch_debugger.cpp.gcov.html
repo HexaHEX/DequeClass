@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_debugger.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_debugger.cpp<span style="font-size: 80%;"> (source / <a href="catch_debugger.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 27/12/2010.
+<span class="lineNum">       3 </span>            :  *  Copyright 2010 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  *
+<span class="lineNum">       8 </span>            :  */
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #include &quot;catch_debugger.h&quot;
+<span class="lineNum">      11 </span>            : #include &quot;catch_errno_guard.h&quot;
+<span class="lineNum">      12 </span>            : #include &quot;catch_stream.h&quot;
+<span class="lineNum">      13 </span>            : #include &quot;catch_platform.h&quot;
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : #if defined(CATCH_PLATFORM_MAC) || defined(CATCH_PLATFORM_IPHONE)
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : #  include &lt;cassert&gt;
+<span class="lineNum">      18 </span>            : #  include &lt;sys/types.h&gt;
+<span class="lineNum">      19 </span>            : #  include &lt;unistd.h&gt;
+<span class="lineNum">      20 </span>            : #  include &lt;cstddef&gt;
+<span class="lineNum">      21 </span>            : #  include &lt;ostream&gt;
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : #ifdef __apple_build_version__
+<span class="lineNum">      24 </span>            :     // These headers will only compile with AppleClang (XCode)
+<span class="lineNum">      25 </span>            :     // For other compilers (Clang, GCC, ... ) we need to exclude them
+<span class="lineNum">      26 </span>            : #  include &lt;sys/sysctl.h&gt;
+<span class="lineNum">      27 </span>            : #endif
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            :     namespace Catch {
+<span class="lineNum">      30 </span>            :         #ifdef __apple_build_version__
+<span class="lineNum">      31 </span>            :         // The following function is taken directly from the following technical note:
+<span class="lineNum">      32 </span>            :         // https://developer.apple.com/library/archive/qa/qa1361/_index.html
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            :         // Returns true if the current process is being debugged (either
+<span class="lineNum">      35 </span>            :         // running under the debugger or has a debugger attached post facto).
+<span class="lineNum">      36 </span>            :         bool isDebuggerActive(){
+<span class="lineNum">      37 </span>            :             int                 mib[4];
+<span class="lineNum">      38 </span>            :             struct kinfo_proc   info;
+<span class="lineNum">      39 </span>            :             std::size_t         size;
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            :             // Initialize the flags so that, if sysctl fails for some bizarre
+<span class="lineNum">      42 </span>            :             // reason, we get a predictable result.
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            :             info.kp_proc.p_flag = 0;
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            :             // Initialize mib, which tells sysctl the info we want, in this case
+<span class="lineNum">      47 </span>            :             // we're looking for information about a specific process ID.
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            :             mib[0] = CTL_KERN;
+<span class="lineNum">      50 </span>            :             mib[1] = KERN_PROC;
+<span class="lineNum">      51 </span>            :             mib[2] = KERN_PROC_PID;
+<span class="lineNum">      52 </span>            :             mib[3] = getpid();
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            :             // Call sysctl.
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            :             size = sizeof(info);
+<span class="lineNum">      57 </span>            :             if( sysctl(mib, sizeof(mib) / sizeof(*mib), &amp;info, &amp;size, nullptr, 0) != 0 ) {
+<span class="lineNum">      58 </span>            :                 Catch::cerr() &lt;&lt; &quot;\n** Call to sysctl failed - unable to determine if debugger is active **\n&quot; &lt;&lt; std::endl;
+<span class="lineNum">      59 </span>            :                 return false;
+<span class="lineNum">      60 </span>            :             }
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            :             // We're being debugged if the P_TRACED flag is set.
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :             return ( (info.kp_proc.p_flag &amp; P_TRACED) != 0 );
+<span class="lineNum">      65 </span>            :         }
+<span class="lineNum">      66 </span>            :         #else
+<span class="lineNum">      67 </span>            :         bool isDebuggerActive() {
+<span class="lineNum">      68 </span>            :             // We need to find another way to determine this for non-appleclang compilers on macOS
+<span class="lineNum">      69 </span>            :             return false;
+<span class="lineNum">      70 </span>            :         }
+<span class="lineNum">      71 </span>            :         #endif
+<span class="lineNum">      72 </span>            :     } // namespace Catch
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            : #elif defined(CATCH_PLATFORM_LINUX)
+<span class="lineNum">      75 </span>            :     #include &lt;fstream&gt;
+<span class="lineNum">      76 </span>            :     #include &lt;string&gt;
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            :     namespace Catch{
+<span class="lineNum">      79 </span>            :         // The standard POSIX way of detecting a debugger is to attempt to
+<span class="lineNum">      80 </span>            :         // ptrace() the process, but this needs to be done from a child and not
+<span class="lineNum">      81 </span>            :         // this process itself to still allow attaching to this process later
+<span class="lineNum">      82 </span>            :         // if wanted, so is rather heavy. Under Linux we have the PID of the
+<span class="lineNum">      83 </span>            :         // &quot;debugger&quot; (which doesn't need to be gdb, of course, it could also
+<a name="84"><span class="lineNum">      84 </span>            :         // be strace, for example) in /proc/$PID/status, so just get it from</a>
+<span class="lineNum">      85 </span>            :         // there instead.
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :         bool isDebuggerActive(){</span>
+<span class="lineNum">      87 </span>            :             // Libstdc++ has a bug, where std::ifstream sets errno to 0
+<span class="lineNum">      88 </span>            :             // This way our users can properly assert over errno values
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :             ErrnoGuard guard;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :             std::ifstream in(&quot;/proc/self/status&quot;);</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             for( std::string line; std::getline(in, line); ) {</span>
+<span class="lineNum">      92 </span>            :                 static const int PREFIX_LEN = 11;
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :                 if( line.compare(0, PREFIX_LEN, &quot;TracerPid:\t&quot;) == 0 ) {</span>
+<span class="lineNum">      94 </span>            :                     // We're traced if the PID is not 0 and no other PID starts
+<span class="lineNum">      95 </span>            :                     // with 0 digit, so it's enough to check for just a single
+<span class="lineNum">      96 </span>            :                     // character.
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :                     return line.length() &gt; PREFIX_LEN &amp;&amp; line[PREFIX_LEN] != '0';</span>
+<span class="lineNum">      98 </span>            :                 }
+<span class="lineNum">      99 </span>            :             }
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :             return false;</span>
+<span class="lineNum">     102 </span>            :         }
+<span class="lineNum">     103 </span>            :     } // namespace Catch
+<span class="lineNum">     104 </span>            : #elif defined(_MSC_VER)
+<span class="lineNum">     105 </span>            :     extern &quot;C&quot; __declspec(dllimport) int __stdcall IsDebuggerPresent();
+<span class="lineNum">     106 </span>            :     namespace Catch {
+<span class="lineNum">     107 </span>            :         bool isDebuggerActive() {
+<span class="lineNum">     108 </span>            :             return IsDebuggerPresent() != 0;
+<span class="lineNum">     109 </span>            :         }
+<span class="lineNum">     110 </span>            :     }
+<span class="lineNum">     111 </span>            : #elif defined(__MINGW32__)
+<span class="lineNum">     112 </span>            :     extern &quot;C&quot; __declspec(dllimport) int __stdcall IsDebuggerPresent();
+<span class="lineNum">     113 </span>            :     namespace Catch {
+<span class="lineNum">     114 </span>            :         bool isDebuggerActive() {
+<span class="lineNum">     115 </span>            :             return IsDebuggerPresent() != 0;
+<span class="lineNum">     116 </span>            :         }
+<span class="lineNum">     117 </span>            :     }
+<span class="lineNum">     118 </span>            : #else
+<span class="lineNum">     119 </span>            :     namespace Catch {
+<span class="lineNum">     120 </span>            :        bool isDebuggerActive() { return false; }
+<span class="lineNum">     121 </span>            :     }
+<span class="lineNum">     122 </span>            : #endif // Platform
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

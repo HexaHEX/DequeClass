@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_fatal_condition.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_fatal_condition.cpp<span style="font-size: 80%;"> (source / <a href="catch_fatal_condition.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntry">35</td>
+            <td class="headerCovTableEntryLo">62.9 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntryLo">60.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 21/08/2014
+<span class="lineNum">       3 </span>            :  *  Copyright 2014 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  *
+<span class="lineNum">       8 </span>            :  */
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #include &quot;catch_fatal_condition.h&quot;
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            : #include &quot;catch_context.h&quot;
+<span class="lineNum">      13 </span>            : #include &quot;catch_interfaces_capture.h&quot;
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : #if defined(__GNUC__)
+<span class="lineNum">      16 </span>            : #    pragma GCC diagnostic push
+<span class="lineNum">      17 </span>            : #    pragma GCC diagnostic ignored &quot;-Wmissing-field-initializers&quot;
+<span class="lineNum">      18 </span>            : #endif
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : #if defined( CATCH_CONFIG_WINDOWS_SEH ) || defined( CATCH_CONFIG_POSIX_SIGNALS )
+<span class="lineNum">      21 </span>            : 
+<a name="22"><span class="lineNum">      22 </span>            : namespace {</a>
+<span class="lineNum">      23 </span>            :     // Report the error condition
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 :     void reportFatal( char const * const message ) {</span>
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :         Catch::getCurrentContext().getResultCapture()-&gt;handleFatalErrorCondition( message );</span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      27 </span>            : }
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : #endif // signals/SEH handling
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : #if defined( CATCH_CONFIG_WINDOWS_SEH )
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : namespace Catch {
+<span class="lineNum">      34 </span>            :     struct SignalDefs { DWORD id; const char* name; };
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            :     // There is no 1-1 mapping between signals and windows exceptions.
+<span class="lineNum">      37 </span>            :     // Windows can easily distinguish between SO and SigSegV,
+<span class="lineNum">      38 </span>            :     // but SigInt, SigTerm, etc are handled differently.
+<span class="lineNum">      39 </span>            :     static SignalDefs signalDefs[] = {
+<span class="lineNum">      40 </span>            :         { static_cast&lt;DWORD&gt;(EXCEPTION_ILLEGAL_INSTRUCTION),  &quot;SIGILL - Illegal instruction signal&quot; },
+<span class="lineNum">      41 </span>            :         { static_cast&lt;DWORD&gt;(EXCEPTION_STACK_OVERFLOW), &quot;SIGSEGV - Stack overflow&quot; },
+<span class="lineNum">      42 </span>            :         { static_cast&lt;DWORD&gt;(EXCEPTION_ACCESS_VIOLATION), &quot;SIGSEGV - Segmentation violation signal&quot; },
+<span class="lineNum">      43 </span>            :         { static_cast&lt;DWORD&gt;(EXCEPTION_INT_DIVIDE_BY_ZERO), &quot;Divide by zero error&quot; },
+<span class="lineNum">      44 </span>            :     };
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            :     LONG CALLBACK FatalConditionHandler::handleVectoredException(PEXCEPTION_POINTERS ExceptionInfo) {
+<span class="lineNum">      47 </span>            :         for (auto const&amp; def : signalDefs) {
+<span class="lineNum">      48 </span>            :             if (ExceptionInfo-&gt;ExceptionRecord-&gt;ExceptionCode == def.id) {
+<span class="lineNum">      49 </span>            :                 reportFatal(def.name);
+<span class="lineNum">      50 </span>            :             }
+<span class="lineNum">      51 </span>            :         }
+<span class="lineNum">      52 </span>            :         // If its not an exception we care about, pass it along.
+<span class="lineNum">      53 </span>            :         // This stops us from eating debugger breaks etc.
+<span class="lineNum">      54 </span>            :         return EXCEPTION_CONTINUE_SEARCH;
+<span class="lineNum">      55 </span>            :     }
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            :     FatalConditionHandler::FatalConditionHandler() {
+<span class="lineNum">      58 </span>            :         isSet = true;
+<span class="lineNum">      59 </span>            :         // 32k seems enough for Catch to handle stack overflow,
+<span class="lineNum">      60 </span>            :         // but the value was found experimentally, so there is no strong guarantee
+<span class="lineNum">      61 </span>            :         guaranteeSize = 32 * 1024;
+<span class="lineNum">      62 </span>            :         exceptionHandlerHandle = nullptr;
+<span class="lineNum">      63 </span>            :         // Register as first handler in current chain
+<span class="lineNum">      64 </span>            :         exceptionHandlerHandle = AddVectoredExceptionHandler(1, handleVectoredException);
+<span class="lineNum">      65 </span>            :         // Pass in guarantee size to be filled
+<span class="lineNum">      66 </span>            :         SetThreadStackGuarantee(&amp;guaranteeSize);
+<span class="lineNum">      67 </span>            :     }
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span>            :     void FatalConditionHandler::reset() {
+<span class="lineNum">      70 </span>            :         if (isSet) {
+<span class="lineNum">      71 </span>            :             RemoveVectoredExceptionHandler(exceptionHandlerHandle);
+<span class="lineNum">      72 </span>            :             SetThreadStackGuarantee(&amp;guaranteeSize);
+<span class="lineNum">      73 </span>            :             exceptionHandlerHandle = nullptr;
+<span class="lineNum">      74 </span>            :             isSet = false;
+<span class="lineNum">      75 </span>            :         }
+<span class="lineNum">      76 </span>            :     }
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            :     FatalConditionHandler::~FatalConditionHandler() {
+<span class="lineNum">      79 </span>            :         reset();
+<span class="lineNum">      80 </span>            :     }
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            : bool FatalConditionHandler::isSet = false;
+<span class="lineNum">      83 </span>            : ULONG FatalConditionHandler::guaranteeSize = 0;
+<span class="lineNum">      84 </span>            : PVOID FatalConditionHandler::exceptionHandlerHandle = nullptr;
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span>            : } // namespace Catch
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            : #elif defined( CATCH_CONFIG_POSIX_SIGNALS )
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span>            : namespace Catch {
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            :     struct SignalDefs {
+<span class="lineNum">      94 </span>            :         int id;
+<span class="lineNum">      95 </span>            :         const char* name;
+<span class="lineNum">      96 </span>            :     };
+<span class="lineNum">      97 </span>            :     
+<span class="lineNum">      98 </span>            :     // 32kb for the alternate stack seems to be sufficient. However, this value
+<span class="lineNum">      99 </span>            :     // is experimentally determined, so that's not guaranteed.
+<span class="lineNum">     100 </span>            :     static constexpr std::size_t sigStackSize = 32768 &gt;= MINSIGSTKSZ ? 32768 : MINSIGSTKSZ;
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span>            :     static SignalDefs signalDefs[] = {
+<span class="lineNum">     103 </span>            :         { SIGINT,  &quot;SIGINT - Terminal interrupt signal&quot; },
+<span class="lineNum">     104 </span>            :         { SIGILL,  &quot;SIGILL - Illegal instruction signal&quot; },
+<span class="lineNum">     105 </span>            :         { SIGFPE,  &quot;SIGFPE - Floating point error signal&quot; },
+<span class="lineNum">     106 </span>            :         { SIGSEGV, &quot;SIGSEGV - Segmentation violation signal&quot; },
+<span class="lineNum">     107 </span>            :         { SIGTERM, &quot;SIGTERM - Termination request signal&quot; },
+<span class="lineNum">     108 </span>            :         { SIGABRT, &quot;SIGABRT - Abort (abnormal termination) signal&quot; }
+<span class="lineNum">     109 </span>            :     };
+<a name="110"><span class="lineNum">     110 </span>            : </a>
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     void FatalConditionHandler::handleSignal( int sig ) {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         char const * name = &quot;&lt;unknown signal&gt;&quot;;</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :         for (auto const&amp; def : signalDefs) {</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :             if (sig == def.id) {</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :                 name = def.name;</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     118 </span>            :             }
+<span class="lineNum">     119 </span>            :         }
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         reset();</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         reportFatal(name);</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :         raise( sig );</span>
+<a name="123"><span class="lineNum">     123 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span><span class="lineCov">         75 :     FatalConditionHandler::FatalConditionHandler() {</span>
+<span class="lineNum">     126 </span><span class="lineCov">         75 :         isSet = true;</span>
+<span class="lineNum">     127 </span>            :         stack_t sigStack;
+<span class="lineNum">     128 </span><span class="lineCov">         75 :         sigStack.ss_sp = altStackMem;</span>
+<span class="lineNum">     129 </span><span class="lineCov">         75 :         sigStack.ss_size = sigStackSize;</span>
+<span class="lineNum">     130 </span><span class="lineCov">         75 :         sigStack.ss_flags = 0;</span>
+<span class="lineNum">     131 </span><span class="lineCov">         75 :         sigaltstack(&amp;sigStack, &amp;oldSigStack);</span>
+<span class="lineNum">     132 </span><span class="lineCov">         75 :         struct sigaction sa = { };</span>
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span><span class="lineCov">         75 :         sa.sa_handler = handleSignal;</span>
+<span class="lineNum">     135 </span><span class="lineCov">         75 :         sa.sa_flags = SA_ONSTACK;</span>
+<span class="lineNum">     136 </span><span class="lineCov">        525 :         for (std::size_t i = 0; i &lt; sizeof(signalDefs)/sizeof(SignalDefs); ++i) {</span>
+<span class="lineNum">     137 </span><span class="lineCov">        450 :             sigaction(signalDefs[i].id, &amp;sa, &amp;oldSigActions[i]);</span>
+<span class="lineNum">     138 </span>            :         }
+<span class="lineNum">     139 </span><span class="lineCov">         75 :     }</span>
+<a name="140"><span class="lineNum">     140 </span>            : </a>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span><span class="lineCov">         75 :     FatalConditionHandler::~FatalConditionHandler() {</span>
+<span class="lineNum">     143 </span><span class="lineCov">         75 :         reset();</span>
+<a name="144"><span class="lineNum">     144 </span><span class="lineCov">         75 :     }</span></a>
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span><span class="lineCov">        150 :     void FatalConditionHandler::reset() {</span>
+<span class="lineNum">     147 </span><span class="lineCov">        150 :         if( isSet ) {</span>
+<span class="lineNum">     148 </span>            :             // Set signals back to previous values -- hopefully nobody overwrote them in the meantime
+<span class="lineNum">     149 </span><span class="lineCov">        525 :             for( std::size_t i = 0; i &lt; sizeof(signalDefs)/sizeof(SignalDefs); ++i ) {</span>
+<span class="lineNum">     150 </span><span class="lineCov">        450 :                 sigaction(signalDefs[i].id, &amp;oldSigActions[i], nullptr);</span>
+<span class="lineNum">     151 </span>            :             }
+<span class="lineNum">     152 </span>            :             // Return the old stack
+<span class="lineNum">     153 </span><span class="lineCov">         75 :             sigaltstack(&amp;oldSigStack, nullptr);</span>
+<span class="lineNum">     154 </span><span class="lineCov">         75 :             isSet = false;</span>
+<span class="lineNum">     155 </span>            :         }
+<span class="lineNum">     156 </span><span class="lineCov">        150 :     }</span>
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span>            :     bool FatalConditionHandler::isSet = false;
+<span class="lineNum">     159 </span>            :     struct sigaction FatalConditionHandler::oldSigActions[sizeof(signalDefs)/sizeof(SignalDefs)] = {};
+<span class="lineNum">     160 </span>            :     stack_t FatalConditionHandler::oldSigStack = {};
+<span class="lineNum">     161 </span>            :     char FatalConditionHandler::altStackMem[sigStackSize] = {};
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span>            : } // namespace Catch
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span>            : #else
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            : namespace Catch {
+<span class="lineNum">     169 </span>            :     void FatalConditionHandler::reset() {}
+<span class="lineNum">     170 </span>            : }
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span>            : #endif // signals/SEH handling
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span>            : #if defined(__GNUC__)
+<span class="lineNum">     175 </span>            : #    pragma GCC diagnostic pop
+<span class="lineNum">     176 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

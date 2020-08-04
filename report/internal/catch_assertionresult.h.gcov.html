@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_assertionresult.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_assertionresult.h<span style="font-size: 80%;"> (source / <a href="catch_assertionresult.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 28/10/2010.
+<span class="lineNum">       3 </span>            :  *  Copyright 2010 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : #ifndef TWOBLUECUBES_CATCH_ASSERTIONRESULT_H_INCLUDED
+<span class="lineNum">       9 </span>            : #define TWOBLUECUBES_CATCH_ASSERTIONRESULT_H_INCLUDED
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &lt;string&gt;
+<span class="lineNum">      12 </span>            : #include &quot;catch_assertioninfo.h&quot;
+<span class="lineNum">      13 </span>            : #include &quot;catch_result_type.h&quot;
+<span class="lineNum">      14 </span>            : #include &quot;catch_common.h&quot;
+<span class="lineNum">      15 </span>            : #include &quot;catch_stringref.h&quot;
+<span class="lineNum">      16 </span>            : #include &quot;catch_assertionhandler.h&quot;
+<span class="lineNum">      17 </span>            : 
+<a name="18"><span class="lineNum">      18 </span>            : namespace Catch {</a>
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span><span class="lineCov">        189 :     struct AssertionResultData</span>
+<span class="lineNum">      21 </span>            :     {
+<span class="lineNum">      22 </span>            :         AssertionResultData() = delete;
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            :         AssertionResultData( ResultWas::OfType _resultType, LazyExpression const&amp; _lazyExpression );
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            :         std::string message;
+<span class="lineNum">      27 </span>            :         mutable std::string reconstructedExpression;
+<span class="lineNum">      28 </span>            :         LazyExpression lazyExpression;
+<span class="lineNum">      29 </span>            :         ResultWas::OfType resultType;
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            :         std::string reconstructExpression() const;
+<a name="32"><span class="lineNum">      32 </span>            :     };</a>
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span><span class="lineCov">        135 :     class AssertionResult {</span>
+<span class="lineNum">      35 </span>            :     public:
+<span class="lineNum">      36 </span>            :         AssertionResult() = delete;
+<span class="lineNum">      37 </span>            :         AssertionResult( AssertionInfo const&amp; info, AssertionResultData const&amp; data );
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            :         bool isOk() const;
+<span class="lineNum">      40 </span>            :         bool succeeded() const;
+<span class="lineNum">      41 </span>            :         ResultWas::OfType getResultType() const;
+<span class="lineNum">      42 </span>            :         bool hasExpression() const;
+<span class="lineNum">      43 </span>            :         bool hasMessage() const;
+<span class="lineNum">      44 </span>            :         std::string getExpression() const;
+<span class="lineNum">      45 </span>            :         std::string getExpressionInMacro() const;
+<span class="lineNum">      46 </span>            :         bool hasExpandedExpression() const;
+<span class="lineNum">      47 </span>            :         std::string getExpandedExpression() const;
+<span class="lineNum">      48 </span>            :         std::string getMessage() const;
+<span class="lineNum">      49 </span>            :         SourceLineInfo getSourceInfo() const;
+<span class="lineNum">      50 </span>            :         StringRef getTestMacroName() const;
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            :     //protected:
+<span class="lineNum">      53 </span>            :         AssertionInfo m_info;
+<span class="lineNum">      54 </span>            :         AssertionResultData m_resultData;
+<span class="lineNum">      55 </span>            :     };
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            : } // end namespace Catch
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            : #endif // TWOBLUECUBES_CATCH_ASSERTIONRESULT_H_INCLUDED
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

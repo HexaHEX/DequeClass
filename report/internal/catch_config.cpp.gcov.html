@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_config.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_config.cpp<span style="font-size: 80%;"> (source / <a href="catch_config.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">29</td>
+            <td class="headerCovTableEntry">47</td>
+            <td class="headerCovTableEntryLo">61.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntry">33</td>
+            <td class="headerCovTableEntryLo">63.6 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Martin on 19/07/2017.
+<span class="lineNum">       3 </span>            :  *
+<span class="lineNum">       4 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       5 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &quot;catch_config.hpp&quot;
+<span class="lineNum">       9 </span>            : #include &quot;catch_enforce.h&quot;
+<span class="lineNum">      10 </span>            : #include &quot;catch_stringref.h&quot;
+<span class="lineNum">      11 </span>            : 
+<a name="12"><span class="lineNum">      12 </span>            : namespace Catch {</a>
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span><span class="lineCov">          3 :     Config::Config( ConfigData const&amp; data )</span>
+<span class="lineNum">      15 </span>            :     :   m_data( data ),
+<span class="lineNum">      16 </span><span class="lineCov">          3 :         m_stream( openStream() )</span>
+<span class="lineNum">      17 </span>            :     {
+<span class="lineNum">      18 </span>            :         // We need to trim filter specs to avoid trouble with superfluous
+<span class="lineNum">      19 </span>            :         // whitespace (esp. important for bdd macros, as those are manually
+<span class="lineNum">      20 </span>            :         // aligned with whitespace).
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span><span class="lineCov">          3 :         for (auto&amp; elem : m_data.testsOrTags) {</span>
+<span class="lineNum">      23 </span><span class="lineNoCov">          0 :             elem = trim(elem);</span>
+<span class="lineNum">      24 </span>            :         }
+<span class="lineNum">      25 </span><span class="lineCov">          3 :         for (auto&amp; elem : m_data.sectionsToRun) {</span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :             elem = trim(elem);</span>
+<span class="lineNum">      27 </span>            :         }
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span><span class="lineCov">          6 :         TestSpecParser parser(ITagAliasRegistry::get());</span>
+<span class="lineNum">      30 </span><span class="lineCov">          3 :         if (!m_data.testsOrTags.empty()) {</span>
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 :             m_hasTestFilters = true;</span>
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :             for (auto const&amp; testOrTags : m_data.testsOrTags) {</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :                 parser.parse(testOrTags);</span>
+<span class="lineNum">      34 </span>            :             }
+<span class="lineNum">      35 </span>            :         }
+<span class="lineNum">      36 </span><span class="lineCov">          3 :         m_testSpec = parser.testSpec();</span>
+<a name="37"><span class="lineNum">      37 </span><span class="lineCov">          3 :     }</span></a>
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :     std::string const&amp; Config::getFilename() const {</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :         return m_data.outputFilename ;</span>
+<a name="41"><span class="lineNum">      41 </span>            :     }</a>
+<a name="42"><span class="lineNum">      42 </span>            : </a>
+<a name="43"><span class="lineNum">      43 </span><span class="lineCov">          3 :     bool Config::listTests() const          { return m_data.listTests; }</span></a>
+<a name="44"><span class="lineNum">      44 </span><span class="lineCov">          3 :     bool Config::listTestNamesOnly() const  { return m_data.listTestNamesOnly; }</span></a>
+<span class="lineNum">      45 </span><span class="lineCov">          3 :     bool Config::listTags() const           { return m_data.listTags; }</span>
+<a name="46"><span class="lineNum">      46 </span><span class="lineCov">          3 :     bool Config::listReporters() const      { return m_data.listReporters; }</span></a>
+<a name="47"><span class="lineNum">      47 </span>            : </a>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :     std::string Config::getProcessName() const { return m_data.processName; }</span>
+<a name="49"><span class="lineNum">      49 </span><span class="lineCov">          3 :     std::string const&amp; Config::getReporterName() const { return m_data.reporterName; }</span></a>
+<a name="50"><span class="lineNum">      50 </span>            : </a>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     std::vector&lt;std::string&gt; const&amp; Config::getTestsOrTags() const { return m_data.testsOrTags; }</span>
+<a name="52"><span class="lineNum">      52 </span><span class="lineCov">          9 :     std::vector&lt;std::string&gt; const&amp; Config::getSectionsToRun() const { return m_data.sectionsToRun; }</span></a>
+<a name="53"><span class="lineNum">      53 </span>            : </a>
+<span class="lineNum">      54 </span><span class="lineCov">         12 :     TestSpec const&amp; Config::testSpec() const { return m_testSpec; }</span>
+<a name="55"><span class="lineNum">      55 </span><span class="lineNoCov">          0 :     bool Config::hasTestFilters() const { return m_hasTestFilters; }</span></a>
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :     bool Config::showHelp() const { return m_data.showHelp; }</span>
+<a name="58"><span class="lineNum">      58 </span>            : </a>
+<a name="59"><span class="lineNum">      59 </span>            :     // IConfig interface</a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineCov">         27 :     bool Config::allowThrows() const                   { return !m_data.noThrow; }</span></a>
+<a name="61"><span class="lineNum">      61 </span><span class="lineCov">          3 :     std::ostream&amp; Config::stream() const               { return m_stream-&gt;stream(); }</span></a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">          9 :     std::string Config::name() const                   { return m_data.name.empty() ? m_data.processName : m_data.name; }</span></a>
+<a name="63"><span class="lineNum">      63 </span><span class="lineCov">         30 :     bool Config::includeSuccessfulResults() const      { return m_data.showSuccessfulTests; }</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineNoCov">          0 :     bool Config::warnAboutMissingAssertions() const    { return !!(m_data.warnings &amp; WarnAbout::NoAssertions); }</span></a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">          3 :     bool Config::warnAboutNoTests() const              { return !!(m_data.warnings &amp; WarnAbout::NoTests); }</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineCov">        198 :     ShowDurations::OrNot Config::showDurations() const { return m_data.showDurations; }</span></a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineCov">          9 :     RunTests::InWhatOrder Config::runOrder() const     { return m_data.runOrder; }</span></a>
+<a name="68"><span class="lineNum">      68 </span><span class="lineCov">         78 :     unsigned int Config::rngSeed() const               { return m_data.rngSeed; }</span></a>
+<a name="69"><span class="lineNum">      69 </span><span class="lineCov">          3 :     UseColour::YesOrNo Config::useColour() const       { return m_data.useColour; }</span></a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineNoCov">          0 :     bool Config::shouldDebugBreak() const              { return m_data.shouldDebugBreak; }</span></a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">         90 :     int Config::abortAfter() const                     { return m_data.abortAfter; }</span></a>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :     bool Config::showInvisibles() const                { return m_data.showInvisibles; }</span>
+<a name="73"><span class="lineNum">      73 </span><span class="lineCov">          3 :     Verbosity Config::verbosity() const                { return m_data.verbosity; }</span></a>
+<a name="74"><span class="lineNum">      74 </span>            : </a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">          3 :     bool Config::benchmarkNoAnalysis() const                      { return m_data.benchmarkNoAnalysis; }</span></a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineNoCov">          0 :     int Config::benchmarkSamples() const                          { return m_data.benchmarkSamples; }</span></a>
+<a name="77"><span class="lineNum">      77 </span><span class="lineNoCov">          0 :     double Config::benchmarkConfidenceInterval() const            { return m_data.benchmarkConfidenceInterval; }</span></a>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     unsigned int Config::benchmarkResamples() const               { return m_data.benchmarkResamples; }</span>
+<a name="79"><span class="lineNum">      79 </span><span class="lineNoCov">          0 :     std::chrono::milliseconds Config::benchmarkWarmupTime() const { return std::chrono::milliseconds(m_data.benchmarkWarmupTime); }</span></a>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineCov">          3 :     IStream const* Config::openStream() {</span>
+<span class="lineNum">      82 </span><span class="lineCov">          3 :         return Catch::makeStream(m_data.outputFilename);</span>
+<span class="lineNum">      83 </span>            :     }
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            : } // end namespace Catch
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
