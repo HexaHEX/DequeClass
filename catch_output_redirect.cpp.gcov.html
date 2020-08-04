@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_output_redirect.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_output_redirect.cpp<span style="font-size: 80%;"> (source / <a href="catch_output_redirect.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Martin on 28/04/2018.
+<span class="lineNum">       3 </span>            :  *
+<span class="lineNum">       4 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       5 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &quot;catch_output_redirect.h&quot;
+<span class="lineNum">       9 </span>            : #include &quot;catch_enforce.h&quot;
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &lt;cstdio&gt;
+<span class="lineNum">      12 </span>            : #include &lt;cstring&gt;
+<span class="lineNum">      13 </span>            : #include &lt;fstream&gt;
+<span class="lineNum">      14 </span>            : #include &lt;sstream&gt;
+<span class="lineNum">      15 </span>            : #include &lt;stdexcept&gt;
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : #if defined(CATCH_CONFIG_NEW_CAPTURE)
+<span class="lineNum">      18 </span>            :     #if defined(_MSC_VER)
+<span class="lineNum">      19 </span>            :     #include &lt;io.h&gt;      //_dup and _dup2
+<span class="lineNum">      20 </span>            :     #define dup _dup
+<span class="lineNum">      21 </span>            :     #define dup2 _dup2
+<span class="lineNum">      22 </span>            :     #define fileno _fileno
+<span class="lineNum">      23 </span>            :     #else
+<span class="lineNum">      24 </span>            :     #include &lt;unistd.h&gt;  // dup and dup2
+<span class="lineNum">      25 </span>            :     #endif
+<span class="lineNum">      26 </span>            : #endif
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : 
+<a name="29"><span class="lineNum">      29 </span>            : namespace Catch {</a>
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 :     RedirectedStream::RedirectedStream( std::ostream&amp; originalStream, std::ostream&amp; redirectionStream )</span>
+<span class="lineNum">      32 </span>            :     :   m_originalStream( originalStream ),
+<span class="lineNum">      33 </span>            :         m_redirectionStream( redirectionStream ),
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :         m_prevBuf( m_originalStream.rdbuf() )</span>
+<span class="lineNum">      35 </span>            :     {
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :         m_originalStream.rdbuf( m_redirectionStream.rdbuf() );</span>
+<a name="37"><span class="lineNum">      37 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :     RedirectedStream::~RedirectedStream() {</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :         m_originalStream.rdbuf( m_prevBuf );</span>
+<a name="41"><span class="lineNum">      41 </span><span class="lineNoCov">          0 :     }</span></a>
+<a name="42"><span class="lineNum">      42 </span>            : </a>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :     RedirectedStdOut::RedirectedStdOut() : m_cout( Catch::cout(), m_rss.get() ) {}</span>
+<a name="44"><span class="lineNum">      44 </span><span class="lineNoCov">          0 :     auto RedirectedStdOut::str() const -&gt; std::string { return m_rss.str(); }</span></a>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :     RedirectedStdErr::RedirectedStdErr()</span>
+<span class="lineNum">      47 </span>            :     :   m_cerr( Catch::cerr(), m_rss.get() ),
+<a name="48"><span class="lineNum">      48 </span><span class="lineNoCov">          0 :         m_clog( Catch::clog(), m_rss.get() )</span></a>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :     {}</span>
+<a name="50"><span class="lineNum">      50 </span><span class="lineNoCov">          0 :     auto RedirectedStdErr::str() const -&gt; std::string { return m_rss.str(); }</span></a>
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :     RedirectedStreams::RedirectedStreams(std::string&amp; redirectedCout, std::string&amp; redirectedCerr)</span>
+<span class="lineNum">      53 </span>            :     :   m_redirectedCout(redirectedCout),
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :         m_redirectedCerr(redirectedCerr)</span>
+<a name="55"><span class="lineNum">      55 </span><span class="lineNoCov">          0 :     {}</span></a>
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :     RedirectedStreams::~RedirectedStreams() {</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         m_redirectedCout += m_redirectedStdOut.str();</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :         m_redirectedCerr += m_redirectedStdErr.str();</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            : #if defined(CATCH_CONFIG_NEW_CAPTURE)
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            : #if defined(_MSC_VER)
+<span class="lineNum">      65 </span>            :     TempFile::TempFile() {
+<span class="lineNum">      66 </span>            :         if (tmpnam_s(m_buffer)) {
+<span class="lineNum">      67 </span>            :             CATCH_RUNTIME_ERROR(&quot;Could not get a temp filename&quot;);
+<span class="lineNum">      68 </span>            :         }
+<span class="lineNum">      69 </span>            :         if (fopen_s(&amp;m_file, m_buffer, &quot;w&quot;)) {
+<span class="lineNum">      70 </span>            :             char buffer[100];
+<span class="lineNum">      71 </span>            :             if (strerror_s(buffer, errno)) {
+<span class="lineNum">      72 </span>            :                 CATCH_RUNTIME_ERROR(&quot;Could not translate errno to a string&quot;);
+<span class="lineNum">      73 </span>            :             }
+<span class="lineNum">      74 </span>            :             CATCH_RUNTIME_ERROR(&quot;Could not open the temp file: '&quot; &lt;&lt; m_buffer &lt;&lt; &quot;' because: &quot; &lt;&lt; buffer);
+<span class="lineNum">      75 </span>            :         }
+<span class="lineNum">      76 </span>            :     }
+<span class="lineNum">      77 </span>            : #else
+<span class="lineNum">      78 </span>            :     TempFile::TempFile() {
+<span class="lineNum">      79 </span>            :         m_file = std::tmpfile();
+<span class="lineNum">      80 </span>            :         if (!m_file) {
+<span class="lineNum">      81 </span>            :             CATCH_RUNTIME_ERROR(&quot;Could not create a temp file.&quot;);
+<span class="lineNum">      82 </span>            :         }
+<span class="lineNum">      83 </span>            :     }
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            : #endif
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span>            :     TempFile::~TempFile() {
+<span class="lineNum">      88 </span>            :          // TBD: What to do about errors here?
+<span class="lineNum">      89 </span>            :          std::fclose(m_file);
+<span class="lineNum">      90 </span>            :          // We manually create the file on Windows only, on Linux
+<span class="lineNum">      91 </span>            :          // it will be autodeleted
+<span class="lineNum">      92 </span>            : #if defined(_MSC_VER)
+<span class="lineNum">      93 </span>            :          std::remove(m_buffer);
+<span class="lineNum">      94 </span>            : #endif
+<span class="lineNum">      95 </span>            :     }
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :     FILE* TempFile::getFile() {
+<span class="lineNum">      99 </span>            :         return m_file;
+<span class="lineNum">     100 </span>            :     }
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span>            :     std::string TempFile::getContents() {
+<span class="lineNum">     103 </span>            :         std::stringstream sstr;
+<span class="lineNum">     104 </span>            :         char buffer[100] = {};
+<span class="lineNum">     105 </span>            :         std::rewind(m_file);
+<span class="lineNum">     106 </span>            :         while (std::fgets(buffer, sizeof(buffer), m_file)) {
+<span class="lineNum">     107 </span>            :             sstr &lt;&lt; buffer;
+<span class="lineNum">     108 </span>            :         }
+<span class="lineNum">     109 </span>            :         return sstr.str();
+<span class="lineNum">     110 </span>            :     }
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span>            :     OutputRedirect::OutputRedirect(std::string&amp; stdout_dest, std::string&amp; stderr_dest) :
+<span class="lineNum">     113 </span>            :         m_originalStdout(dup(1)),
+<span class="lineNum">     114 </span>            :         m_originalStderr(dup(2)),
+<span class="lineNum">     115 </span>            :         m_stdoutDest(stdout_dest),
+<span class="lineNum">     116 </span>            :         m_stderrDest(stderr_dest) {
+<span class="lineNum">     117 </span>            :         dup2(fileno(m_stdoutFile.getFile()), 1);
+<span class="lineNum">     118 </span>            :         dup2(fileno(m_stderrFile.getFile()), 2);
+<span class="lineNum">     119 </span>            :     }
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            :     OutputRedirect::~OutputRedirect() {
+<span class="lineNum">     122 </span>            :         Catch::cout() &lt;&lt; std::flush;
+<span class="lineNum">     123 </span>            :         fflush(stdout);
+<span class="lineNum">     124 </span>            :         // Since we support overriding these streams, we flush cerr
+<span class="lineNum">     125 </span>            :         // even though std::cerr is unbuffered
+<span class="lineNum">     126 </span>            :         Catch::cerr() &lt;&lt; std::flush;
+<span class="lineNum">     127 </span>            :         Catch::clog() &lt;&lt; std::flush;
+<span class="lineNum">     128 </span>            :         fflush(stderr);
+<span class="lineNum">     129 </span>            : 
+<span class="lineNum">     130 </span>            :         dup2(m_originalStdout, 1);
+<span class="lineNum">     131 </span>            :         dup2(m_originalStderr, 2);
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :         m_stdoutDest += m_stdoutFile.getContents();
+<span class="lineNum">     134 </span>            :         m_stderrDest += m_stderrFile.getContents();
+<span class="lineNum">     135 </span>            :     }
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span>            : #endif // CATCH_CONFIG_NEW_CAPTURE
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span>            : } // namespace Catch
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span>            : #if defined(CATCH_CONFIG_NEW_CAPTURE)
+<span class="lineNum">     142 </span>            :     #if defined(_MSC_VER)
+<span class="lineNum">     143 </span>            :     #undef dup
+<span class="lineNum">     144 </span>            :     #undef dup2
+<span class="lineNum">     145 </span>            :     #undef fileno
+<span class="lineNum">     146 </span>            :     #endif
+<span class="lineNum">     147 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

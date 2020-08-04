@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_random_number_generator.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_random_number_generator.h<span style="font-size: 80%;"> (source / <a href="catch_random_number_generator.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Martin on 30/08/2017.
+<span class="lineNum">       3 </span>            :  *
+<span class="lineNum">       4 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       5 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : #ifndef TWOBLUECUBES_CATCH_RANDOM_NUMBER_GENERATOR_H_INCLUDED
+<span class="lineNum">       8 </span>            : #define TWOBLUECUBES_CATCH_RANDOM_NUMBER_GENERATOR_H_INCLUDED
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #include &lt;cstdint&gt;
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            : namespace Catch {
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :     // This is a simple implementation of C++11 Uniform Random Number
+<span class="lineNum">      15 </span>            :     // Generator. It does not provide all operators, because Catch2
+<span class="lineNum">      16 </span>            :     // does not use it, but it should behave as expected inside stdlib's
+<span class="lineNum">      17 </span>            :     // distributions.
+<span class="lineNum">      18 </span>            :     // The implementation is based on the PCG family (http://pcg-random.org)
+<span class="lineNum">      19 </span>            :     class SimplePcg32 {
+<span class="lineNum">      20 </span>            :         using state_type = std::uint64_t;
+<span class="lineNum">      21 </span>            :     public:
+<span class="lineNum">      22 </span>            :         using result_type = std::uint32_t;
+<span class="lineNum">      23 </span>            :         static constexpr result_type (min)() {
+<span class="lineNum">      24 </span>            :             return 0;
+<span class="lineNum">      25 </span>            :         }
+<span class="lineNum">      26 </span>            :         static constexpr result_type (max)() {
+<span class="lineNum">      27 </span>            :             return static_cast&lt;result_type&gt;(-1);
+<span class="lineNum">      28 </span>            :         }
+<a name="29"><span class="lineNum">      29 </span>            : </a>
+<span class="lineNum">      30 </span>            :         // Provide some default initial state for the default constructor
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 :         SimplePcg32():SimplePcg32(0xed743cc4U) {}</span>
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            :         explicit SimplePcg32(result_type seed_);
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            :         void seed(result_type seed_);
+<span class="lineNum">      36 </span>            :         void discard(uint64_t skip);
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            :         result_type operator()();
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            :     private:
+<span class="lineNum">      41 </span>            :         friend bool operator==(SimplePcg32 const&amp; lhs, SimplePcg32 const&amp; rhs);
+<span class="lineNum">      42 </span>            :         friend bool operator!=(SimplePcg32 const&amp; lhs, SimplePcg32 const&amp; rhs);
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            :         // In theory we also need operator&lt;&lt; and operator&gt;&gt;
+<span class="lineNum">      45 </span>            :         // In practice we do not use them, so we will skip them for now
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            :         std::uint64_t m_state;
+<span class="lineNum">      49 </span>            :         // This part of the state determines which &quot;stream&quot; of the numbers
+<span class="lineNum">      50 </span>            :         // is chosen -- we take it as a constant for Catch2, so we only
+<span class="lineNum">      51 </span>            :         // need to deal with seeding the main state.
+<span class="lineNum">      52 </span>            :         // Picked by reading 8 bytes from `/dev/random` :-)
+<span class="lineNum">      53 </span>            :         static const std::uint64_t s_inc = (0x13ed0cc53f939476ULL &lt;&lt; 1ULL) | 1ULL;
+<span class="lineNum">      54 </span>            :     };
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            : } // end namespace Catch
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            : #endif // TWOBLUECUBES_CATCH_RANDOM_NUMBER_GENERATOR_H_INCLUDED
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

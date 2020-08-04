@@ -1,0 +1,313 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_matchers_floating.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_matchers_floating.cpp<span style="font-size: 80%;"> (source / <a href="catch_matchers_floating.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">93</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">27</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Martin on 07/11/2017.
+<span class="lineNum">       3 </span>            :  *
+<span class="lineNum">       4 </span>            :  * Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       5 </span>            :  * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &quot;catch_matchers_floating.h&quot;
+<span class="lineNum">       9 </span>            : #include &quot;catch_enforce.h&quot;
+<span class="lineNum">      10 </span>            : #include &quot;catch_polyfills.hpp&quot;
+<span class="lineNum">      11 </span>            : #include &quot;catch_to_string.hpp&quot;
+<span class="lineNum">      12 </span>            : #include &quot;catch_tostring.h&quot;
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : #include &lt;algorithm&gt;
+<span class="lineNum">      15 </span>            : #include &lt;cmath&gt;
+<span class="lineNum">      16 </span>            : #include &lt;cstdlib&gt;
+<span class="lineNum">      17 </span>            : #include &lt;cstdint&gt;
+<span class="lineNum">      18 </span>            : #include &lt;cstring&gt;
+<span class="lineNum">      19 </span>            : #include &lt;sstream&gt;
+<span class="lineNum">      20 </span>            : #include &lt;type_traits&gt;
+<span class="lineNum">      21 </span>            : #include &lt;iomanip&gt;
+<span class="lineNum">      22 </span>            : #include &lt;limits&gt;
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span>            : namespace Catch {
+<a name="26"><span class="lineNum">      26 </span>            : namespace {</a>
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span><span class="lineNoCov">          0 :     int32_t convert(float f) {</span>
+<span class="lineNum">      29 </span>            :         static_assert(sizeof(float) == sizeof(int32_t), &quot;Important ULP matcher assumption violated&quot;);
+<span class="lineNum">      30 </span>            :         int32_t i;
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 :         std::memcpy(&amp;i, &amp;f, sizeof(f));</span>
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :         return i;</span>
+<a name="33"><span class="lineNum">      33 </span>            :     }</a>
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span><span class="lineNoCov">          0 :     int64_t convert(double d) {</span>
+<span class="lineNum">      36 </span>            :         static_assert(sizeof(double) == sizeof(int64_t), &quot;Important ULP matcher assumption violated&quot;);
+<span class="lineNum">      37 </span>            :         int64_t i;
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :         std::memcpy(&amp;i, &amp;d, sizeof(d));</span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :         return i;</span>
+<span class="lineNum">      40 </span>            :     }
+<a name="41"><span class="lineNum">      41 </span>            : </a>
+<span class="lineNum">      42 </span>            :     template &lt;typename FP&gt;
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :     bool almostEqualUlps(FP lhs, FP rhs, uint64_t maxUlpDiff) {</span>
+<span class="lineNum">      44 </span>            :         // Comparison with NaN should always be false.
+<span class="lineNum">      45 </span>            :         // This way we can rule it out before getting into the ugly details
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :         if (Catch::isnan(lhs) || Catch::isnan(rhs)) {</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :             return false;</span>
+<span class="lineNum">      48 </span>            :         }
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :         auto lc = convert(lhs);</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :         auto rc = convert(rhs);</span>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         if ((lc &lt; 0) != (rc &lt; 0)) {</span>
+<span class="lineNum">      54 </span>            :             // Potentially we can have +0 and -0
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :             return lhs == rhs;</span>
+<span class="lineNum">      56 </span>            :         }
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         auto ulpDiff = std::abs(lc - rc);</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :         return static_cast&lt;uint64_t&gt;(ulpDiff) &lt;= maxUlpDiff;</span>
+<span class="lineNum">      60 </span>            :     }
+<span class="lineNum">      61 </span>            : 
+<a name="62"><span class="lineNum">      62 </span>            : #if defined(CATCH_CONFIG_GLOBAL_NEXTAFTER)</a>
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     float nextafter(float x, float y) {</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :         return ::nextafterf(x, y);</span>
+<a name="66"><span class="lineNum">      66 </span>            :     }</a>
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     double nextafter(double x, double y) {</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         return ::nextafter(x, y);</span>
+<span class="lineNum">      70 </span>            :     }
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span>            : #endif // ^^^ CATCH_CONFIG_GLOBAL_NEXTAFTER ^^^
+<a name="73"><span class="lineNum">      73 </span>            : </a>
+<span class="lineNum">      74 </span>            : template &lt;typename FP&gt;
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 : FP step(FP start, FP direction, uint64_t steps) {</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     for (uint64_t i = 0; i &lt; steps; ++i) {</span>
+<span class="lineNum">      77 </span>            : #if defined(CATCH_CONFIG_GLOBAL_NEXTAFTER)
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :         start = Catch::nextafter(start, direction);</span>
+<span class="lineNum">      79 </span>            : #else
+<span class="lineNum">      80 </span>            :         start = std::nextafter(start, direction);
+<span class="lineNum">      81 </span>            : #endif
+<span class="lineNum">      82 </span>            :     }
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :     return start;</span>
+<span class="lineNum">      84 </span>            : }
+<span class="lineNum">      85 </span>            : 
+<a name="86"><span class="lineNum">      86 </span>            : // Performs equivalent check of std::fabs(lhs - rhs) &lt;= margin</a>
+<span class="lineNum">      87 </span>            : // But without the subtraction to allow for INFINITY in comparison
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 : bool marginComparison(double lhs, double rhs, double margin) {</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     return (lhs + margin &gt;= rhs) &amp;&amp; (rhs + margin &gt;= lhs);</span>
+<span class="lineNum">      90 </span>            : }
+<a name="91"><span class="lineNum">      91 </span>            : </a>
+<span class="lineNum">      92 </span>            : template &lt;typename FloatingPoint&gt;
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 : void write(std::ostream&amp; out, FloatingPoint num) {</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     out &lt;&lt; std::scientific</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :         &lt;&lt; std::setprecision(std::numeric_limits&lt;FloatingPoint&gt;::max_digits10 - 1)</span>
+<span class="lineNum">      96 </span>            :         &lt;&lt; num;
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            : } // end anonymous namespace
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            : namespace Matchers {
+<span class="lineNum">     102 </span>            : namespace Floating {
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span>            :     enum class FloatingPointKind : uint8_t {
+<span class="lineNum">     105 </span>            :         Float,
+<span class="lineNum">     106 </span>            :         Double
+<span class="lineNum">     107 </span>            :     };
+<a name="108"><span class="lineNum">     108 </span>            : </a>
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :     WithinAbsMatcher::WithinAbsMatcher(double target, double margin)</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         :m_target{ target }, m_margin{ margin } {</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :         CATCH_ENFORCE(margin &gt;= 0, &quot;Invalid margin: &quot; &lt;&lt; margin &lt;&lt; '.'</span>
+<span class="lineNum">     113 </span>            :             &lt;&lt; &quot; Margin has to be non-negative.&quot;);
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     115 </span>            : 
+<a name="116"><span class="lineNum">     116 </span>            :     // Performs equivalent check of std::fabs(lhs - rhs) &lt;= margin</a>
+<span class="lineNum">     117 </span>            :     // But without the subtraction to allow for INFINITY in comparison
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :     bool WithinAbsMatcher::match(double const&amp; matchee) const {</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         return (matchee + m_margin &gt;= m_target) &amp;&amp; (m_target + m_margin &gt;= matchee);</span>
+<a name="120"><span class="lineNum">     120 </span>            :     }</a>
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     std::string WithinAbsMatcher::describe() const {</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         return &quot;is within &quot; + ::Catch::Detail::stringify(m_margin) + &quot; of &quot; + ::Catch::Detail::stringify(m_target);</span>
+<span class="lineNum">     124 </span>            :     }
+<a name="125"><span class="lineNum">     125 </span>            : </a>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     WithinUlpsMatcher::WithinUlpsMatcher(double target, uint64_t ulps, FloatingPointKind baseType)</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :         :m_target{ target }, m_ulps{ ulps }, m_type{ baseType } {</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         CATCH_ENFORCE(m_type == FloatingPointKind::Double</span>
+<span class="lineNum">     130 </span>            :                    || m_ulps &lt; (std::numeric_limits&lt;uint32_t&gt;::max)(),
+<span class="lineNum">     131 </span>            :             &quot;Provided ULP is impossibly large for a float comparison.&quot;);
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            : #if defined(__clang__)
+<span class="lineNum">     135 </span>            : #pragma clang diagnostic push
+<span class="lineNum">     136 </span>            : // Clang &lt;3.5 reports on the default branch in the switch below
+<span class="lineNum">     137 </span>            : #pragma clang diagnostic ignored &quot;-Wunreachable-code&quot;
+<a name="138"><span class="lineNum">     138 </span>            : #endif</a>
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     bool WithinUlpsMatcher::match(double const&amp; matchee) const {</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         switch (m_type) {</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :         case FloatingPointKind::Float:</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             return almostEqualUlps&lt;float&gt;(static_cast&lt;float&gt;(matchee), static_cast&lt;float&gt;(m_target), m_ulps);</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :         case FloatingPointKind::Double:</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :             return almostEqualUlps&lt;double&gt;(matchee, m_target, m_ulps);</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :         default:</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :             CATCH_INTERNAL_ERROR( &quot;Unknown FloatingPointKind value&quot; );</span>
+<span class="lineNum">     148 </span>            :         }
+<span class="lineNum">     149 </span>            :     }
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            : #if defined(__clang__)
+<span class="lineNum">     152 </span>            : #pragma clang diagnostic pop
+<a name="153"><span class="lineNum">     153 </span>            : #endif</a>
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     std::string WithinUlpsMatcher::describe() const {</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :         std::stringstream ret;</span>
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :         ret &lt;&lt; &quot;is within &quot; &lt;&lt; m_ulps &lt;&lt; &quot; ULPs of &quot;;</span>
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :         if (m_type == FloatingPointKind::Float) {</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :             write(ret, static_cast&lt;float&gt;(m_target));</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :             ret &lt;&lt; 'f';</span>
+<span class="lineNum">     163 </span>            :         } else {
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :             write(ret, m_target);</span>
+<span class="lineNum">     165 </span>            :         }
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :         ret &lt;&lt; &quot; ([&quot;;</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :         if (m_type == FloatingPointKind::Double) {</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :             write(ret, step(m_target, static_cast&lt;double&gt;(-INFINITY), m_ulps));</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :             ret &lt;&lt; &quot;, &quot;;</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :             write(ret, step(m_target, static_cast&lt;double&gt;( INFINITY), m_ulps));</span>
+<span class="lineNum">     172 </span>            :         } else {
+<span class="lineNum">     173 </span>            :             // We have to cast INFINITY to float because of MinGW, see #1782
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :             write(ret, step(static_cast&lt;float&gt;(m_target), static_cast&lt;float&gt;(-INFINITY), m_ulps));</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :             ret &lt;&lt; &quot;, &quot;;</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :             write(ret, step(static_cast&lt;float&gt;(m_target), static_cast&lt;float&gt;( INFINITY), m_ulps));</span>
+<span class="lineNum">     177 </span>            :         }
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :         ret &lt;&lt; &quot;])&quot;;</span>
+<span class="lineNum">     179 </span>            : 
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :         return ret.str();</span>
+<a name="181"><span class="lineNum">     181 </span>            :     }</a>
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :     WithinRelMatcher::WithinRelMatcher(double target, double epsilon):</span>
+<span class="lineNum">     184 </span>            :         m_target(target),
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         m_epsilon(epsilon){</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         CATCH_ENFORCE(m_epsilon &gt;= 0., &quot;Relative comparison with epsilon &lt;  0 does not make sense.&quot;);</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :         CATCH_ENFORCE(m_epsilon  &lt; 1., &quot;Relative comparison with epsilon &gt;= 1 does not make sense.&quot;);</span>
+<a name="188"><span class="lineNum">     188 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :     bool WithinRelMatcher::match(double const&amp; matchee) const {</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         const auto relMargin = m_epsilon * (std::max)(std::fabs(matchee), std::fabs(m_target));</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :         return marginComparison(matchee, m_target,</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                                 std::isinf(relMargin)? 0 : relMargin);</span>
+<a name="194"><span class="lineNum">     194 </span>            :     }</a>
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     std::string WithinRelMatcher::describe() const {</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :         Catch::ReusableStringStream sstr;</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         sstr &lt;&lt; &quot;and &quot; &lt;&lt; m_target &lt;&lt; &quot; are within &quot; &lt;&lt; m_epsilon * 100. &lt;&lt; &quot;% of each other&quot;;</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         return sstr.str();</span>
+<span class="lineNum">     200 </span>            :     }
+<span class="lineNum">     201 </span>            : 
+<span class="lineNum">     202 </span>            : }// namespace Floating
+<span class="lineNum">     203 </span>            : 
+<a name="204"><span class="lineNum">     204 </span>            : </a>
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 : Floating::WithinUlpsMatcher WithinULP(double target, uint64_t maxUlpDiff) {</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     return Floating::WithinUlpsMatcher(target, maxUlpDiff, Floating::FloatingPointKind::Double);</span>
+<a name="208"><span class="lineNum">     208 </span>            : }</a>
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 : Floating::WithinUlpsMatcher WithinULP(float target, uint64_t maxUlpDiff) {</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     return Floating::WithinUlpsMatcher(target, maxUlpDiff, Floating::FloatingPointKind::Float);</span>
+<a name="212"><span class="lineNum">     212 </span>            : }</a>
+<span class="lineNum">     213 </span>            : 
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 : Floating::WithinAbsMatcher WithinAbs(double target, double margin) {</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     return Floating::WithinAbsMatcher(target, margin);</span>
+<a name="216"><span class="lineNum">     216 </span>            : }</a>
+<span class="lineNum">     217 </span>            : 
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 : Floating::WithinRelMatcher WithinRel(double target, double eps) {</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :     return Floating::WithinRelMatcher(target, eps);</span>
+<a name="220"><span class="lineNum">     220 </span>            : }</a>
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 : Floating::WithinRelMatcher WithinRel(double target) {</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :     return Floating::WithinRelMatcher(target, std::numeric_limits&lt;double&gt;::epsilon() * 100);</span>
+<a name="224"><span class="lineNum">     224 </span>            : }</a>
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 : Floating::WithinRelMatcher WithinRel(float target, float eps) {</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :     return Floating::WithinRelMatcher(target, eps);</span>
+<a name="228"><span class="lineNum">     228 </span>            : }</a>
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 : Floating::WithinRelMatcher WithinRel(float target) {</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :     return Floating::WithinRelMatcher(target, std::numeric_limits&lt;float&gt;::epsilon() * 100);</span>
+<span class="lineNum">     232 </span>            : }
+<span class="lineNum">     233 </span>            : 
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span>            : } // namespace Matchers
+<span class="lineNum">     236 </span>            : } // namespace Catch
+<span class="lineNum">     237 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_output_redirect.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_output_redirect.h<span style="font-size: 80%;"> (source / <a href="catch_output_redirect.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Martin on 28/04/2018.
+<span class="lineNum">       3 </span>            :  *
+<span class="lineNum">       4 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       5 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       6 </span>            :  */
+<span class="lineNum">       7 </span>            : #ifndef TWOBLUECUBES_CATCH_OUTPUT_REDIRECT_H
+<span class="lineNum">       8 </span>            : #define TWOBLUECUBES_CATCH_OUTPUT_REDIRECT_H
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #include &quot;catch_platform.h&quot;
+<span class="lineNum">      11 </span>            : #include &quot;catch_stream.h&quot;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            : #include &lt;cstdio&gt;
+<span class="lineNum">      14 </span>            : #include &lt;iosfwd&gt;
+<span class="lineNum">      15 </span>            : #include &lt;string&gt;
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : namespace Catch {
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :     class RedirectedStream {
+<span class="lineNum">      20 </span>            :         std::ostream&amp; m_originalStream;
+<span class="lineNum">      21 </span>            :         std::ostream&amp; m_redirectionStream;
+<span class="lineNum">      22 </span>            :         std::streambuf* m_prevBuf;
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            :     public:
+<span class="lineNum">      25 </span>            :         RedirectedStream( std::ostream&amp; originalStream, std::ostream&amp; redirectionStream );
+<span class="lineNum">      26 </span>            :         ~RedirectedStream();
+<a name="27"><span class="lineNum">      27 </span>            :     };</a>
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span><span class="lineNoCov">          0 :     class RedirectedStdOut {</span>
+<span class="lineNum">      30 </span>            :         ReusableStringStream m_rss;
+<span class="lineNum">      31 </span>            :         RedirectedStream m_cout;
+<span class="lineNum">      32 </span>            :     public:
+<span class="lineNum">      33 </span>            :         RedirectedStdOut();
+<span class="lineNum">      34 </span>            :         auto str() const -&gt; std::string;
+<span class="lineNum">      35 </span>            :     };
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            :     // StdErr has two constituent streams in C++, std::cerr and std::clog
+<a name="38"><span class="lineNum">      38 </span>            :     // This means that we need to redirect 2 streams into 1 to keep proper</a>
+<span class="lineNum">      39 </span>            :     // order of writes
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :     class RedirectedStdErr {</span>
+<span class="lineNum">      41 </span>            :         ReusableStringStream m_rss;
+<span class="lineNum">      42 </span>            :         RedirectedStream m_cerr;
+<span class="lineNum">      43 </span>            :         RedirectedStream m_clog;
+<span class="lineNum">      44 </span>            :     public:
+<span class="lineNum">      45 </span>            :         RedirectedStdErr();
+<span class="lineNum">      46 </span>            :         auto str() const -&gt; std::string;
+<span class="lineNum">      47 </span>            :     };
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            :     class RedirectedStreams {
+<span class="lineNum">      50 </span>            :     public:
+<span class="lineNum">      51 </span>            :         RedirectedStreams(RedirectedStreams const&amp;) = delete;
+<span class="lineNum">      52 </span>            :         RedirectedStreams&amp; operator=(RedirectedStreams const&amp;) = delete;
+<span class="lineNum">      53 </span>            :         RedirectedStreams(RedirectedStreams&amp;&amp;) = delete;
+<span class="lineNum">      54 </span>            :         RedirectedStreams&amp; operator=(RedirectedStreams&amp;&amp;) = delete;
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            :         RedirectedStreams(std::string&amp; redirectedCout, std::string&amp; redirectedCerr);
+<span class="lineNum">      57 </span>            :         ~RedirectedStreams();
+<span class="lineNum">      58 </span>            :     private:
+<span class="lineNum">      59 </span>            :         std::string&amp; m_redirectedCout;
+<span class="lineNum">      60 </span>            :         std::string&amp; m_redirectedCerr;
+<span class="lineNum">      61 </span>            :         RedirectedStdOut m_redirectedStdOut;
+<span class="lineNum">      62 </span>            :         RedirectedStdErr m_redirectedStdErr;
+<span class="lineNum">      63 </span>            :     };
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            : #if defined(CATCH_CONFIG_NEW_CAPTURE)
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            :     // Windows's implementation of std::tmpfile is terrible (it tries
+<span class="lineNum">      68 </span>            :     // to create a file inside system folder, thus requiring elevated
+<span class="lineNum">      69 </span>            :     // privileges for the binary), so we have to use tmpnam(_s) and
+<span class="lineNum">      70 </span>            :     // create the file ourselves there.
+<span class="lineNum">      71 </span>            :     class TempFile {
+<span class="lineNum">      72 </span>            :     public:
+<span class="lineNum">      73 </span>            :         TempFile(TempFile const&amp;) = delete;
+<span class="lineNum">      74 </span>            :         TempFile&amp; operator=(TempFile const&amp;) = delete;
+<span class="lineNum">      75 </span>            :         TempFile(TempFile&amp;&amp;) = delete;
+<span class="lineNum">      76 </span>            :         TempFile&amp; operator=(TempFile&amp;&amp;) = delete;
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            :         TempFile();
+<span class="lineNum">      79 </span>            :         ~TempFile();
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span>            :         std::FILE* getFile();
+<span class="lineNum">      82 </span>            :         std::string getContents();
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span>            :     private:
+<span class="lineNum">      85 </span>            :         std::FILE* m_file = nullptr;
+<span class="lineNum">      86 </span>            :     #if defined(_MSC_VER)
+<span class="lineNum">      87 </span>            :         char m_buffer[L_tmpnam] = { 0 };
+<span class="lineNum">      88 </span>            :     #endif
+<span class="lineNum">      89 </span>            :     };
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span>            :     class OutputRedirect {
+<span class="lineNum">      93 </span>            :     public:
+<span class="lineNum">      94 </span>            :         OutputRedirect(OutputRedirect const&amp;) = delete;
+<span class="lineNum">      95 </span>            :         OutputRedirect&amp; operator=(OutputRedirect const&amp;) = delete;
+<span class="lineNum">      96 </span>            :         OutputRedirect(OutputRedirect&amp;&amp;) = delete;
+<span class="lineNum">      97 </span>            :         OutputRedirect&amp; operator=(OutputRedirect&amp;&amp;) = delete;
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span>            :         OutputRedirect(std::string&amp; stdout_dest, std::string&amp; stderr_dest);
+<span class="lineNum">     101 </span>            :         ~OutputRedirect();
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            :     private:
+<span class="lineNum">     104 </span>            :         int m_originalStdout = -1;
+<span class="lineNum">     105 </span>            :         int m_originalStderr = -1;
+<span class="lineNum">     106 </span>            :         TempFile m_stdoutFile;
+<span class="lineNum">     107 </span>            :         TempFile m_stderrFile;
+<span class="lineNum">     108 </span>            :         std::string&amp; m_stdoutDest;
+<span class="lineNum">     109 </span>            :         std::string&amp; m_stderrDest;
+<span class="lineNum">     110 </span>            :     };
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span>            : #endif
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span>            : } // end namespace Catch
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span>            : #endif // TWOBLUECUBES_CATCH_OUTPUT_REDIRECT_H
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_interfaces_reporter.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_interfaces_reporter.h<span style="font-size: 80%;"> (source / <a href="catch_interfaces_reporter.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntry">28</td>
+            <td class="headerCovTableEntryMed">78.6 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">29</td>
+            <td class="headerCovTableEntry">44</td>
+            <td class="headerCovTableEntryLo">65.9 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 31/12/2010.
+<span class="lineNum">       3 </span>            :  *  Copyright 2010 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : #ifndef TWOBLUECUBES_CATCH_INTERFACES_REPORTER_H_INCLUDED
+<span class="lineNum">       9 </span>            : #define TWOBLUECUBES_CATCH_INTERFACES_REPORTER_H_INCLUDED
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &quot;catch_section_info.h&quot;
+<span class="lineNum">      12 </span>            : #include &quot;catch_common.h&quot;
+<span class="lineNum">      13 </span>            : #include &quot;catch_config.hpp&quot;
+<span class="lineNum">      14 </span>            : #include &quot;catch_totals.h&quot;
+<span class="lineNum">      15 </span>            : #include &quot;catch_test_case_info.h&quot;
+<span class="lineNum">      16 </span>            : #include &quot;catch_assertionresult.h&quot;
+<span class="lineNum">      17 </span>            : #include &quot;catch_message.h&quot;
+<span class="lineNum">      18 </span>            : #include &quot;catch_option.hpp&quot;
+<span class="lineNum">      19 </span>            : #include &quot;catch_stringref.h&quot;
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            : #if defined(CATCH_CONFIG_ENABLE_BENCHMARKING)
+<span class="lineNum">      22 </span>            : #include &quot;benchmark/catch_estimate.hpp&quot;
+<span class="lineNum">      23 </span>            : #include &quot;benchmark/catch_outlier_classification.hpp&quot;
+<span class="lineNum">      24 </span>            : #endif // CATCH_CONFIG_ENABLE_BENCHMARKING
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            : #include &lt;string&gt;
+<span class="lineNum">      28 </span>            : #include &lt;iosfwd&gt;
+<span class="lineNum">      29 </span>            : #include &lt;map&gt;
+<span class="lineNum">      30 </span>            : #include &lt;set&gt;
+<span class="lineNum">      31 </span>            : #include &lt;memory&gt;
+<span class="lineNum">      32 </span>            : #include &lt;algorithm&gt;
+<span class="lineNum">      33 </span>            : 
+<a name="34"><span class="lineNum">      34 </span>            : namespace Catch {</a>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineCov">          3 :     struct ReporterConfig {</span>
+<span class="lineNum">      37 </span>            :         explicit ReporterConfig( IConfigPtr const&amp; _fullConfig );
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            :         ReporterConfig( IConfigPtr const&amp; _fullConfig, std::ostream&amp; _stream );
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            :         std::ostream&amp; stream() const;
+<span class="lineNum">      42 </span>            :         IConfigPtr fullConfig() const;
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            :     private:
+<span class="lineNum">      45 </span>            :         std::ostream* m_stream;
+<span class="lineNum">      46 </span>            :         IConfigPtr m_fullConfig;
+<a name="47"><span class="lineNum">      47 </span>            :     };</a>
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span><span class="lineCov">          3 :     struct ReporterPreferences {</span>
+<span class="lineNum">      50 </span>            :         bool shouldRedirectStdOut = false;
+<span class="lineNum">      51 </span>            :         bool shouldReportAllAssertions = false;
+<span class="lineNum">      52 </span>            :     };
+<a name="53"><span class="lineNum">      53 </span>            : </a>
+<a name="54"><span class="lineNum">      54 </span>            :     template&lt;typename T&gt;</a>
+<span class="lineNum">      55 </span><span class="lineCov">         18 :     struct LazyStat : Option&lt;T&gt; {</span>
+<span class="lineNum">      56 </span><span class="lineCov">         15 :         LazyStat&amp; operator=( T const&amp; _value ) {</span>
+<span class="lineNum">      57 </span><span class="lineCov">         15 :             Option&lt;T&gt;::operator=( _value );</span>
+<span class="lineNum">      58 </span><span class="lineCov">         15 :             used = false;</span>
+<a name="59"><span class="lineNum">      59 </span><span class="lineCov">         15 :             return *this;</span></a>
+<span class="lineNum">      60 </span>            :         }
+<span class="lineNum">      61 </span><span class="lineCov">         21 :         void reset() {</span>
+<span class="lineNum">      62 </span><span class="lineCov">         21 :             Option&lt;T&gt;::reset();</span>
+<span class="lineNum">      63 </span><span class="lineCov">         21 :             used = false;</span>
+<span class="lineNum">      64 </span><span class="lineCov">         21 :         }</span>
+<span class="lineNum">      65 </span>            :         bool used = false;
+<a name="66"><span class="lineNum">      66 </span>            :     };</a>
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span><span class="lineCov">         15 :     struct TestRunInfo {</span>
+<span class="lineNum">      69 </span>            :         TestRunInfo( std::string const&amp; _name );
+<a name="70"><span class="lineNum">      70 </span>            :         std::string name;</a>
+<span class="lineNum">      71 </span>            :     };
+<span class="lineNum">      72 </span><span class="lineCov">         18 :     struct GroupInfo {</span>
+<span class="lineNum">      73 </span>            :         GroupInfo(  std::string const&amp; _name,
+<span class="lineNum">      74 </span>            :                     std::size_t _groupIndex,
+<span class="lineNum">      75 </span>            :                     std::size_t _groupsCount );
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            :         std::string name;
+<span class="lineNum">      78 </span>            :         std::size_t groupIndex;
+<span class="lineNum">      79 </span>            :         std::size_t groupsCounts;
+<a name="80"><span class="lineNum">      80 </span>            :     };</a>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineCov">         27 :     struct AssertionStats {</span>
+<span class="lineNum">      83 </span>            :         AssertionStats( AssertionResult const&amp; _assertionResult,
+<span class="lineNum">      84 </span>            :                         std::vector&lt;MessageInfo&gt; const&amp; _infoMessages,
+<a name="85"><span class="lineNum">      85 </span>            :                         Totals const&amp; _totals );</a>
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         AssertionStats( AssertionStats const&amp; )              = default;</span>
+<span class="lineNum">      88 </span>            :         AssertionStats( AssertionStats &amp;&amp; )                  = default;
+<span class="lineNum">      89 </span>            :         AssertionStats&amp; operator = ( AssertionStats const&amp; ) = delete;
+<span class="lineNum">      90 </span>            :         AssertionStats&amp; operator = ( AssertionStats &amp;&amp; )     = delete;
+<span class="lineNum">      91 </span>            :         virtual ~AssertionStats();
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            :         AssertionResult assertionResult;
+<span class="lineNum">      94 </span>            :         std::vector&lt;MessageInfo&gt; infoMessages;
+<span class="lineNum">      95 </span>            :         Totals totals;
+<a name="96"><span class="lineNum">      96 </span>            :     };</a>
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineCov">        198 :     struct SectionStats {</span>
+<span class="lineNum">      99 </span>            :         SectionStats(   SectionInfo const&amp; _sectionInfo,
+<span class="lineNum">     100 </span>            :                         Counts const&amp; _assertions,
+<a name="101"><span class="lineNum">     101 </span>            :                         double _durationInSeconds,</a>
+<span class="lineNum">     102 </span>            :                         bool _missingAssertions );
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         SectionStats( SectionStats const&amp; )              = default;</span>
+<span class="lineNum">     104 </span>            :         SectionStats( SectionStats &amp;&amp; )                  = default;
+<span class="lineNum">     105 </span>            :         SectionStats&amp; operator = ( SectionStats const&amp; ) = default;
+<span class="lineNum">     106 </span>            :         SectionStats&amp; operator = ( SectionStats &amp;&amp; )     = default;
+<span class="lineNum">     107 </span>            :         virtual ~SectionStats();
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            :         SectionInfo sectionInfo;
+<span class="lineNum">     110 </span>            :         Counts assertions;
+<span class="lineNum">     111 </span>            :         double durationInSeconds;
+<span class="lineNum">     112 </span>            :         bool missingAssertions;
+<a name="113"><span class="lineNum">     113 </span>            :     };</a>
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span><span class="lineCov">          9 :     struct TestCaseStats {</span>
+<span class="lineNum">     116 </span>            :         TestCaseStats(  TestCaseInfo const&amp; _testInfo,
+<span class="lineNum">     117 </span>            :                         Totals const&amp; _totals,
+<span class="lineNum">     118 </span>            :                         std::string const&amp; _stdOut,
+<span class="lineNum">     119 </span>            :                         std::string const&amp; _stdErr,
+<a name="120"><span class="lineNum">     120 </span>            :                         bool _aborting );</a>
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :         TestCaseStats( TestCaseStats const&amp; )              = default;</span>
+<span class="lineNum">     123 </span>            :         TestCaseStats( TestCaseStats &amp;&amp; )                  = default;
+<span class="lineNum">     124 </span>            :         TestCaseStats&amp; operator = ( TestCaseStats const&amp; ) = default;
+<span class="lineNum">     125 </span>            :         TestCaseStats&amp; operator = ( TestCaseStats &amp;&amp; )     = default;
+<span class="lineNum">     126 </span>            :         virtual ~TestCaseStats();
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            :         TestCaseInfo testInfo;
+<span class="lineNum">     129 </span>            :         Totals totals;
+<span class="lineNum">     130 </span>            :         std::string stdOut;
+<span class="lineNum">     131 </span>            :         std::string stdErr;
+<span class="lineNum">     132 </span>            :         bool aborting;
+<a name="133"><span class="lineNum">     133 </span>            :     };</a>
+<span class="lineNum">     134 </span>            : 
+<span class="lineNum">     135 </span><span class="lineCov">          3 :     struct TestGroupStats {</span>
+<span class="lineNum">     136 </span>            :         TestGroupStats( GroupInfo const&amp; _groupInfo,
+<span class="lineNum">     137 </span>            :                         Totals const&amp; _totals,
+<span class="lineNum">     138 </span>            :                         bool _aborting );
+<a name="139"><span class="lineNum">     139 </span>            :         TestGroupStats( GroupInfo const&amp; _groupInfo );</a>
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         TestGroupStats( TestGroupStats const&amp; )              = default;</span>
+<span class="lineNum">     142 </span>            :         TestGroupStats( TestGroupStats &amp;&amp; )                  = default;
+<span class="lineNum">     143 </span>            :         TestGroupStats&amp; operator = ( TestGroupStats const&amp; ) = default;
+<span class="lineNum">     144 </span>            :         TestGroupStats&amp; operator = ( TestGroupStats &amp;&amp; )     = default;
+<span class="lineNum">     145 </span>            :         virtual ~TestGroupStats();
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span>            :         GroupInfo groupInfo;
+<span class="lineNum">     148 </span>            :         Totals totals;
+<span class="lineNum">     149 </span>            :         bool aborting;
+<a name="150"><span class="lineNum">     150 </span>            :     };</a>
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span><span class="lineCov">          3 :     struct TestRunStats {</span>
+<span class="lineNum">     153 </span>            :         TestRunStats(   TestRunInfo const&amp; _runInfo,
+<span class="lineNum">     154 </span>            :                         Totals const&amp; _totals,
+<a name="155"><span class="lineNum">     155 </span>            :                         bool _aborting );</a>
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         TestRunStats( TestRunStats const&amp; )              = default;</span>
+<span class="lineNum">     158 </span>            :         TestRunStats( TestRunStats &amp;&amp; )                  = default;
+<span class="lineNum">     159 </span>            :         TestRunStats&amp; operator = ( TestRunStats const&amp; ) = default;
+<span class="lineNum">     160 </span>            :         TestRunStats&amp; operator = ( TestRunStats &amp;&amp; )     = default;
+<span class="lineNum">     161 </span>            :         virtual ~TestRunStats();
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            :         TestRunInfo runInfo;
+<span class="lineNum">     164 </span>            :         Totals totals;
+<span class="lineNum">     165 </span>            :         bool aborting;
+<span class="lineNum">     166 </span>            :     };
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            : #if defined(CATCH_CONFIG_ENABLE_BENCHMARKING)
+<span class="lineNum">     169 </span>            :     struct BenchmarkInfo {
+<span class="lineNum">     170 </span>            :         std::string name;
+<span class="lineNum">     171 </span>            :         double estimatedDuration;
+<span class="lineNum">     172 </span>            :         int iterations;
+<span class="lineNum">     173 </span>            :         int samples;
+<span class="lineNum">     174 </span>            :         unsigned int resamples;
+<span class="lineNum">     175 </span>            :         double clockResolution;
+<span class="lineNum">     176 </span>            :         double clockCost;
+<span class="lineNum">     177 </span>            :     };
+<span class="lineNum">     178 </span>            : 
+<span class="lineNum">     179 </span>            :     template &lt;class Duration&gt;
+<span class="lineNum">     180 </span>            :     struct BenchmarkStats {
+<span class="lineNum">     181 </span>            :         BenchmarkInfo info;
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span>            :         std::vector&lt;Duration&gt; samples;
+<span class="lineNum">     184 </span>            :         Benchmark::Estimate&lt;Duration&gt; mean;
+<span class="lineNum">     185 </span>            :         Benchmark::Estimate&lt;Duration&gt; standardDeviation;
+<span class="lineNum">     186 </span>            :         Benchmark::OutlierClassification outliers;
+<span class="lineNum">     187 </span>            :         double outlierVariance;
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span>            :         template &lt;typename Duration2&gt;
+<span class="lineNum">     190 </span>            :         operator BenchmarkStats&lt;Duration2&gt;() const {
+<span class="lineNum">     191 </span>            :             std::vector&lt;Duration2&gt; samples2;
+<span class="lineNum">     192 </span>            :             samples2.reserve(samples.size());
+<span class="lineNum">     193 </span>            :             std::transform(samples.begin(), samples.end(), std::back_inserter(samples2), [](Duration d) { return Duration2(d); });
+<span class="lineNum">     194 </span>            :             return {
+<span class="lineNum">     195 </span>            :                 info,
+<span class="lineNum">     196 </span>            :                 std::move(samples2),
+<span class="lineNum">     197 </span>            :                 mean,
+<span class="lineNum">     198 </span>            :                 standardDeviation,
+<span class="lineNum">     199 </span>            :                 outliers,
+<span class="lineNum">     200 </span>            :                 outlierVariance,
+<span class="lineNum">     201 </span>            :             };
+<span class="lineNum">     202 </span>            :         }
+<span class="lineNum">     203 </span>            :     };
+<a name="204"><span class="lineNum">     204 </span>            : #endif // CATCH_CONFIG_ENABLE_BENCHMARKING</a>
+<a name="205"><span class="lineNum">     205 </span>            : </a>
+<span class="lineNum">     206 </span><span class="lineCov">          3 :     struct IStreamingReporter {</span>
+<span class="lineNum">     207 </span><span class="lineCov">          3 :         virtual ~IStreamingReporter() = default;</span>
+<span class="lineNum">     208 </span>            : 
+<span class="lineNum">     209 </span>            :         // Implementing class must also provide the following static methods:
+<span class="lineNum">     210 </span>            :         // static std::string getDescription();
+<span class="lineNum">     211 </span>            :         // static std::set&lt;Verbosity&gt; getSupportedVerbosities()
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span>            :         virtual ReporterPreferences getPreferences() const = 0;
+<span class="lineNum">     214 </span>            : 
+<a name="215"><span class="lineNum">     215 </span>            :         virtual void noMatchingTestCases( std::string const&amp; spec ) = 0;</a>
+<span class="lineNum">     216 </span>            : 
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         virtual void reportInvalidArguments(std::string const&amp;) {}</span>
+<span class="lineNum">     218 </span>            :         
+<span class="lineNum">     219 </span>            :         virtual void testRunStarting( TestRunInfo const&amp; testRunInfo ) = 0;
+<span class="lineNum">     220 </span>            :         virtual void testGroupStarting( GroupInfo const&amp; groupInfo ) = 0;
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span>            :         virtual void testCaseStarting( TestCaseInfo const&amp; testInfo ) = 0;
+<span class="lineNum">     223 </span>            :         virtual void sectionStarting( SectionInfo const&amp; sectionInfo ) = 0;
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span>            : #if defined(CATCH_CONFIG_ENABLE_BENCHMARKING)
+<span class="lineNum">     226 </span>            :         virtual void benchmarkPreparing( std::string const&amp; ) {}
+<span class="lineNum">     227 </span>            :         virtual void benchmarkStarting( BenchmarkInfo const&amp; ) {}
+<span class="lineNum">     228 </span>            :         virtual void benchmarkEnded( BenchmarkStats&lt;&gt; const&amp; ) {}
+<span class="lineNum">     229 </span>            :         virtual void benchmarkFailed( std::string const&amp; ) {}
+<span class="lineNum">     230 </span>            : #endif // CATCH_CONFIG_ENABLE_BENCHMARKING
+<span class="lineNum">     231 </span>            : 
+<span class="lineNum">     232 </span>            :         virtual void assertionStarting( AssertionInfo const&amp; assertionInfo ) = 0;
+<span class="lineNum">     233 </span>            : 
+<span class="lineNum">     234 </span>            :         // The return value indicates if the messages buffer should be cleared:
+<span class="lineNum">     235 </span>            :         virtual bool assertionEnded( AssertionStats const&amp; assertionStats ) = 0;
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span>            :         virtual void sectionEnded( SectionStats const&amp; sectionStats ) = 0;
+<span class="lineNum">     238 </span>            :         virtual void testCaseEnded( TestCaseStats const&amp; testCaseStats ) = 0;
+<span class="lineNum">     239 </span>            :         virtual void testGroupEnded( TestGroupStats const&amp; testGroupStats ) = 0;
+<span class="lineNum">     240 </span>            :         virtual void testRunEnded( TestRunStats const&amp; testRunStats ) = 0;
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span>            :         virtual void skipTest( TestCaseInfo const&amp; testInfo ) = 0;
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span>            :         // Default empty implementation provided
+<span class="lineNum">     245 </span>            :         virtual void fatalErrorEncountered( StringRef name );
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span>            :         virtual bool isMulti() const;
+<span class="lineNum">     248 </span>            :     };
+<a name="249"><span class="lineNum">     249 </span>            :     using IStreamingReporterPtr = std::unique_ptr&lt;IStreamingReporter&gt;;</a>
+<span class="lineNum">     250 </span>            : 
+<span class="lineNum">     251 </span><span class="lineCov">         24 :     struct IReporterFactory {</span>
+<span class="lineNum">     252 </span>            :         virtual ~IReporterFactory();
+<span class="lineNum">     253 </span>            :         virtual IStreamingReporterPtr create( ReporterConfig const&amp; config ) const = 0;
+<span class="lineNum">     254 </span>            :         virtual std::string getDescription() const = 0;
+<span class="lineNum">     255 </span>            :     };
+<a name="256"><span class="lineNum">     256 </span>            :     using IReporterFactoryPtr = std::shared_ptr&lt;IReporterFactory&gt;;</a>
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span><span class="lineCov">          6 :     struct IReporterRegistry {</span>
+<span class="lineNum">     259 </span>            :         using FactoryMap = std::map&lt;std::string, IReporterFactoryPtr&gt;;
+<span class="lineNum">     260 </span>            :         using Listeners = std::vector&lt;IReporterFactoryPtr&gt;;
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span>            :         virtual ~IReporterRegistry();
+<span class="lineNum">     263 </span>            :         virtual IStreamingReporterPtr create( std::string const&amp; name, IConfigPtr const&amp; config ) const = 0;
+<span class="lineNum">     264 </span>            :         virtual FactoryMap const&amp; getFactories() const = 0;
+<span class="lineNum">     265 </span>            :         virtual Listeners const&amp; getListeners() const = 0;
+<span class="lineNum">     266 </span>            :     };
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span>            : } // end namespace Catch
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span>            : #endif // TWOBLUECUBES_CATCH_INTERFACES_REPORTER_H_INCLUDED
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
