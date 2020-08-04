@@ -1,0 +1,358 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - reporters/catch_reporter_bases.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">reporters</a> - catch_reporter_bases.hpp<span style="font-size: 80%;"> (source / <a href="catch_reporter_bases.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">36</td>
+            <td class="headerCovTableEntry">122</td>
+            <td class="headerCovTableEntryLo">29.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">99</td>
+            <td class="headerCovTableEntryLo">12.1 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 27/11/2013.
+<span class="lineNum">       3 </span>            :  *  Copyright 2013 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : #ifndef TWOBLUECUBES_CATCH_REPORTER_BASES_HPP_INCLUDED
+<span class="lineNum">       9 </span>            : #define TWOBLUECUBES_CATCH_REPORTER_BASES_HPP_INCLUDED
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &quot;../internal/catch_enforce.h&quot;
+<span class="lineNum">      12 </span>            : #include &quot;../internal/catch_interfaces_reporter.h&quot;
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : #include &lt;algorithm&gt;
+<span class="lineNum">      15 </span>            : #include &lt;cstring&gt;
+<span class="lineNum">      16 </span>            : #include &lt;cfloat&gt;
+<span class="lineNum">      17 </span>            : #include &lt;cstdio&gt;
+<span class="lineNum">      18 </span>            : #include &lt;cassert&gt;
+<span class="lineNum">      19 </span>            : #include &lt;memory&gt;
+<span class="lineNum">      20 </span>            : #include &lt;ostream&gt;
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            : namespace Catch {
+<span class="lineNum">      23 </span>            :     void prepareExpandedExpression(AssertionResult&amp; result);
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span>            :     // Returns double formatted as %.3f (format expected on output)
+<span class="lineNum">      26 </span>            :     std::string getFormattedDuration( double duration );
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            :     std::string serializeFilters( std::vector&lt;std::string&gt; const&amp; container );
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            :     template&lt;typename DerivedT&gt;
+<a name="31"><span class="lineNum">      31 </span>            :     struct StreamingReporterBase : IStreamingReporter {</a>
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span><span class="lineCov">          3 :         StreamingReporterBase( ReporterConfig const&amp; _config )</span>
+<span class="lineNum">      34 </span>            :         :   m_config( _config.fullConfig() ),
+<span class="lineNum">      35 </span><span class="lineCov">          3 :             stream( _config.stream() )</span>
+<span class="lineNum">      36 </span>            :         {
+<span class="lineNum">      37 </span><span class="lineCov">          3 :             m_reporterPrefs.shouldRedirectStdOut = false;</span>
+<span class="lineNum">      38 </span><span class="lineCov">          3 :             if( !DerivedT::getSupportedVerbosities().count( m_config-&gt;verbosity() ) )</span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :                 CATCH_ERROR( &quot;Verbosity level not supported by this reporter&quot; );</span>
+<a name="40"><span class="lineNum">      40 </span><span class="lineCov">          3 :         }</span></a>
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span><span class="lineCov">         78 :         ReporterPreferences getPreferences() const override {</span>
+<span class="lineNum">      43 </span><span class="lineCov">         78 :             return m_reporterPrefs;</span>
+<a name="44"><span class="lineNum">      44 </span>            :         }</a>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineCov">          3 :         static std::set&lt;Verbosity&gt; getSupportedVerbosities() {</span>
+<span class="lineNum">      47 </span><span class="lineCov">          3 :             return { Verbosity::Normal };</span>
+<a name="48"><span class="lineNum">      48 </span>            :         }</a>
+<span class="lineNum">      49 </span>            : 
+<a name="50"><span class="lineNum">      50 </span><span class="lineCov">          3 :         ~StreamingReporterBase() override = default;</span></a>
+<span class="lineNum">      51 </span>            : 
+<a name="52"><span class="lineNum">      52 </span><span class="lineNoCov">          0 :         void noMatchingTestCases(std::string const&amp;) override {}</span></a>
+<span class="lineNum">      53 </span>            : 
+<a name="54"><span class="lineNum">      54 </span><span class="lineNoCov">          0 :         void reportInvalidArguments(std::string const&amp;) override {}</span></a>
+<span class="lineNum">      55 </span>            :         
+<span class="lineNum">      56 </span><span class="lineCov">          3 :         void testRunStarting(TestRunInfo const&amp; _testRunInfo) override {</span>
+<span class="lineNum">      57 </span><span class="lineCov">          3 :             currentTestRunInfo = _testRunInfo;</span>
+<a name="58"><span class="lineNum">      58 </span><span class="lineCov">          3 :         }</span></a>
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span><span class="lineCov">          3 :         void testGroupStarting(GroupInfo const&amp; _groupInfo) override {</span>
+<span class="lineNum">      61 </span><span class="lineCov">          3 :             currentGroupInfo = _groupInfo;</span>
+<a name="62"><span class="lineNum">      62 </span><span class="lineCov">          3 :         }</span></a>
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span><span class="lineCov">          9 :         void testCaseStarting(TestCaseInfo const&amp; _testInfo) override  {</span>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">          9 :             currentTestCaseInfo = _testInfo;</span></a>
+<span class="lineNum">      66 </span><span class="lineCov">          9 :         }</span>
+<span class="lineNum">      67 </span><span class="lineCov">        198 :         void sectionStarting(SectionInfo const&amp; _sectionInfo) override {</span>
+<span class="lineNum">      68 </span><span class="lineCov">        198 :             m_sectionStack.push_back(_sectionInfo);</span>
+<a name="69"><span class="lineNum">      69 </span><span class="lineCov">        198 :         }</span></a>
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span><span class="lineCov">        198 :         void sectionEnded(SectionStats const&amp; /* _sectionStats */) override {</span>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">        198 :             m_sectionStack.pop_back();</span></a>
+<span class="lineNum">      73 </span><span class="lineCov">        198 :         }</span>
+<span class="lineNum">      74 </span><span class="lineCov">          9 :         void testCaseEnded(TestCaseStats const&amp; /* _testCaseStats */) override {</span>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">          9 :             currentTestCaseInfo.reset();</span></a>
+<span class="lineNum">      76 </span><span class="lineCov">          9 :         }</span>
+<span class="lineNum">      77 </span><span class="lineCov">          3 :         void testGroupEnded(TestGroupStats const&amp; /* _testGroupStats */) override {</span>
+<a name="78"><span class="lineNum">      78 </span><span class="lineCov">          3 :             currentGroupInfo.reset();</span></a>
+<span class="lineNum">      79 </span><span class="lineCov">          3 :         }</span>
+<span class="lineNum">      80 </span><span class="lineCov">          3 :         void testRunEnded(TestRunStats const&amp; /* _testRunStats */) override {</span>
+<span class="lineNum">      81 </span><span class="lineCov">          3 :             currentTestCaseInfo.reset();</span>
+<span class="lineNum">      82 </span><span class="lineCov">          3 :             currentGroupInfo.reset();</span>
+<span class="lineNum">      83 </span><span class="lineCov">          3 :             currentTestRunInfo.reset();</span>
+<a name="84"><span class="lineNum">      84 </span><span class="lineCov">          3 :         }</span></a>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :         void skipTest(TestCaseInfo const&amp;) override {</span>
+<span class="lineNum">      87 </span>            :             // Don't do anything with this by default.
+<span class="lineNum">      88 </span>            :             // It can optionally be overridden in the derived class.
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span>            :         IConfigPtr m_config;
+<span class="lineNum">      92 </span>            :         std::ostream&amp; stream;
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span>            :         LazyStat&lt;TestRunInfo&gt; currentTestRunInfo;
+<span class="lineNum">      95 </span>            :         LazyStat&lt;GroupInfo&gt; currentGroupInfo;
+<span class="lineNum">      96 </span>            :         LazyStat&lt;TestCaseInfo&gt; currentTestCaseInfo;
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :         std::vector&lt;SectionInfo&gt; m_sectionStack;
+<span class="lineNum">      99 </span>            :         ReporterPreferences m_reporterPrefs;
+<span class="lineNum">     100 </span>            :     };
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span>            :     template&lt;typename DerivedT&gt;
+<span class="lineNum">     103 </span>            :     struct CumulativeReporterBase : IStreamingReporter {
+<a name="104"><span class="lineNum">     104 </span>            :         template&lt;typename T, typename ChildNodeT&gt;</a>
+<a name="105"><span class="lineNum">     105 </span>            :         struct Node {</a>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :             explicit Node( T const&amp; _value ) : value( _value ) {}</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :             virtual ~Node() {}</span>
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            :             using ChildNodes = std::vector&lt;std::shared_ptr&lt;ChildNodeT&gt;&gt;;
+<span class="lineNum">     110 </span>            :             T value;
+<span class="lineNum">     111 </span>            :             ChildNodes children;
+<a name="112"><span class="lineNum">     112 </span>            :         };</a>
+<a name="113"><span class="lineNum">     113 </span>            :         struct SectionNode {</a>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :             explicit SectionNode(SectionStats const&amp; _stats) : stats(_stats) {}</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :             virtual ~SectionNode() = default;</span>
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span>            :             bool operator == (SectionNode const&amp; other) const {
+<span class="lineNum">     118 </span>            :                 return stats.sectionInfo.lineInfo == other.stats.sectionInfo.lineInfo;
+<span class="lineNum">     119 </span>            :             }
+<span class="lineNum">     120 </span>            :             bool operator == (std::shared_ptr&lt;SectionNode&gt; const&amp; other) const {
+<span class="lineNum">     121 </span>            :                 return operator==(*other);
+<span class="lineNum">     122 </span>            :             }
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span>            :             SectionStats stats;
+<span class="lineNum">     125 </span>            :             using ChildSections = std::vector&lt;std::shared_ptr&lt;SectionNode&gt;&gt;;
+<span class="lineNum">     126 </span>            :             using Assertions = std::vector&lt;AssertionStats&gt;;
+<span class="lineNum">     127 </span>            :             ChildSections childSections;
+<span class="lineNum">     128 </span>            :             Assertions assertions;
+<span class="lineNum">     129 </span>            :             std::string stdOut;
+<span class="lineNum">     130 </span>            :             std::string stdErr;
+<span class="lineNum">     131 </span>            :         };
+<a name="132"><span class="lineNum">     132 </span>            : </a>
+<a name="133"><span class="lineNum">     133 </span>            :         struct BySectionInfo {</a>
+<a name="134"><span class="lineNum">     134 </span><span class="lineNoCov">          0 :             BySectionInfo( SectionInfo const&amp; other ) : m_other( other ) {}</span></a>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :             BySectionInfo( BySectionInfo const&amp; other ) : m_other( other.m_other ) {}</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :             bool operator() (std::shared_ptr&lt;SectionNode&gt; const&amp; node) const {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :                 return ((node-&gt;stats.sectionInfo.name == m_other.name) &amp;&amp;</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :                         (node-&gt;stats.sectionInfo.lineInfo == m_other.lineInfo));</span>
+<span class="lineNum">     139 </span>            :             }
+<span class="lineNum">     140 </span>            :             void operator=(BySectionInfo const&amp;) = delete;
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            :         private:
+<span class="lineNum">     143 </span>            :             SectionInfo const&amp; m_other;
+<span class="lineNum">     144 </span>            :         };
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span>            :         using TestCaseNode = Node&lt;TestCaseStats, SectionNode&gt;;
+<span class="lineNum">     148 </span>            :         using TestGroupNode = Node&lt;TestGroupStats, TestCaseNode&gt;;
+<a name="149"><span class="lineNum">     149 </span>            :         using TestRunNode = Node&lt;TestRunStats, TestGroupNode&gt;;</a>
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         CumulativeReporterBase( ReporterConfig const&amp; _config )</span>
+<span class="lineNum">     152 </span>            :         :   m_config( _config.fullConfig() ),
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :             stream( _config.stream() )</span>
+<span class="lineNum">     154 </span>            :         {
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :             m_reporterPrefs.shouldRedirectStdOut = false;</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :             if( !DerivedT::getSupportedVerbosities().count( m_config-&gt;verbosity() ) )</span>
+<a name="157"><span class="lineNum">     157 </span><span class="lineNoCov">          0 :                 CATCH_ERROR( &quot;Verbosity level not supported by this reporter&quot; );</span></a>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :         }</span>
+<a name="159"><span class="lineNum">     159 </span><span class="lineNoCov">          0 :         ~CumulativeReporterBase() override = default;</span></a>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :         ReporterPreferences getPreferences() const override {</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :             return m_reporterPrefs;</span>
+<a name="163"><span class="lineNum">     163 </span>            :         }</a>
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :         static std::set&lt;Verbosity&gt; getSupportedVerbosities() {</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :             return { Verbosity::Normal };</span>
+<a name="167"><span class="lineNum">     167 </span>            :         }</a>
+<a name="168"><span class="lineNum">     168 </span>            : </a>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         void testRunStarting( TestRunInfo const&amp; ) override {}</span>
+<a name="170"><span class="lineNum">     170 </span><span class="lineNoCov">          0 :         void testGroupStarting( GroupInfo const&amp; ) override {}</span></a>
+<span class="lineNum">     171 </span>            : 
+<a name="172"><span class="lineNum">     172 </span><span class="lineNoCov">          0 :         void testCaseStarting( TestCaseInfo const&amp; ) override {}</span></a>
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :         void sectionStarting( SectionInfo const&amp; sectionInfo ) override {</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :             SectionStats incompleteStats( sectionInfo, Counts(), 0, false );</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :             std::shared_ptr&lt;SectionNode&gt; node;</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :             if( m_sectionStack.empty() ) {</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :                 if( !m_rootSection )</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :                     m_rootSection = std::make_shared&lt;SectionNode&gt;( incompleteStats );</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :                 node = m_rootSection;</span>
+<span class="lineNum">     181 </span>            :             }
+<span class="lineNum">     182 </span>            :             else {
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                 SectionNode&amp; parentNode = *m_sectionStack.back();</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :                 auto it =</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :                     std::find_if(   parentNode.childSections.begin(),</span>
+<span class="lineNum">     186 </span>            :                                     parentNode.childSections.end(),
+<span class="lineNum">     187 </span>            :                                     BySectionInfo( sectionInfo ) );
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :                 if( it == parentNode.childSections.end() ) {</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :                     node = std::make_shared&lt;SectionNode&gt;( incompleteStats );</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :                     parentNode.childSections.push_back( node );</span>
+<span class="lineNum">     191 </span>            :                 }
+<span class="lineNum">     192 </span>            :                 else
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                     node = *it;</span>
+<span class="lineNum">     194 </span>            :             }
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :             m_sectionStack.push_back( node );</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :             m_deepestSection = std::move(node);</span>
+<a name="197"><span class="lineNum">     197 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     198 </span>            : 
+<a name="199"><span class="lineNum">     199 </span><span class="lineNoCov">          0 :         void assertionStarting(AssertionInfo const&amp;) override {}</span></a>
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :         bool assertionEnded(AssertionStats const&amp; assertionStats) override {</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :             assert(!m_sectionStack.empty());</span>
+<span class="lineNum">     203 </span>            :             // AssertionResult holds a pointer to a temporary DecomposedExpression,
+<span class="lineNum">     204 </span>            :             // which getExpandedExpression() calls to build the expression string.
+<span class="lineNum">     205 </span>            :             // Our section stack copy of the assertionResult will likely outlive the
+<span class="lineNum">     206 </span>            :             // temporary, so it must be expanded or discarded now to avoid calling
+<span class="lineNum">     207 </span>            :             // a destroyed object later.
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :             prepareExpandedExpression(const_cast&lt;AssertionResult&amp;&gt;( assertionStats.assertionResult ) );</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :             SectionNode&amp; sectionNode = *m_sectionStack.back();</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :             sectionNode.assertions.push_back(assertionStats);</span>
+<a name="211"><span class="lineNum">     211 </span><span class="lineNoCov">          0 :             return true;</span></a>
+<span class="lineNum">     212 </span>            :         }
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :         void sectionEnded(SectionStats const&amp; sectionStats) override {</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :             assert(!m_sectionStack.empty());</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :             SectionNode&amp; node = *m_sectionStack.back();</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :             node.stats = sectionStats;</span>
+<a name="217"><span class="lineNum">     217 </span><span class="lineNoCov">          0 :             m_sectionStack.pop_back();</span></a>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         void testCaseEnded(TestCaseStats const&amp; testCaseStats) override {</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :             auto node = std::make_shared&lt;TestCaseNode&gt;(testCaseStats);</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :             assert(m_sectionStack.size() == 0);</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :             node-&gt;children.push_back(m_rootSection);</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :             m_testCases.push_back(node);</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :             m_rootSection.reset();</span>
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :             assert(m_deepestSection);</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :             m_deepestSection-&gt;stdOut = testCaseStats.stdOut;</span>
+<a name="228"><span class="lineNum">     228 </span><span class="lineNoCov">          0 :             m_deepestSection-&gt;stdErr = testCaseStats.stdErr;</span></a>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         void testGroupEnded(TestGroupStats const&amp; testGroupStats) override {</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :             auto node = std::make_shared&lt;TestGroupNode&gt;(testGroupStats);</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :             node-&gt;children.swap(m_testCases);</span>
+<a name="233"><span class="lineNum">     233 </span><span class="lineNoCov">          0 :             m_testGroups.push_back(node);</span></a>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         void testRunEnded(TestRunStats const&amp; testRunStats) override {</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :             auto node = std::make_shared&lt;TestRunNode&gt;(testRunStats);</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :             node-&gt;children.swap(m_testGroups);</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :             m_testRuns.push_back(node);</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :             testRunEndedCumulative();</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         }</span>
+<a name="241"><span class="lineNum">     241 </span>            :         virtual void testRunEndedCumulative() = 0;</a>
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :         void skipTest(TestCaseInfo const&amp;) override {}</span>
+<span class="lineNum">     244 </span>            : 
+<span class="lineNum">     245 </span>            :         IConfigPtr m_config;
+<span class="lineNum">     246 </span>            :         std::ostream&amp; stream;
+<span class="lineNum">     247 </span>            :         std::vector&lt;AssertionStats&gt; m_assertions;
+<span class="lineNum">     248 </span>            :         std::vector&lt;std::vector&lt;std::shared_ptr&lt;SectionNode&gt;&gt;&gt; m_sections;
+<span class="lineNum">     249 </span>            :         std::vector&lt;std::shared_ptr&lt;TestCaseNode&gt;&gt; m_testCases;
+<span class="lineNum">     250 </span>            :         std::vector&lt;std::shared_ptr&lt;TestGroupNode&gt;&gt; m_testGroups;
+<span class="lineNum">     251 </span>            : 
+<span class="lineNum">     252 </span>            :         std::vector&lt;std::shared_ptr&lt;TestRunNode&gt;&gt; m_testRuns;
+<span class="lineNum">     253 </span>            : 
+<span class="lineNum">     254 </span>            :         std::shared_ptr&lt;SectionNode&gt; m_rootSection;
+<span class="lineNum">     255 </span>            :         std::shared_ptr&lt;SectionNode&gt; m_deepestSection;
+<span class="lineNum">     256 </span>            :         std::vector&lt;std::shared_ptr&lt;SectionNode&gt;&gt; m_sectionStack;
+<span class="lineNum">     257 </span>            :         ReporterPreferences m_reporterPrefs;
+<span class="lineNum">     258 </span>            :     };
+<a name="259"><span class="lineNum">     259 </span>            : </a>
+<span class="lineNum">     260 </span>            :     template&lt;char C&gt;
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :     char const* getLineOfChars() {</span>
+<span class="lineNum">     262 </span>            :         static char line[CATCH_CONFIG_CONSOLE_WIDTH] = {0};
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :         if( !*line ) {</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :             std::memset( line, C, CATCH_CONFIG_CONSOLE_WIDTH-1 );</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :             line[CATCH_CONFIG_CONSOLE_WIDTH-1] = 0;</span>
+<span class="lineNum">     266 </span>            :         }
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :         return line;</span>
+<span class="lineNum">     268 </span>            :     }
+<a name="269"><span class="lineNum">     269 </span>            : </a>
+<span class="lineNum">     270 </span>            : 
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :     struct TestEventListenerBase : StreamingReporterBase&lt;TestEventListenerBase&gt; {</span>
+<span class="lineNum">     272 </span>            :         TestEventListenerBase( ReporterConfig const&amp; _config );
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span>            :         static std::set&lt;Verbosity&gt; getSupportedVerbosities();
+<span class="lineNum">     275 </span>            : 
+<span class="lineNum">     276 </span>            :         void assertionStarting(AssertionInfo const&amp;) override;
+<span class="lineNum">     277 </span>            :         bool assertionEnded(AssertionStats const&amp;) override;
+<span class="lineNum">     278 </span>            :     };
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span>            : } // end namespace Catch
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span>            : #endif // TWOBLUECUBES_CATCH_REPORTER_BASES_HPP_INCLUDED
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

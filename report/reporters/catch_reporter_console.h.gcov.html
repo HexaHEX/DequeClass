@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - reporters/catch_reporter_console.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">reporters</a> - catch_reporter_console.h<span style="font-size: 80%;"> (source / <a href="catch_reporter_console.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 5/12/2012.
+<span class="lineNum">       3 </span>            :  *  Copyright 2012 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : #ifndef TWOBLUECUBES_CATCH_REPORTER_CONSOLE_H_INCLUDED
+<span class="lineNum">       9 </span>            : #define TWOBLUECUBES_CATCH_REPORTER_CONSOLE_H_INCLUDED
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &quot;catch_reporter_bases.hpp&quot;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            : #if defined(_MSC_VER)
+<span class="lineNum">      14 </span>            : #pragma warning(push)
+<span class="lineNum">      15 </span>            : #pragma warning(disable:4061) // Not all labels are EXPLICITLY handled in switch
+<span class="lineNum">      16 </span>            :                               // Note that 4062 (not all labels are handled
+<span class="lineNum">      17 </span>            :                               // and default is missing) is enabled
+<span class="lineNum">      18 </span>            : #endif
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            : namespace Catch {
+<span class="lineNum">      22 </span>            :     // Fwd decls
+<span class="lineNum">      23 </span>            :     struct SummaryColumn;
+<a name="24"><span class="lineNum">      24 </span>            :     class TablePrinter;</a>
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span><span class="lineCov">          6 :     struct ConsoleReporter : StreamingReporterBase&lt;ConsoleReporter&gt; {</span>
+<span class="lineNum">      27 </span>            :         std::unique_ptr&lt;TablePrinter&gt; m_tablePrinter;
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            :         ConsoleReporter(ReporterConfig const&amp; config);
+<span class="lineNum">      30 </span>            :         ~ConsoleReporter() override;
+<span class="lineNum">      31 </span>            :         static std::string getDescription();
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            :         void noMatchingTestCases(std::string const&amp; spec) override;
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            :         void reportInvalidArguments(std::string const&amp;arg) override;
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            :         void assertionStarting(AssertionInfo const&amp;) override;
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            :         bool assertionEnded(AssertionStats const&amp; _assertionStats) override;
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            :         void sectionStarting(SectionInfo const&amp; _sectionInfo) override;
+<span class="lineNum">      42 </span>            :         void sectionEnded(SectionStats const&amp; _sectionStats) override;
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            : #if defined(CATCH_CONFIG_ENABLE_BENCHMARKING)
+<span class="lineNum">      45 </span>            :         void benchmarkPreparing(std::string const&amp; name) override;
+<span class="lineNum">      46 </span>            :         void benchmarkStarting(BenchmarkInfo const&amp; info) override;
+<span class="lineNum">      47 </span>            :         void benchmarkEnded(BenchmarkStats&lt;&gt; const&amp; stats) override;
+<span class="lineNum">      48 </span>            :         void benchmarkFailed(std::string const&amp; error) override;
+<span class="lineNum">      49 </span>            : #endif // CATCH_CONFIG_ENABLE_BENCHMARKING
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            :         void testCaseEnded(TestCaseStats const&amp; _testCaseStats) override;
+<span class="lineNum">      52 </span>            :         void testGroupEnded(TestGroupStats const&amp; _testGroupStats) override;
+<span class="lineNum">      53 </span>            :         void testRunEnded(TestRunStats const&amp; _testRunStats) override;
+<span class="lineNum">      54 </span>            :         void testRunStarting(TestRunInfo const&amp; _testRunInfo) override;
+<span class="lineNum">      55 </span>            :     private:
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            :         void lazyPrint();
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            :         void lazyPrintWithoutClosingBenchmarkTable();
+<span class="lineNum">      60 </span>            :         void lazyPrintRunInfo();
+<span class="lineNum">      61 </span>            :         void lazyPrintGroupInfo();
+<span class="lineNum">      62 </span>            :         void printTestCaseAndSectionHeader();
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :         void printClosedHeader(std::string const&amp; _name);
+<span class="lineNum">      65 </span>            :         void printOpenHeader(std::string const&amp; _name);
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            :         // if string has a : in first line will set indent to follow it on
+<span class="lineNum">      68 </span>            :         // subsequent lines
+<span class="lineNum">      69 </span>            :         void printHeaderString(std::string const&amp; _string, std::size_t indent = 0);
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span>            :         void printTotals(Totals const&amp; totals);
+<span class="lineNum">      73 </span>            :         void printSummaryRow(std::string const&amp; label, std::vector&lt;SummaryColumn&gt; const&amp; cols, std::size_t row);
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            :         void printTotalsDivider(Totals const&amp; totals);
+<span class="lineNum">      76 </span>            :         void printSummaryDivider();
+<span class="lineNum">      77 </span>            :         void printTestFilters();
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span>            :     private:
+<span class="lineNum">      80 </span>            :         bool m_headerPrinted = false;
+<span class="lineNum">      81 </span>            :     };
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span>            : } // end namespace Catch
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            : #if defined(_MSC_VER)
+<span class="lineNum">      86 </span>            : #pragma warning(pop)
+<span class="lineNum">      87 </span>            : #endif
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            : #endif // TWOBLUECUBES_CATCH_REPORTER_CONSOLE_H_INCLUDED
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

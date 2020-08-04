@@ -1,0 +1,349 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - reporters/catch_reporter_xml.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">reporters</a> - catch_reporter_xml.cpp<span style="font-size: 80%;"> (source / <a href="catch_reporter_xml.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">148</td>
+            <td class="headerCovTableEntryLo">1.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntryLo">11.8 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 28/10/2010.
+<span class="lineNum">       3 </span>            :  *  Copyright 2010 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &quot;catch_reporter_xml.h&quot;
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &quot;../internal/catch_capture.hpp&quot;
+<span class="lineNum">      12 </span>            : #include &quot;../internal/catch_reporter_registrars.hpp&quot;
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : #if defined(_MSC_VER)
+<span class="lineNum">      15 </span>            : #pragma warning(push)
+<span class="lineNum">      16 </span>            : #pragma warning(disable:4061) // Not all labels are EXPLICITLY handled in switch
+<span class="lineNum">      17 </span>            :                               // Note that 4062 (not all labels are handled
+<span class="lineNum">      18 </span>            :                               // and default is missing) is enabled
+<span class="lineNum">      19 </span>            : #endif
+<a name="20"><span class="lineNum">      20 </span>            : </a>
+<span class="lineNum">      21 </span>            : namespace Catch {
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 :     XmlReporter::XmlReporter( ReporterConfig const&amp; _config )</span>
+<span class="lineNum">      23 </span>            :     :   StreamingReporterBase( _config ),
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 :         m_xml(_config.stream())</span>
+<span class="lineNum">      25 </span>            :     {
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :         m_reporterPrefs.shouldRedirectStdOut = true;</span>
+<span class="lineNum">      27 </span><span class="lineNoCov">          0 :         m_reporterPrefs.shouldReportAllAssertions = true;</span>
+<span class="lineNum">      28 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      29 </span>            : 
+<a name="30"><span class="lineNum">      30 </span>            :     XmlReporter::~XmlReporter() = default;</a>
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :     std::string XmlReporter::getDescription() {</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :         return &quot;Reports test results as an XML document&quot;;</span>
+<a name="34"><span class="lineNum">      34 </span>            :     }</a>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :     std::string XmlReporter::getStylesheetRef() const {</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :         return std::string();</span>
+<a name="38"><span class="lineNum">      38 </span>            :     }</a>
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :     void XmlReporter::writeSourceInfo( SourceLineInfo const&amp; sourceInfo ) {</span>
+<span class="lineNum">      41 </span>            :         m_xml
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;filename&quot;, sourceInfo.file )</span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;line&quot;, sourceInfo.line );</span>
+<a name="44"><span class="lineNum">      44 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :     void XmlReporter::noMatchingTestCases( std::string const&amp; s ) {</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :         StreamingReporterBase::noMatchingTestCases( s );</span>
+<a name="48"><span class="lineNum">      48 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :     void XmlReporter::testRunStarting( TestRunInfo const&amp; testInfo ) {</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :         StreamingReporterBase::testRunStarting( testInfo );</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         std::string stylesheetRef = getStylesheetRef();</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         if( !stylesheetRef.empty() )</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :             m_xml.writeStylesheetRef( stylesheetRef );</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :         m_xml.startElement( &quot;Catch&quot; );</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :         if( !m_config-&gt;name().empty() )</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :             m_xml.writeAttribute( &quot;name&quot;, m_config-&gt;name() );</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         if (m_config-&gt;testSpec().hasFilters())</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :             m_xml.writeAttribute( &quot;filters&quot;, serializeFilters( m_config-&gt;getTestsOrTags() ) );</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :         if( m_config-&gt;rngSeed() != 0 )</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :             m_xml.scopedElement( &quot;Randomness&quot; )</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :                 .writeAttribute( &quot;seed&quot;, m_config-&gt;rngSeed() );</span>
+<a name="63"><span class="lineNum">      63 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :     void XmlReporter::testGroupStarting( GroupInfo const&amp; groupInfo ) {</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :         StreamingReporterBase::testGroupStarting( groupInfo );</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         m_xml.startElement( &quot;Group&quot; )</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;name&quot;, groupInfo.name );</span>
+<a name="69"><span class="lineNum">      69 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     void XmlReporter::testCaseStarting( TestCaseInfo const&amp; testInfo ) {</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :         StreamingReporterBase::testCaseStarting(testInfo);</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         m_xml.startElement( &quot;TestCase&quot; )</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;name&quot;, trim( testInfo.name ) )</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;description&quot;, testInfo.description )</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;tags&quot;, testInfo.tagsAsString() );</span>
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :         writeSourceInfo( testInfo.lineInfo );</span>
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :         if ( m_config-&gt;showDurations() == ShowDurations::Always )</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :             m_testCaseTimer.start();</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :         m_xml.ensureTagClosed();</span>
+<a name="83"><span class="lineNum">      83 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :     void XmlReporter::sectionStarting( SectionInfo const&amp; sectionInfo ) {</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :         StreamingReporterBase::sectionStarting( sectionInfo );</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         if( m_sectionDepth++ &gt; 0 ) {</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :             m_xml.startElement( &quot;Section&quot; )</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :                 .writeAttribute( &quot;name&quot;, trim( sectionInfo.name ) );</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :             writeSourceInfo( sectionInfo.lineInfo );</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             m_xml.ensureTagClosed();</span>
+<span class="lineNum">      92 </span>            :         }
+<a name="93"><span class="lineNum">      93 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      94 </span>            : 
+<a name="95"><span class="lineNum">      95 </span><span class="lineNoCov">          0 :     void XmlReporter::assertionStarting( AssertionInfo const&amp; ) { }</span></a>
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :     bool XmlReporter::assertionEnded( AssertionStats const&amp; assertionStats ) {</span>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         AssertionResult const&amp; result = assertionStats.assertionResult;</span>
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         bool includeResults = m_config-&gt;includeSuccessfulResults() || !result.isOk();</span>
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         if( includeResults || result.getResultType() == ResultWas::Warning ) {</span>
+<span class="lineNum">     104 </span>            :             // Print any info messages in &lt;Info&gt; tags.
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :             for( auto const&amp; msg : assertionStats.infoMessages ) {</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :                 if( msg.type == ResultWas::Info &amp;&amp; includeResults ) {</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :                     m_xml.scopedElement( &quot;Info&quot; )</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :                             .writeText( msg.message );</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :                 } else if ( msg.type == ResultWas::Warning ) {</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :                     m_xml.scopedElement( &quot;Warning&quot; )</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :                             .writeText( msg.message );</span>
+<span class="lineNum">     112 </span>            :                 }
+<span class="lineNum">     113 </span>            :             }
+<span class="lineNum">     114 </span>            :         }
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span>            :         // Drop out if result was successful but we're not printing them.
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         if( !includeResults &amp;&amp; result.getResultType() != ResultWas::Warning )</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :             return true;</span>
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            :         // Print the expression if there is one.
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :         if( result.hasExpression() ) {</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :             m_xml.startElement( &quot;Expression&quot; )</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :                 .writeAttribute( &quot;success&quot;, result.succeeded() )</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :                 .writeAttribute( &quot;type&quot;, result.getTestMacroName() );</span>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :             writeSourceInfo( result.getSourceInfo() );</span>
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :             m_xml.scopedElement( &quot;Original&quot; )</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :                 .writeText( result.getExpression() );</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :             m_xml.scopedElement( &quot;Expanded&quot; )</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :                 .writeText( result.getExpandedExpression() );</span>
+<span class="lineNum">     133 </span>            :         }
+<span class="lineNum">     134 </span>            : 
+<span class="lineNum">     135 </span>            :         // And... Print a result applicable to each result type.
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         switch( result.getResultType() ) {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :             case ResultWas::ThrewException:</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :                 m_xml.startElement( &quot;Exception&quot; );</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :                 writeSourceInfo( result.getSourceInfo() );</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :                 m_xml.writeText( result.getMessage() );</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :                 m_xml.endElement();</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             case ResultWas::FatalErrorCondition:</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :                 m_xml.startElement( &quot;FatalErrorCondition&quot; );</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :                 writeSourceInfo( result.getSourceInfo() );</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :                 m_xml.writeText( result.getMessage() );</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :                 m_xml.endElement();</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :             case ResultWas::Info:</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :                 m_xml.scopedElement( &quot;Info&quot; )</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :                     .writeText( result.getMessage() );</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :             case ResultWas::Warning:</span>
+<span class="lineNum">     154 </span>            :                 // Warning will already have been written
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :             case ResultWas::ExplicitFailure:</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :                 m_xml.startElement( &quot;Failure&quot; );</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :                 writeSourceInfo( result.getSourceInfo() );</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :                 m_xml.writeText( result.getMessage() );</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :                 m_xml.endElement();</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :             default:</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     164 </span>            :         }
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :         if( result.hasExpression() )</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :             m_xml.endElement();</span>
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         return true;</span>
+<a name="170"><span class="lineNum">     170 </span>            :     }</a>
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :     void XmlReporter::sectionEnded( SectionStats const&amp; sectionStats ) {</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :         StreamingReporterBase::sectionEnded( sectionStats );</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :         if( --m_sectionDepth &gt; 0 ) {</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :             XmlWriter::ScopedElement e = m_xml.scopedElement( &quot;OverallResults&quot; );</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :             e.writeAttribute( &quot;successes&quot;, sectionStats.assertions.passed );</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :             e.writeAttribute( &quot;failures&quot;, sectionStats.assertions.failed );</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :             e.writeAttribute( &quot;expectedFailures&quot;, sectionStats.assertions.failedButOk );</span>
+<span class="lineNum">     179 </span>            : 
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :             if ( m_config-&gt;showDurations() == ShowDurations::Always )</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :                 e.writeAttribute( &quot;durationInSeconds&quot;, sectionStats.durationInSeconds );</span>
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :             m_xml.endElement();</span>
+<span class="lineNum">     184 </span>            :         }
+<a name="185"><span class="lineNum">     185 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     void XmlReporter::testCaseEnded( TestCaseStats const&amp; testCaseStats ) {</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         StreamingReporterBase::testCaseEnded( testCaseStats );</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :         XmlWriter::ScopedElement e = m_xml.scopedElement( &quot;OverallResult&quot; );</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :         e.writeAttribute( &quot;success&quot;, testCaseStats.totals.assertions.allOk() );</span>
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :         if ( m_config-&gt;showDurations() == ShowDurations::Always )</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :             e.writeAttribute( &quot;durationInSeconds&quot;, m_testCaseTimer.getElapsedSeconds() );</span>
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :         if( !testCaseStats.stdOut.empty() )</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :             m_xml.scopedElement( &quot;StdOut&quot; ).writeText( trim( testCaseStats.stdOut ), XmlFormatting::Newline );</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :         if( !testCaseStats.stdErr.empty() )</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :             m_xml.scopedElement( &quot;StdErr&quot; ).writeText( trim( testCaseStats.stdErr ), XmlFormatting::Newline );</span>
+<span class="lineNum">     199 </span>            : 
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :         m_xml.endElement();</span>
+<a name="201"><span class="lineNum">     201 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     void XmlReporter::testGroupEnded( TestGroupStats const&amp; testGroupStats ) {</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         StreamingReporterBase::testGroupEnded( testGroupStats );</span>
+<span class="lineNum">     205 </span>            :         // TODO: Check testGroupStats.aborting and act accordingly.
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :         m_xml.scopedElement( &quot;OverallResults&quot; )</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;successes&quot;, testGroupStats.totals.assertions.passed )</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;failures&quot;, testGroupStats.totals.assertions.failed )</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;expectedFailures&quot;, testGroupStats.totals.assertions.failedButOk );</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :         m_xml.endElement();</span>
+<a name="211"><span class="lineNum">     211 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     void XmlReporter::testRunEnded( TestRunStats const&amp; testRunStats ) {</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :         StreamingReporterBase::testRunEnded( testRunStats );</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :         m_xml.scopedElement( &quot;OverallResults&quot; )</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;successes&quot;, testRunStats.totals.assertions.passed )</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;failures&quot;, testRunStats.totals.assertions.failed )</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :             .writeAttribute( &quot;expectedFailures&quot;, testRunStats.totals.assertions.failedButOk );</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         m_xml.endElement();</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span>            : #if defined(CATCH_CONFIG_ENABLE_BENCHMARKING)
+<span class="lineNum">     223 </span>            :     void XmlReporter::benchmarkPreparing(std::string const&amp; name) {
+<span class="lineNum">     224 </span>            :         m_xml.startElement(&quot;BenchmarkResults&quot;)
+<span class="lineNum">     225 </span>            :             .writeAttribute(&quot;name&quot;, name);
+<span class="lineNum">     226 </span>            :     }
+<span class="lineNum">     227 </span>            : 
+<span class="lineNum">     228 </span>            :     void XmlReporter::benchmarkStarting(BenchmarkInfo const &amp;info) {
+<span class="lineNum">     229 </span>            :         m_xml.writeAttribute(&quot;samples&quot;, info.samples)
+<span class="lineNum">     230 </span>            :             .writeAttribute(&quot;resamples&quot;, info.resamples)
+<span class="lineNum">     231 </span>            :             .writeAttribute(&quot;iterations&quot;, info.iterations)
+<span class="lineNum">     232 </span>            :             .writeAttribute(&quot;clockResolution&quot;, info.clockResolution)
+<span class="lineNum">     233 </span>            :             .writeAttribute(&quot;estimatedDuration&quot;, info.estimatedDuration)
+<span class="lineNum">     234 </span>            :             .writeComment(&quot;All values in nano seconds&quot;);
+<span class="lineNum">     235 </span>            :     }
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span>            :     void XmlReporter::benchmarkEnded(BenchmarkStats&lt;&gt; const&amp; benchmarkStats) {
+<span class="lineNum">     238 </span>            :         m_xml.startElement(&quot;mean&quot;)
+<span class="lineNum">     239 </span>            :             .writeAttribute(&quot;value&quot;, benchmarkStats.mean.point.count())
+<span class="lineNum">     240 </span>            :             .writeAttribute(&quot;lowerBound&quot;, benchmarkStats.mean.lower_bound.count())
+<span class="lineNum">     241 </span>            :             .writeAttribute(&quot;upperBound&quot;, benchmarkStats.mean.upper_bound.count())
+<span class="lineNum">     242 </span>            :             .writeAttribute(&quot;ci&quot;, benchmarkStats.mean.confidence_interval);
+<span class="lineNum">     243 </span>            :         m_xml.endElement();
+<span class="lineNum">     244 </span>            :         m_xml.startElement(&quot;standardDeviation&quot;)
+<span class="lineNum">     245 </span>            :             .writeAttribute(&quot;value&quot;, benchmarkStats.standardDeviation.point.count())
+<span class="lineNum">     246 </span>            :             .writeAttribute(&quot;lowerBound&quot;, benchmarkStats.standardDeviation.lower_bound.count())
+<span class="lineNum">     247 </span>            :             .writeAttribute(&quot;upperBound&quot;, benchmarkStats.standardDeviation.upper_bound.count())
+<span class="lineNum">     248 </span>            :             .writeAttribute(&quot;ci&quot;, benchmarkStats.standardDeviation.confidence_interval);
+<span class="lineNum">     249 </span>            :         m_xml.endElement();
+<span class="lineNum">     250 </span>            :         m_xml.startElement(&quot;outliers&quot;)
+<span class="lineNum">     251 </span>            :             .writeAttribute(&quot;variance&quot;, benchmarkStats.outlierVariance)
+<span class="lineNum">     252 </span>            :             .writeAttribute(&quot;lowMild&quot;, benchmarkStats.outliers.low_mild)
+<span class="lineNum">     253 </span>            :             .writeAttribute(&quot;lowSevere&quot;, benchmarkStats.outliers.low_severe)
+<span class="lineNum">     254 </span>            :             .writeAttribute(&quot;highMild&quot;, benchmarkStats.outliers.high_mild)
+<span class="lineNum">     255 </span>            :             .writeAttribute(&quot;highSevere&quot;, benchmarkStats.outliers.high_severe);
+<span class="lineNum">     256 </span>            :         m_xml.endElement();
+<span class="lineNum">     257 </span>            :         m_xml.endElement();
+<span class="lineNum">     258 </span>            :     }
+<span class="lineNum">     259 </span>            : 
+<span class="lineNum">     260 </span>            :     void XmlReporter::benchmarkFailed(std::string const &amp;error) {
+<span class="lineNum">     261 </span>            :         m_xml.scopedElement(&quot;failed&quot;).
+<span class="lineNum">     262 </span>            :             writeAttribute(&quot;message&quot;, error);
+<span class="lineNum">     263 </span>            :         m_xml.endElement();
+<span class="lineNum">     264 </span>            :     }
+<span class="lineNum">     265 </span>            : #endif // CATCH_CONFIG_ENABLE_BENCHMARKING
+<span class="lineNum">     266 </span>            : 
+<a name="267"><span class="lineNum">     267 </span><span class="lineCov">          3 :     CATCH_REGISTER_REPORTER( &quot;xml&quot;, XmlReporter )</span></a>
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span><span class="lineCov">          9 : } // end namespace Catch</span>
+<span class="lineNum">     270 </span>            : 
+<span class="lineNum">     271 </span>            : #if defined(_MSC_VER)
+<span class="lineNum">     272 </span>            : #pragma warning(pop)
+<span class="lineNum">     273 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

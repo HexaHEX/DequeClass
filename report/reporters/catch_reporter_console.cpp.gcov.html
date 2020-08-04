@@ -1,0 +1,775 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - reporters/catch_reporter_console.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">reporters</a> - catch_reporter_console.cpp<span style="font-size: 80%;"> (source / <a href="catch_reporter_console.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">85</td>
+            <td class="headerCovTableEntry">334</td>
+            <td class="headerCovTableEntryLo">25.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntry">49</td>
+            <td class="headerCovTableEntryLo">44.9 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 5/12/2012.
+<span class="lineNum">       3 </span>            :  *  Copyright 2012 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &quot;catch_reporter_console.h&quot;
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &quot;../internal/catch_reporter_registrars.hpp&quot;
+<span class="lineNum">      12 </span>            : #include &quot;../internal/catch_console_colour.h&quot;
+<span class="lineNum">      13 </span>            : #include &quot;../internal/catch_version.h&quot;
+<span class="lineNum">      14 </span>            : #include &quot;../internal/catch_text.h&quot;
+<span class="lineNum">      15 </span>            : #include &quot;../internal/catch_stringref.h&quot;
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : #include &lt;cfloat&gt;
+<span class="lineNum">      18 </span>            : #include &lt;cstdio&gt;
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : #if defined(_MSC_VER)
+<span class="lineNum">      21 </span>            : #pragma warning(push)
+<span class="lineNum">      22 </span>            : #pragma warning(disable:4061) // Not all labels are EXPLICITLY handled in switch
+<span class="lineNum">      23 </span>            :  // Note that 4062 (not all labels are handled and default is missing) is enabled
+<span class="lineNum">      24 </span>            : #endif
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            : #if defined(__clang__)
+<span class="lineNum">      27 </span>            : #  pragma clang diagnostic push
+<span class="lineNum">      28 </span>            : // For simplicity, benchmarking-only helpers are always enabled
+<span class="lineNum">      29 </span>            : #  pragma clang diagnostic ignored &quot;-Wunused-function&quot;
+<span class="lineNum">      30 </span>            : #endif
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : namespace Catch {
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : namespace {
+<a name="37"><span class="lineNum">      37 </span>            : </a>
+<span class="lineNum">      38 </span>            : // Formatter impl for ConsoleReporter
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 : class ConsoleAssertionPrinter {</span>
+<span class="lineNum">      40 </span>            : public:
+<a name="41"><span class="lineNum">      41 </span>            :     ConsoleAssertionPrinter&amp; operator= (ConsoleAssertionPrinter const&amp;) = delete;</a>
+<span class="lineNum">      42 </span>            :     ConsoleAssertionPrinter(ConsoleAssertionPrinter const&amp;) = delete;
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :     ConsoleAssertionPrinter(std::ostream&amp; _stream, AssertionStats const&amp; _stats, bool _printInfoMessages)</span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :         : stream(_stream),</span>
+<span class="lineNum">      45 </span>            :         stats(_stats),
+<span class="lineNum">      46 </span>            :         result(_stats.assertionResult),
+<span class="lineNum">      47 </span>            :         colour(Colour::None),
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :         message(result.getMessage()),</span>
+<span class="lineNum">      49 </span>            :         messages(_stats.infoMessages),
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :         printInfoMessages(_printInfoMessages) {</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :         switch (result.getResultType()) {</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         case ResultWas::Ok:</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :             colour = Colour::Success;</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :             passOrFail = &quot;PASSED&quot;;</span>
+<span class="lineNum">      55 </span>            :             //if( result.hasMessage() )
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :             if (_stats.infoMessages.size() == 1)</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :                 messageLabel = &quot;with message&quot;;</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :             if (_stats.infoMessages.size() &gt; 1)</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :                 messageLabel = &quot;with messages&quot;;</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :         case ResultWas::ExpressionFailed:</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :             if (result.isOk()) {</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :                 colour = Colour::Success;</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :                 passOrFail = &quot;FAILED - but was ok&quot;;</span>
+<span class="lineNum">      65 </span>            :             } else {
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :                 colour = Colour::Error;</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :                 passOrFail = &quot;FAILED&quot;;</span>
+<span class="lineNum">      68 </span>            :             }
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :             if (_stats.infoMessages.size() == 1)</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :                 messageLabel = &quot;with message&quot;;</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :             if (_stats.infoMessages.size() &gt; 1)</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :                 messageLabel = &quot;with messages&quot;;</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :         case ResultWas::ThrewException:</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :             colour = Colour::Error;</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :             passOrFail = &quot;FAILED&quot;;</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :             messageLabel = &quot;due to unexpected exception with &quot;;</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :             if (_stats.infoMessages.size() == 1)</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :                 messageLabel += &quot;message&quot;;</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :             if (_stats.infoMessages.size() &gt; 1)</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :                 messageLabel += &quot;messages&quot;;</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :         case ResultWas::FatalErrorCondition:</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :             colour = Colour::Error;</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :             passOrFail = &quot;FAILED&quot;;</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :             messageLabel = &quot;due to a fatal error condition&quot;;</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :         case ResultWas::DidntThrowException:</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :             colour = Colour::Error;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :             passOrFail = &quot;FAILED&quot;;</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             messageLabel = &quot;because no exception was thrown where one was expected&quot;;</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :         case ResultWas::Info:</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :             messageLabel = &quot;info&quot;;</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :         case ResultWas::Warning:</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :             messageLabel = &quot;warning&quot;;</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         case ResultWas::ExplicitFailure:</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :             passOrFail = &quot;FAILED&quot;;</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :             colour = Colour::Error;</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :             if (_stats.infoMessages.size() == 1)</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :                 messageLabel = &quot;explicitly with message&quot;;</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :             if (_stats.infoMessages.size() &gt; 1)</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :                 messageLabel = &quot;explicitly with messages&quot;;</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     107 </span>            :             // These cases are here to prevent compiler warnings
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         case ResultWas::Unknown:</span>
+<span class="lineNum">     109 </span>            :         case ResultWas::FailureBit:
+<span class="lineNum">     110 </span>            :         case ResultWas::Exception:
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :             passOrFail = &quot;** internal error **&quot;;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :             colour = Colour::Error;</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     114 </span>            :         }
+<a name="115"><span class="lineNum">     115 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     void print() const {</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         printSourceInfo();</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         if (stats.totals.assertions.total() &gt; 0) {</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :             printResultType();</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :             printOriginalExpression();</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :             printReconstructedExpression();</span>
+<span class="lineNum">     123 </span>            :         } else {
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :             stream &lt;&lt; '\n';</span>
+<span class="lineNum">     125 </span>            :         }
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         printMessage();</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     }</span>
+<a name="128"><span class="lineNum">     128 </span>            : </a>
+<span class="lineNum">     129 </span>            : private:
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     void printResultType() const {</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         if (!passOrFail.empty()) {</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :             Colour colourGuard(colour);</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :             stream &lt;&lt; passOrFail &lt;&lt; &quot;:\n&quot;;</span>
+<a name="134"><span class="lineNum">     134 </span>            :         }</a>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     void printOriginalExpression() const {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         if (result.hasExpression()) {</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :             Colour colourGuard(Colour::OriginalExpression);</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :             stream &lt;&lt; &quot;  &quot;;</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :             stream &lt;&lt; result.getExpressionInMacro();</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :             stream &lt;&lt; '\n';</span>
+<a name="142"><span class="lineNum">     142 </span>            :         }</a>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     void printReconstructedExpression() const {</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :         if (result.hasExpandedExpression()) {</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :             stream &lt;&lt; &quot;with expansion:\n&quot;;</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :             Colour colourGuard(Colour::ReconstructedExpression);</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :             stream &lt;&lt; Column(result.getExpandedExpression()).indent(2) &lt;&lt; '\n';</span>
+<a name="149"><span class="lineNum">     149 </span>            :         }</a>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :     void printMessage() const {</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         if (!messageLabel.empty())</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :             stream &lt;&lt; messageLabel &lt;&lt; ':' &lt;&lt; '\n';</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :         for (auto const&amp; msg : messages) {</span>
+<span class="lineNum">     155 </span>            :             // If this assertion is a warning ignore any INFO messages
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :             if (printInfoMessages || msg.type != ResultWas::Info)</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :                 stream &lt;&lt; Column(msg.message).indent(2) &lt;&lt; '\n';</span>
+<a name="158"><span class="lineNum">     158 </span>            :         }</a>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :     void printSourceInfo() const {</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :         Colour colourGuard(Colour::FileName);</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :         stream &lt;&lt; result.getSourceInfo() &lt;&lt; &quot;: &quot;;</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span>            :     std::ostream&amp; stream;
+<span class="lineNum">     166 </span>            :     AssertionStats const&amp; stats;
+<span class="lineNum">     167 </span>            :     AssertionResult const&amp; result;
+<span class="lineNum">     168 </span>            :     Colour::Code colour;
+<span class="lineNum">     169 </span>            :     std::string passOrFail;
+<span class="lineNum">     170 </span>            :     std::string messageLabel;
+<span class="lineNum">     171 </span>            :     std::string message;
+<span class="lineNum">     172 </span>            :     std::vector&lt;MessageInfo&gt; messages;
+<span class="lineNum">     173 </span>            :     bool printInfoMessages;
+<a name="174"><span class="lineNum">     174 </span>            : };</a>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineCov">          9 : std::size_t makeRatio(std::size_t number, std::size_t total) {</span>
+<span class="lineNum">     177 </span><span class="lineCov">          9 :     std::size_t ratio = total &gt; 0 ? CATCH_CONFIG_CONSOLE_WIDTH * number / total : 0;</span>
+<span class="lineNum">     178 </span><span class="lineCov">          9 :     return (ratio == 0 &amp;&amp; number &gt; 0) ? 1 : ratio;</span>
+<a name="179"><span class="lineNum">     179 </span>            : }</a>
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span><span class="lineCov">          3 : std::size_t&amp; findMax(std::size_t&amp; i, std::size_t&amp; j, std::size_t&amp; k) {</span>
+<span class="lineNum">     182 </span><span class="lineCov">          3 :     if (i &gt; j &amp;&amp; i &gt; k)</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         return i;</span>
+<span class="lineNum">     184 </span><span class="lineCov">          3 :     else if (j &gt; k)</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         return j;</span>
+<span class="lineNum">     186 </span>            :     else
+<span class="lineNum">     187 </span><span class="lineCov">          3 :         return k;</span>
+<a name="188"><span class="lineNum">     188 </span>            : }</a>
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span><span class="lineCov">         36 : struct ColumnInfo {</span>
+<span class="lineNum">     191 </span>            :     enum Justification { Left, Right };
+<span class="lineNum">     192 </span>            :     std::string name;
+<span class="lineNum">     193 </span>            :     int width;
+<span class="lineNum">     194 </span>            :     Justification justification;
+<span class="lineNum">     195 </span>            : };
+<span class="lineNum">     196 </span>            : struct ColumnBreak {};
+<span class="lineNum">     197 </span>            : struct RowBreak {};
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span>            : class Duration {
+<span class="lineNum">     200 </span>            :     enum class Unit {
+<span class="lineNum">     201 </span>            :         Auto,
+<span class="lineNum">     202 </span>            :         Nanoseconds,
+<span class="lineNum">     203 </span>            :         Microseconds,
+<span class="lineNum">     204 </span>            :         Milliseconds,
+<span class="lineNum">     205 </span>            :         Seconds,
+<span class="lineNum">     206 </span>            :         Minutes
+<span class="lineNum">     207 </span>            :     };
+<span class="lineNum">     208 </span>            :     static const uint64_t s_nanosecondsInAMicrosecond = 1000;
+<span class="lineNum">     209 </span>            :     static const uint64_t s_nanosecondsInAMillisecond = 1000 * s_nanosecondsInAMicrosecond;
+<span class="lineNum">     210 </span>            :     static const uint64_t s_nanosecondsInASecond = 1000 * s_nanosecondsInAMillisecond;
+<span class="lineNum">     211 </span>            :     static const uint64_t s_nanosecondsInAMinute = 60 * s_nanosecondsInASecond;
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span>            :     double m_inNanoseconds;
+<span class="lineNum">     214 </span>            :     Unit m_units;
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span>            : public:
+<span class="lineNum">     217 </span>            :     explicit Duration(double inNanoseconds, Unit units = Unit::Auto)
+<span class="lineNum">     218 </span>            :         : m_inNanoseconds(inNanoseconds),
+<span class="lineNum">     219 </span>            :         m_units(units) {
+<span class="lineNum">     220 </span>            :         if (m_units == Unit::Auto) {
+<span class="lineNum">     221 </span>            :             if (m_inNanoseconds &lt; s_nanosecondsInAMicrosecond)
+<span class="lineNum">     222 </span>            :                 m_units = Unit::Nanoseconds;
+<span class="lineNum">     223 </span>            :             else if (m_inNanoseconds &lt; s_nanosecondsInAMillisecond)
+<span class="lineNum">     224 </span>            :                 m_units = Unit::Microseconds;
+<span class="lineNum">     225 </span>            :             else if (m_inNanoseconds &lt; s_nanosecondsInASecond)
+<span class="lineNum">     226 </span>            :                 m_units = Unit::Milliseconds;
+<span class="lineNum">     227 </span>            :             else if (m_inNanoseconds &lt; s_nanosecondsInAMinute)
+<span class="lineNum">     228 </span>            :                 m_units = Unit::Seconds;
+<span class="lineNum">     229 </span>            :             else
+<span class="lineNum">     230 </span>            :                 m_units = Unit::Minutes;
+<span class="lineNum">     231 </span>            :         }
+<span class="lineNum">     232 </span>            : 
+<span class="lineNum">     233 </span>            :     }
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span>            :     auto value() const -&gt; double {
+<span class="lineNum">     236 </span>            :         switch (m_units) {
+<span class="lineNum">     237 </span>            :         case Unit::Microseconds:
+<span class="lineNum">     238 </span>            :             return m_inNanoseconds / static_cast&lt;double&gt;(s_nanosecondsInAMicrosecond);
+<span class="lineNum">     239 </span>            :         case Unit::Milliseconds:
+<span class="lineNum">     240 </span>            :             return m_inNanoseconds / static_cast&lt;double&gt;(s_nanosecondsInAMillisecond);
+<span class="lineNum">     241 </span>            :         case Unit::Seconds:
+<span class="lineNum">     242 </span>            :             return m_inNanoseconds / static_cast&lt;double&gt;(s_nanosecondsInASecond);
+<span class="lineNum">     243 </span>            :         case Unit::Minutes:
+<span class="lineNum">     244 </span>            :             return m_inNanoseconds / static_cast&lt;double&gt;(s_nanosecondsInAMinute);
+<span class="lineNum">     245 </span>            :         default:
+<span class="lineNum">     246 </span>            :             return m_inNanoseconds;
+<span class="lineNum">     247 </span>            :         }
+<span class="lineNum">     248 </span>            :     }
+<span class="lineNum">     249 </span>            :     auto unitsAsString() const -&gt; std::string {
+<span class="lineNum">     250 </span>            :         switch (m_units) {
+<span class="lineNum">     251 </span>            :         case Unit::Nanoseconds:
+<span class="lineNum">     252 </span>            :             return &quot;ns&quot;;
+<span class="lineNum">     253 </span>            :         case Unit::Microseconds:
+<span class="lineNum">     254 </span>            :             return &quot;us&quot;;
+<span class="lineNum">     255 </span>            :         case Unit::Milliseconds:
+<span class="lineNum">     256 </span>            :             return &quot;ms&quot;;
+<span class="lineNum">     257 </span>            :         case Unit::Seconds:
+<span class="lineNum">     258 </span>            :             return &quot;s&quot;;
+<span class="lineNum">     259 </span>            :         case Unit::Minutes:
+<span class="lineNum">     260 </span>            :             return &quot;m&quot;;
+<span class="lineNum">     261 </span>            :         default:
+<span class="lineNum">     262 </span>            :             return &quot;** internal error **&quot;;
+<span class="lineNum">     263 </span>            :         }
+<span class="lineNum">     264 </span>            : 
+<span class="lineNum">     265 </span>            :     }
+<span class="lineNum">     266 </span>            :     friend auto operator &lt;&lt; (std::ostream&amp; os, Duration const&amp; duration) -&gt; std::ostream&amp; {
+<span class="lineNum">     267 </span>            :         return os &lt;&lt; duration.value() &lt;&lt; ' ' &lt;&lt; duration.unitsAsString();
+<span class="lineNum">     268 </span>            :     }
+<span class="lineNum">     269 </span>            : };
+<a name="270"><span class="lineNum">     270 </span>            : } // end anon namespace</a>
+<span class="lineNum">     271 </span>            : 
+<span class="lineNum">     272 </span><span class="lineCov">          3 : class TablePrinter {</span>
+<span class="lineNum">     273 </span>            :     std::ostream&amp; m_os;
+<span class="lineNum">     274 </span>            :     std::vector&lt;ColumnInfo&gt; m_columnInfos;
+<span class="lineNum">     275 </span>            :     std::ostringstream m_oss;
+<span class="lineNum">     276 </span>            :     int m_currentColumn = -1;
+<span class="lineNum">     277 </span>            :     bool m_isOpen = false;
+<a name="278"><span class="lineNum">     278 </span>            : </a>
+<span class="lineNum">     279 </span>            : public:
+<span class="lineNum">     280 </span><span class="lineCov">          3 :     TablePrinter( std::ostream&amp; os, std::vector&lt;ColumnInfo&gt; columnInfos )</span>
+<span class="lineNum">     281 </span><span class="lineCov">          3 :     :   m_os( os ),</span>
+<span class="lineNum">     282 </span><span class="lineCov">          3 :         m_columnInfos( std::move( columnInfos ) ) {}</span>
+<span class="lineNum">     283 </span>            : 
+<span class="lineNum">     284 </span>            :     auto columnInfos() const -&gt; std::vector&lt;ColumnInfo&gt; const&amp; {
+<span class="lineNum">     285 </span>            :         return m_columnInfos;
+<span class="lineNum">     286 </span>            :     }
+<span class="lineNum">     287 </span>            : 
+<span class="lineNum">     288 </span>            :     void open() {
+<span class="lineNum">     289 </span>            :         if (!m_isOpen) {
+<span class="lineNum">     290 </span>            :             m_isOpen = true;
+<span class="lineNum">     291 </span>            :             *this &lt;&lt; RowBreak();
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span>            :                         Columns headerCols;
+<span class="lineNum">     294 </span>            :                         Spacer spacer(2);
+<span class="lineNum">     295 </span>            :                         for (auto const&amp; info : m_columnInfos) {
+<span class="lineNum">     296 </span>            :                                 headerCols += Column(info.name).width(static_cast&lt;std::size_t&gt;(info.width - 2));
+<span class="lineNum">     297 </span>            :                                 headerCols += spacer;
+<span class="lineNum">     298 </span>            :                         }
+<span class="lineNum">     299 </span>            :                         m_os &lt;&lt; headerCols &lt;&lt; '\n';
+<span class="lineNum">     300 </span>            : 
+<span class="lineNum">     301 </span>            :             m_os &lt;&lt; Catch::getLineOfChars&lt;'-'&gt;() &lt;&lt; '\n';
+<a name="302"><span class="lineNum">     302 </span>            :         }</a>
+<span class="lineNum">     303 </span>            :     }
+<span class="lineNum">     304 </span><span class="lineCov">        405 :     void close() {</span>
+<span class="lineNum">     305 </span><span class="lineCov">        405 :         if (m_isOpen) {</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :             *this &lt;&lt; RowBreak();</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :             m_os &lt;&lt; std::endl;</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :             m_isOpen = false;</span>
+<span class="lineNum">     309 </span>            :         }
+<span class="lineNum">     310 </span><span class="lineCov">        405 :     }</span>
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     313 </span>            :     friend TablePrinter&amp; operator &lt;&lt; (TablePrinter&amp; tp, T const&amp; value) {
+<span class="lineNum">     314 </span>            :         tp.m_oss &lt;&lt; value;
+<span class="lineNum">     315 </span>            :         return tp;
+<span class="lineNum">     316 </span>            :     }
+<span class="lineNum">     317 </span>            : 
+<span class="lineNum">     318 </span>            :     friend TablePrinter&amp; operator &lt;&lt; (TablePrinter&amp; tp, ColumnBreak) {
+<span class="lineNum">     319 </span>            :         auto colStr = tp.m_oss.str();
+<span class="lineNum">     320 </span>            :         const auto strSize = colStr.size();
+<span class="lineNum">     321 </span>            :         tp.m_oss.str(&quot;&quot;);
+<span class="lineNum">     322 </span>            :         tp.open();
+<span class="lineNum">     323 </span>            :         if (tp.m_currentColumn == static_cast&lt;int&gt;(tp.m_columnInfos.size() - 1)) {
+<span class="lineNum">     324 </span>            :             tp.m_currentColumn = -1;
+<span class="lineNum">     325 </span>            :             tp.m_os &lt;&lt; '\n';
+<span class="lineNum">     326 </span>            :         }
+<span class="lineNum">     327 </span>            :         tp.m_currentColumn++;
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span>            :         auto colInfo = tp.m_columnInfos[tp.m_currentColumn];
+<span class="lineNum">     330 </span>            :         auto padding = (strSize + 1 &lt; static_cast&lt;std::size_t&gt;(colInfo.width))
+<span class="lineNum">     331 </span>            :             ? std::string(colInfo.width - (strSize + 1), ' ')
+<span class="lineNum">     332 </span>            :             : std::string();
+<span class="lineNum">     333 </span>            :         if (colInfo.justification == ColumnInfo::Left)
+<span class="lineNum">     334 </span>            :             tp.m_os &lt;&lt; colStr &lt;&lt; padding &lt;&lt; ' ';
+<span class="lineNum">     335 </span>            :         else
+<span class="lineNum">     336 </span>            :             tp.m_os &lt;&lt; padding &lt;&lt; colStr &lt;&lt; ' ';
+<span class="lineNum">     337 </span>            :         return tp;
+<a name="338"><span class="lineNum">     338 </span>            :     }</a>
+<span class="lineNum">     339 </span>            : 
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     friend TablePrinter&amp; operator &lt;&lt; (TablePrinter&amp; tp, RowBreak) {</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         if (tp.m_currentColumn &gt; 0) {</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :             tp.m_os &lt;&lt; '\n';</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :             tp.m_currentColumn = -1;</span>
+<span class="lineNum">     344 </span>            :         }
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :         return tp;</span>
+<span class="lineNum">     346 </span>            :     }
+<a name="347"><span class="lineNum">     347 </span>            : };</a>
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span><span class="lineCov">          3 : ConsoleReporter::ConsoleReporter(ReporterConfig const&amp; config)</span>
+<a name="350"><span class="lineNum">     350 </span>            :     : StreamingReporterBase(config),</a>
+<span class="lineNum">     351 </span>            :     m_tablePrinter(new TablePrinter(config.stream(),
+<span class="lineNum">     352 </span><span class="lineCov">          3 :         [&amp;config]() -&gt; std::vector&lt;ColumnInfo&gt; {</span>
+<span class="lineNum">     353 </span><span class="lineCov">          3 :         if (config.fullConfig()-&gt;benchmarkNoAnalysis())</span>
+<span class="lineNum">     354 </span>            :         {
+<span class="lineNum">     355 </span>            :             return{
+<span class="lineNum">     356 </span>            :                 { &quot;benchmark name&quot;, CATCH_CONFIG_CONSOLE_WIDTH - 43, ColumnInfo::Left },
+<span class="lineNum">     357 </span>            :                 { &quot;     samples&quot;, 14, ColumnInfo::Right },
+<span class="lineNum">     358 </span>            :                 { &quot;  iterations&quot;, 14, ColumnInfo::Right },
+<span class="lineNum">     359 </span>            :                 { &quot;        mean&quot;, 14, ColumnInfo::Right }
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :             };</span>
+<span class="lineNum">     361 </span>            :         }
+<span class="lineNum">     362 </span>            :         else
+<span class="lineNum">     363 </span>            :         {
+<span class="lineNum">     364 </span>            :             return{
+<span class="lineNum">     365 </span>            :                 { &quot;benchmark name&quot;, CATCH_CONFIG_CONSOLE_WIDTH - 43, ColumnInfo::Left },
+<span class="lineNum">     366 </span>            :                 { &quot;samples      mean       std dev&quot;, 14, ColumnInfo::Right },
+<span class="lineNum">     367 </span>            :                 { &quot;iterations   low mean   low std dev&quot;, 14, ColumnInfo::Right },
+<span class="lineNum">     368 </span>            :                 { &quot;estimated    high mean  high std dev&quot;, 14, ColumnInfo::Right }
+<span class="lineNum">     369 </span><span class="lineCov">          3 :             };</span>
+<span class="lineNum">     370 </span>            :         }
+<span class="lineNum">     371 </span><span class="lineCov">          3 :     }())) {}</span>
+<a name="372"><span class="lineNum">     372 </span>            : ConsoleReporter::~ConsoleReporter() = default;</a>
+<span class="lineNum">     373 </span>            : 
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 : std::string ConsoleReporter::getDescription() {</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :     return &quot;Reports test results as plain lines of text&quot;;</span>
+<a name="376"><span class="lineNum">     376 </span>            : }</a>
+<span class="lineNum">     377 </span>            : 
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 : void ConsoleReporter::noMatchingTestCases(std::string const&amp; spec) {</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :     stream &lt;&lt; &quot;No test cases matched '&quot; &lt;&lt; spec &lt;&lt; '\'' &lt;&lt; std::endl;</span>
+<a name="380"><span class="lineNum">     380 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     381 </span>            : 
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 : void ConsoleReporter::reportInvalidArguments(std::string const&amp;arg){</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :     stream &lt;&lt; &quot;Invalid Filter: &quot; &lt;&lt; arg &lt;&lt; std::endl;</span>
+<a name="384"><span class="lineNum">     384 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     385 </span>            : 
+<a name="386"><span class="lineNum">     386 </span><span class="lineCov">        519 : void ConsoleReporter::assertionStarting(AssertionInfo const&amp;) {}</span></a>
+<span class="lineNum">     387 </span>            : 
+<span class="lineNum">     388 </span><span class="lineCov">         27 : bool ConsoleReporter::assertionEnded(AssertionStats const&amp; _assertionStats) {</span>
+<span class="lineNum">     389 </span><span class="lineCov">         27 :     AssertionResult const&amp; result = _assertionStats.assertionResult;</span>
+<span class="lineNum">     390 </span>            : 
+<span class="lineNum">     391 </span><span class="lineCov">         27 :     bool includeResults = m_config-&gt;includeSuccessfulResults() || !result.isOk();</span>
+<span class="lineNum">     392 </span>            : 
+<span class="lineNum">     393 </span>            :     // Drop out if result was successful but we're not printing them.
+<span class="lineNum">     394 </span><span class="lineCov">         27 :     if (!includeResults &amp;&amp; result.getResultType() != ResultWas::Warning)</span>
+<span class="lineNum">     395 </span><span class="lineCov">         27 :         return false;</span>
+<span class="lineNum">     396 </span>            : 
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :     lazyPrint();</span>
+<span class="lineNum">     398 </span>            : 
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :     ConsoleAssertionPrinter printer(stream, _assertionStats, includeResults);</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :     printer.print();</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :     stream &lt;&lt; std::endl;</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :     return true;</span>
+<a name="403"><span class="lineNum">     403 </span>            : }</a>
+<span class="lineNum">     404 </span>            : 
+<span class="lineNum">     405 </span><span class="lineCov">        198 : void ConsoleReporter::sectionStarting(SectionInfo const&amp; _sectionInfo) {</span>
+<span class="lineNum">     406 </span><span class="lineCov">        198 :     m_tablePrinter-&gt;close();</span>
+<span class="lineNum">     407 </span><span class="lineCov">        198 :     m_headerPrinted = false;</span>
+<a name="408"><span class="lineNum">     408 </span><span class="lineCov">        198 :     StreamingReporterBase::sectionStarting(_sectionInfo);</span></a>
+<span class="lineNum">     409 </span><span class="lineCov">        198 : }</span>
+<span class="lineNum">     410 </span><span class="lineCov">        198 : void ConsoleReporter::sectionEnded(SectionStats const&amp; _sectionStats) {</span>
+<span class="lineNum">     411 </span><span class="lineCov">        198 :     m_tablePrinter-&gt;close();</span>
+<span class="lineNum">     412 </span><span class="lineCov">        198 :     if (_sectionStats.missingAssertions) {</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :         lazyPrint();</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :         Colour colour(Colour::ResultError);</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :         if (m_sectionStack.size() &gt; 1)</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :             stream &lt;&lt; &quot;\nNo assertions in section&quot;;</span>
+<span class="lineNum">     417 </span>            :         else
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :             stream &lt;&lt; &quot;\nNo assertions in test case&quot;;</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :         stream &lt;&lt; &quot; '&quot; &lt;&lt; _sectionStats.sectionInfo.name &lt;&lt; &quot;'\n&quot; &lt;&lt; std::endl;</span>
+<span class="lineNum">     420 </span>            :     }
+<span class="lineNum">     421 </span><span class="lineCov">        198 :     if (m_config-&gt;showDurations() == ShowDurations::Always) {</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :         stream &lt;&lt; getFormattedDuration(_sectionStats.durationInSeconds) &lt;&lt; &quot; s: &quot; &lt;&lt; _sectionStats.sectionInfo.name &lt;&lt; std::endl;</span>
+<span class="lineNum">     423 </span>            :     }
+<span class="lineNum">     424 </span><span class="lineCov">        198 :     if (m_headerPrinted) {</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :         m_headerPrinted = false;</span>
+<span class="lineNum">     426 </span>            :     }
+<span class="lineNum">     427 </span><span class="lineCov">        198 :     StreamingReporterBase::sectionEnded(_sectionStats);</span>
+<span class="lineNum">     428 </span><span class="lineCov">        198 : }</span>
+<span class="lineNum">     429 </span>            : 
+<span class="lineNum">     430 </span>            : #if defined(CATCH_CONFIG_ENABLE_BENCHMARKING)
+<span class="lineNum">     431 </span>            : void ConsoleReporter::benchmarkPreparing(std::string const&amp; name) {
+<span class="lineNum">     432 </span>            :         lazyPrintWithoutClosingBenchmarkTable();
+<span class="lineNum">     433 </span>            : 
+<span class="lineNum">     434 </span>            :         auto nameCol = Column(name).width(static_cast&lt;std::size_t&gt;(m_tablePrinter-&gt;columnInfos()[0].width - 2));
+<span class="lineNum">     435 </span>            : 
+<span class="lineNum">     436 </span>            :         bool firstLine = true;
+<span class="lineNum">     437 </span>            :         for (auto line : nameCol) {
+<span class="lineNum">     438 </span>            :                 if (!firstLine)
+<span class="lineNum">     439 </span>            :                         (*m_tablePrinter) &lt;&lt; ColumnBreak() &lt;&lt; ColumnBreak() &lt;&lt; ColumnBreak();
+<span class="lineNum">     440 </span>            :                 else
+<span class="lineNum">     441 </span>            :                         firstLine = false;
+<span class="lineNum">     442 </span>            : 
+<span class="lineNum">     443 </span>            :                 (*m_tablePrinter) &lt;&lt; line &lt;&lt; ColumnBreak();
+<span class="lineNum">     444 </span>            :         }
+<span class="lineNum">     445 </span>            : }
+<span class="lineNum">     446 </span>            : 
+<span class="lineNum">     447 </span>            : void ConsoleReporter::benchmarkStarting(BenchmarkInfo const&amp; info) {
+<span class="lineNum">     448 </span>            :     (*m_tablePrinter) &lt;&lt; info.samples &lt;&lt; ColumnBreak()
+<span class="lineNum">     449 </span>            :         &lt;&lt; info.iterations &lt;&lt; ColumnBreak();
+<span class="lineNum">     450 </span>            :     if (!m_config-&gt;benchmarkNoAnalysis())
+<span class="lineNum">     451 </span>            :         (*m_tablePrinter) &lt;&lt; Duration(info.estimatedDuration) &lt;&lt; ColumnBreak();
+<span class="lineNum">     452 </span>            : }
+<span class="lineNum">     453 </span>            : void ConsoleReporter::benchmarkEnded(BenchmarkStats&lt;&gt; const&amp; stats) {
+<span class="lineNum">     454 </span>            :     if (m_config-&gt;benchmarkNoAnalysis())
+<span class="lineNum">     455 </span>            :     {
+<span class="lineNum">     456 </span>            :         (*m_tablePrinter) &lt;&lt; Duration(stats.mean.point.count()) &lt;&lt; ColumnBreak();
+<span class="lineNum">     457 </span>            :     }
+<span class="lineNum">     458 </span>            :     else
+<span class="lineNum">     459 </span>            :     {
+<span class="lineNum">     460 </span>            :         (*m_tablePrinter) &lt;&lt; ColumnBreak()
+<span class="lineNum">     461 </span>            :             &lt;&lt; Duration(stats.mean.point.count()) &lt;&lt; ColumnBreak()
+<span class="lineNum">     462 </span>            :             &lt;&lt; Duration(stats.mean.lower_bound.count()) &lt;&lt; ColumnBreak()
+<span class="lineNum">     463 </span>            :             &lt;&lt; Duration(stats.mean.upper_bound.count()) &lt;&lt; ColumnBreak() &lt;&lt; ColumnBreak()
+<span class="lineNum">     464 </span>            :             &lt;&lt; Duration(stats.standardDeviation.point.count()) &lt;&lt; ColumnBreak()
+<span class="lineNum">     465 </span>            :             &lt;&lt; Duration(stats.standardDeviation.lower_bound.count()) &lt;&lt; ColumnBreak()
+<span class="lineNum">     466 </span>            :             &lt;&lt; Duration(stats.standardDeviation.upper_bound.count()) &lt;&lt; ColumnBreak() &lt;&lt; ColumnBreak() &lt;&lt; ColumnBreak() &lt;&lt; ColumnBreak() &lt;&lt; ColumnBreak();
+<span class="lineNum">     467 </span>            :     }
+<span class="lineNum">     468 </span>            : }
+<span class="lineNum">     469 </span>            : 
+<span class="lineNum">     470 </span>            : void ConsoleReporter::benchmarkFailed(std::string const&amp; error) {
+<span class="lineNum">     471 </span>            :         Colour colour(Colour::Red);
+<span class="lineNum">     472 </span>            :     (*m_tablePrinter)
+<span class="lineNum">     473 </span>            :         &lt;&lt; &quot;Benchmark failed (&quot; &lt;&lt; error &lt;&lt; ')'
+<span class="lineNum">     474 </span>            :         &lt;&lt; ColumnBreak() &lt;&lt; RowBreak();
+<span class="lineNum">     475 </span>            : }
+<a name="476"><span class="lineNum">     476 </span>            : #endif // CATCH_CONFIG_ENABLE_BENCHMARKING</a>
+<span class="lineNum">     477 </span>            : 
+<span class="lineNum">     478 </span><span class="lineCov">          9 : void ConsoleReporter::testCaseEnded(TestCaseStats const&amp; _testCaseStats) {</span>
+<span class="lineNum">     479 </span><span class="lineCov">          9 :     m_tablePrinter-&gt;close();</span>
+<span class="lineNum">     480 </span><span class="lineCov">          9 :     StreamingReporterBase::testCaseEnded(_testCaseStats);</span>
+<a name="481"><span class="lineNum">     481 </span><span class="lineCov">          9 :     m_headerPrinted = false;</span></a>
+<span class="lineNum">     482 </span><span class="lineCov">          9 : }</span>
+<span class="lineNum">     483 </span><span class="lineCov">          3 : void ConsoleReporter::testGroupEnded(TestGroupStats const&amp; _testGroupStats) {</span>
+<span class="lineNum">     484 </span><span class="lineCov">          3 :     if (currentGroupInfo.used) {</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :         printSummaryDivider();</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :         stream &lt;&lt; &quot;Summary for group '&quot; &lt;&lt; _testGroupStats.groupInfo.name &lt;&lt; &quot;':\n&quot;;</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :         printTotals(_testGroupStats.totals);</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :         stream &lt;&lt; '\n' &lt;&lt; std::endl;</span>
+<span class="lineNum">     489 </span>            :     }
+<a name="490"><span class="lineNum">     490 </span><span class="lineCov">          3 :     StreamingReporterBase::testGroupEnded(_testGroupStats);</span></a>
+<span class="lineNum">     491 </span><span class="lineCov">          3 : }</span>
+<span class="lineNum">     492 </span><span class="lineCov">          3 : void ConsoleReporter::testRunEnded(TestRunStats const&amp; _testRunStats) {</span>
+<span class="lineNum">     493 </span><span class="lineCov">          3 :     printTotalsDivider(_testRunStats.totals);</span>
+<span class="lineNum">     494 </span><span class="lineCov">          3 :     printTotals(_testRunStats.totals);</span>
+<span class="lineNum">     495 </span><span class="lineCov">          3 :     stream &lt;&lt; std::endl;</span>
+<a name="496"><span class="lineNum">     496 </span><span class="lineCov">          3 :     StreamingReporterBase::testRunEnded(_testRunStats);</span></a>
+<span class="lineNum">     497 </span><span class="lineCov">          3 : }</span>
+<span class="lineNum">     498 </span><span class="lineCov">          3 : void ConsoleReporter::testRunStarting(TestRunInfo const&amp; _testInfo) {</span>
+<span class="lineNum">     499 </span><span class="lineCov">          3 :     StreamingReporterBase::testRunStarting(_testInfo);</span>
+<span class="lineNum">     500 </span><span class="lineCov">          3 :     printTestFilters();</span>
+<a name="501"><span class="lineNum">     501 </span><span class="lineCov">          3 : }</span></a>
+<span class="lineNum">     502 </span>            : 
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 : void ConsoleReporter::lazyPrint() {</span>
+<span class="lineNum">     504 </span>            : 
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :     m_tablePrinter-&gt;close();</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :     lazyPrintWithoutClosingBenchmarkTable();</span>
+<a name="507"><span class="lineNum">     507 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     508 </span>            : 
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 : void ConsoleReporter::lazyPrintWithoutClosingBenchmarkTable() {</span>
+<span class="lineNum">     510 </span>            : 
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :     if (!currentTestRunInfo.used)</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :         lazyPrintRunInfo();</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :     if (!currentGroupInfo.used)</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :         lazyPrintGroupInfo();</span>
+<span class="lineNum">     515 </span>            : 
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :     if (!m_headerPrinted) {</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :         printTestCaseAndSectionHeader();</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :         m_headerPrinted = true;</span>
+<a name="519"><span class="lineNum">     519 </span>            :     }</a>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 : void ConsoleReporter::lazyPrintRunInfo() {</span>
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :     stream &lt;&lt; '\n' &lt;&lt; getLineOfChars&lt;'~'&gt;() &lt;&lt; '\n';</span>
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :     Colour colour(Colour::SecondaryText);</span>
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :     stream &lt;&lt; currentTestRunInfo-&gt;name</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :         &lt;&lt; &quot; is a Catch v&quot; &lt;&lt; libraryVersion() &lt;&lt; &quot; host application.\n&quot;</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :         &lt;&lt; &quot;Run with -? for options\n\n&quot;;</span>
+<span class="lineNum">     527 </span>            : 
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :     if (m_config-&gt;rngSeed() != 0)</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :         stream &lt;&lt; &quot;Randomness seeded to: &quot; &lt;&lt; m_config-&gt;rngSeed() &lt;&lt; &quot;\n\n&quot;;</span>
+<span class="lineNum">     530 </span>            : 
+<a name="531"><span class="lineNum">     531 </span><span class="lineNoCov">          0 :     currentTestRunInfo.used = true;</span></a>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 : void ConsoleReporter::lazyPrintGroupInfo() {</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :     if (!currentGroupInfo-&gt;name.empty() &amp;&amp; currentGroupInfo-&gt;groupsCounts &gt; 1) {</span>
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :         printClosedHeader(&quot;Group: &quot; + currentGroupInfo-&gt;name);</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :         currentGroupInfo.used = true;</span>
+<a name="537"><span class="lineNum">     537 </span>            :     }</a>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 : void ConsoleReporter::printTestCaseAndSectionHeader() {</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :     assert(!m_sectionStack.empty());</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :     printOpenHeader(currentTestCaseInfo-&gt;name);</span>
+<span class="lineNum">     542 </span>            : 
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :     if (m_sectionStack.size() &gt; 1) {</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :         Colour colourGuard(Colour::Headers);</span>
+<span class="lineNum">     545 </span>            : 
+<span class="lineNum">     546 </span>            :         auto
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :             it = m_sectionStack.begin() + 1, // Skip first section (test case)</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :             itEnd = m_sectionStack.end();</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :         for (; it != itEnd; ++it)</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :             printHeaderString(it-&gt;name, 2);</span>
+<span class="lineNum">     551 </span>            :     }
+<span class="lineNum">     552 </span>            : 
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :     SourceLineInfo lineInfo = m_sectionStack.back().lineInfo;</span>
+<span class="lineNum">     554 </span>            : 
+<span class="lineNum">     555 </span>            : 
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :     stream &lt;&lt; getLineOfChars&lt;'-'&gt;() &lt;&lt; '\n';</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :     Colour colourGuard(Colour::FileName);</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     stream &lt;&lt; lineInfo &lt;&lt; '\n';</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :     stream &lt;&lt; getLineOfChars&lt;'.'&gt;() &lt;&lt; '\n' &lt;&lt; std::endl;</span>
+<a name="560"><span class="lineNum">     560 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     561 </span>            : 
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 : void ConsoleReporter::printClosedHeader(std::string const&amp; _name) {</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :     printOpenHeader(_name);</span>
+<a name="564"><span class="lineNum">     564 </span><span class="lineNoCov">          0 :     stream &lt;&lt; getLineOfChars&lt;'.'&gt;() &lt;&lt; '\n';</span></a>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 : void ConsoleReporter::printOpenHeader(std::string const&amp; _name) {</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :     stream &lt;&lt; getLineOfChars&lt;'-'&gt;() &lt;&lt; '\n';</span>
+<span class="lineNum">     568 </span>            :     {
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :         Colour colourGuard(Colour::Headers);</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :         printHeaderString(_name);</span>
+<span class="lineNum">     571 </span>            :     }
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     573 </span>            : 
+<a name="574"><span class="lineNum">     574 </span>            : // if string has a : in first line will set indent to follow it on</a>
+<span class="lineNum">     575 </span>            : // subsequent lines
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 : void ConsoleReporter::printHeaderString(std::string const&amp; _string, std::size_t indent) {</span>
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :     std::size_t i = _string.find(&quot;: &quot;);</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :     if (i != std::string::npos)</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :         i += 2;</span>
+<span class="lineNum">     580 </span>            :     else
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :         i = 0;</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :     stream &lt;&lt; Column(_string).indent(indent + i).initialIndent(indent) &lt;&lt; '\n';</span>
+<a name="583"><span class="lineNum">     583 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     584 </span>            : 
+<a name="585"><span class="lineNum">     585 </span><span class="lineNoCov">          0 : struct SummaryColumn {</span></a>
+<span class="lineNum">     586 </span>            : 
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :     SummaryColumn( std::string _label, Colour::Code _colour )</span>
+<a name="588"><span class="lineNum">     588 </span><span class="lineNoCov">          0 :     :   label( std::move( _label ) ),</span></a>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :         colour( _colour ) {}</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :     SummaryColumn addRow( std::size_t count ) {</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :         ReusableStringStream rss;</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :         rss &lt;&lt; count;</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :         std::string row = rss.str();</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :         for (auto&amp; oldRow : rows) {</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :             while (oldRow.size() &lt; row.size())</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :                 oldRow = ' ' + oldRow;</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :             while (oldRow.size() &gt; row.size())</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :                 row = ' ' + row;</span>
+<span class="lineNum">     599 </span>            :         }
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :         rows.push_back(row);</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :         return *this;</span>
+<span class="lineNum">     602 </span>            :     }
+<span class="lineNum">     603 </span>            : 
+<span class="lineNum">     604 </span>            :     std::string label;
+<span class="lineNum">     605 </span>            :     Colour::Code colour;
+<span class="lineNum">     606 </span>            :     std::vector&lt;std::string&gt; rows;
+<span class="lineNum">     607 </span>            : 
+<a name="608"><span class="lineNum">     608 </span>            : };</a>
+<span class="lineNum">     609 </span>            : 
+<span class="lineNum">     610 </span><span class="lineCov">          3 : void ConsoleReporter::printTotals( Totals const&amp; totals ) {</span>
+<span class="lineNum">     611 </span><span class="lineCov">          3 :     if (totals.testCases.total() == 0) {</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :         stream &lt;&lt; Colour(Colour::Warning) &lt;&lt; &quot;No tests ran\n&quot;;</span>
+<span class="lineNum">     613 </span><span class="lineCov">          3 :     } else if (totals.assertions.total() &gt; 0 &amp;&amp; totals.testCases.allPassed()) {</span>
+<span class="lineNum">     614 </span><span class="lineCov">          3 :         stream &lt;&lt; Colour(Colour::ResultSuccess) &lt;&lt; &quot;All tests passed&quot;;</span>
+<span class="lineNum">     615 </span><span class="lineCov">          3 :         stream &lt;&lt; &quot; (&quot;</span>
+<span class="lineNum">     616 </span><span class="lineCov">          6 :             &lt;&lt; pluralise(totals.assertions.passed, &quot;assertion&quot;) &lt;&lt; &quot; in &quot;</span>
+<span class="lineNum">     617 </span><span class="lineCov">          6 :             &lt;&lt; pluralise(totals.testCases.passed, &quot;test case&quot;) &lt;&lt; ')'</span>
+<span class="lineNum">     618 </span><span class="lineCov">          3 :             &lt;&lt; '\n';</span>
+<span class="lineNum">     619 </span>            :     } else {
+<span class="lineNum">     620 </span>            : 
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :         std::vector&lt;SummaryColumn&gt; columns;</span>
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :         columns.push_back(SummaryColumn(&quot;&quot;, Colour::None)</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :                           .addRow(totals.testCases.total())</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :                           .addRow(totals.assertions.total()));</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :         columns.push_back(SummaryColumn(&quot;passed&quot;, Colour::Success)</span>
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :                           .addRow(totals.testCases.passed)</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :                           .addRow(totals.assertions.passed));</span>
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :         columns.push_back(SummaryColumn(&quot;failed&quot;, Colour::ResultError)</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :                           .addRow(totals.testCases.failed)</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :                           .addRow(totals.assertions.failed));</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :         columns.push_back(SummaryColumn(&quot;failed as expected&quot;, Colour::ResultExpectedFailure)</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :                           .addRow(totals.testCases.failedButOk)</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :                           .addRow(totals.assertions.failedButOk));</span>
+<span class="lineNum">     634 </span>            : 
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :         printSummaryRow(&quot;test cases&quot;, columns, 0);</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 :         printSummaryRow(&quot;assertions&quot;, columns, 1);</span>
+<a name="637"><span class="lineNum">     637 </span>            :     }</a>
+<span class="lineNum">     638 </span><span class="lineCov">          3 : }</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 : void ConsoleReporter::printSummaryRow(std::string const&amp; label, std::vector&lt;SummaryColumn&gt; const&amp; cols, std::size_t row) {</span>
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :     for (auto col : cols) {</span>
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :         std::string value = col.rows[row];</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :         if (col.label.empty()) {</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :             stream &lt;&lt; label &lt;&lt; &quot;: &quot;;</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :             if (value != &quot;0&quot;)</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :                 stream &lt;&lt; value;</span>
+<span class="lineNum">     646 </span>            :             else
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :                 stream &lt;&lt; Colour(Colour::Warning) &lt;&lt; &quot;- none -&quot;;</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :         } else if (value != &quot;0&quot;) {</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :             stream &lt;&lt; Colour(Colour::LightGrey) &lt;&lt; &quot; | &quot;;</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :             stream &lt;&lt; Colour(col.colour)</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :                 &lt;&lt; value &lt;&lt; ' ' &lt;&lt; col.label;</span>
+<span class="lineNum">     652 </span>            :         }
+<span class="lineNum">     653 </span>            :     }
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :     stream &lt;&lt; '\n';</span>
+<a name="655"><span class="lineNum">     655 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     656 </span>            : 
+<span class="lineNum">     657 </span><span class="lineCov">          3 : void ConsoleReporter::printTotalsDivider(Totals const&amp; totals) {</span>
+<span class="lineNum">     658 </span><span class="lineCov">          3 :     if (totals.testCases.total() &gt; 0) {</span>
+<span class="lineNum">     659 </span><span class="lineCov">          3 :         std::size_t failedRatio = makeRatio(totals.testCases.failed, totals.testCases.total());</span>
+<span class="lineNum">     660 </span><span class="lineCov">          3 :         std::size_t failedButOkRatio = makeRatio(totals.testCases.failedButOk, totals.testCases.total());</span>
+<span class="lineNum">     661 </span><span class="lineCov">          3 :         std::size_t passedRatio = makeRatio(totals.testCases.passed, totals.testCases.total());</span>
+<span class="lineNum">     662 </span><span class="lineCov">          3 :         while (failedRatio + failedButOkRatio + passedRatio &lt; CATCH_CONFIG_CONSOLE_WIDTH - 1)</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :             findMax(failedRatio, failedButOkRatio, passedRatio)++;</span>
+<span class="lineNum">     664 </span><span class="lineCov">          9 :         while (failedRatio + failedButOkRatio + passedRatio &gt; CATCH_CONFIG_CONSOLE_WIDTH - 1)</span>
+<span class="lineNum">     665 </span><span class="lineCov">          3 :             findMax(failedRatio, failedButOkRatio, passedRatio)--;</span>
+<span class="lineNum">     666 </span>            : 
+<span class="lineNum">     667 </span><span class="lineCov">          3 :         stream &lt;&lt; Colour(Colour::Error) &lt;&lt; std::string(failedRatio, '=');</span>
+<span class="lineNum">     668 </span><span class="lineCov">          3 :         stream &lt;&lt; Colour(Colour::ResultExpectedFailure) &lt;&lt; std::string(failedButOkRatio, '=');</span>
+<span class="lineNum">     669 </span><span class="lineCov">          3 :         if (totals.testCases.allPassed())</span>
+<span class="lineNum">     670 </span><span class="lineCov">          3 :             stream &lt;&lt; Colour(Colour::ResultSuccess) &lt;&lt; std::string(passedRatio, '=');</span>
+<span class="lineNum">     671 </span>            :         else
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :             stream &lt;&lt; Colour(Colour::Success) &lt;&lt; std::string(passedRatio, '=');</span>
+<span class="lineNum">     673 </span>            :     } else {
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :         stream &lt;&lt; Colour(Colour::Warning) &lt;&lt; std::string(CATCH_CONFIG_CONSOLE_WIDTH - 1, '=');</span>
+<span class="lineNum">     675 </span>            :     }
+<a name="676"><span class="lineNum">     676 </span><span class="lineCov">          3 :     stream &lt;&lt; '\n';</span></a>
+<span class="lineNum">     677 </span><span class="lineCov">          3 : }</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 : void ConsoleReporter::printSummaryDivider() {</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :     stream &lt;&lt; getLineOfChars&lt;'-'&gt;() &lt;&lt; '\n';</span>
+<a name="680"><span class="lineNum">     680 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     681 </span>            : 
+<span class="lineNum">     682 </span><span class="lineCov">          3 : void ConsoleReporter::printTestFilters() {</span>
+<span class="lineNum">     683 </span><span class="lineCov">          3 :     if (m_config-&gt;testSpec().hasFilters()) {</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :         Colour guard(Colour::BrightYellow);</span>
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :         stream &lt;&lt; &quot;Filters: &quot; &lt;&lt; serializeFilters(m_config-&gt;getTestsOrTags()) &lt;&lt; '\n';</span>
+<span class="lineNum">     686 </span>            :     }
+<span class="lineNum">     687 </span><span class="lineCov">          3 : }</span>
+<span class="lineNum">     688 </span>            : 
+<a name="689"><span class="lineNum">     689 </span><span class="lineCov">          3 : CATCH_REGISTER_REPORTER(&quot;console&quot;, ConsoleReporter)</span></a>
+<span class="lineNum">     690 </span>            : 
+<span class="lineNum">     691 </span><span class="lineCov">          9 : } // end namespace Catch</span>
+<span class="lineNum">     692 </span>            : 
+<span class="lineNum">     693 </span>            : #if defined(_MSC_VER)
+<span class="lineNum">     694 </span>            : #pragma warning(pop)
+<span class="lineNum">     695 </span>            : #endif
+<span class="lineNum">     696 </span>            : 
+<span class="lineNum">     697 </span>            : #if defined(__clang__)
+<span class="lineNum">     698 </span>            : #  pragma clang diagnostic pop
+<span class="lineNum">     699 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - reporters/catch_reporter_junit.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">reporters</a> - catch_reporter_junit.cpp<span style="font-size: 80%;"> (source / <a href="catch_reporter_junit.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">158</td>
+            <td class="headerCovTableEntryLo">1.3 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntryLo">9.1 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 26/11/2010.
+<span class="lineNum">       3 </span>            :  *  Copyright 2010 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &quot;catch_reporter_bases.hpp&quot;
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            : #include &quot;catch_reporter_junit.h&quot;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            : #include &quot;../internal/catch_tostring.h&quot;
+<span class="lineNum">      14 </span>            : #include &quot;../internal/catch_reporter_registrars.hpp&quot;
+<span class="lineNum">      15 </span>            : #include &quot;../internal/catch_text.h&quot;
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : #include &lt;cassert&gt;
+<span class="lineNum">      18 </span>            : #include &lt;sstream&gt;
+<span class="lineNum">      19 </span>            : #include &lt;ctime&gt;
+<span class="lineNum">      20 </span>            : #include &lt;algorithm&gt;
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            : namespace Catch {
+<a name="23"><span class="lineNum">      23 </span>            : </a>
+<span class="lineNum">      24 </span>            :     namespace {
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :         std::string getCurrentTimestamp() {</span>
+<span class="lineNum">      26 </span>            :             // Beware, this is not reentrant because of backward compatibility issues
+<span class="lineNum">      27 </span>            :             // Also, UTC only, again because of backward compatibility (%z is C++11)
+<span class="lineNum">      28 </span>            :             time_t rawtime;
+<span class="lineNum">      29 </span><span class="lineNoCov">          0 :             std::time(&amp;rawtime);</span>
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :             auto const timeStampSize = sizeof(&quot;2017-01-16T17:06:45Z&quot;);</span>
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : #ifdef _MSC_VER
+<span class="lineNum">      33 </span>            :             std::tm timeInfo = {};
+<span class="lineNum">      34 </span>            :             gmtime_s(&amp;timeInfo, &amp;rawtime);
+<span class="lineNum">      35 </span>            : #else
+<span class="lineNum">      36 </span>            :             std::tm* timeInfo;
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :             timeInfo = std::gmtime(&amp;rawtime);</span>
+<span class="lineNum">      38 </span>            : #endif
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            :             char timeStamp[timeStampSize];
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :             const char * const fmt = &quot;%Y-%m-%dT%H:%M:%SZ&quot;;</span>
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span>            : #ifdef _MSC_VER
+<span class="lineNum">      44 </span>            :             std::strftime(timeStamp, timeStampSize, fmt, &amp;timeInfo);
+<span class="lineNum">      45 </span>            : #else
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :             std::strftime(timeStamp, timeStampSize, fmt, timeInfo);</span>
+<span class="lineNum">      47 </span>            : #endif
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :             return std::string(timeStamp);</span>
+<a name="49"><span class="lineNum">      49 </span>            :         }</a>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :         std::string fileNameTag(const std::vector&lt;std::string&gt; &amp;tags) {</span>
+<a name="52"><span class="lineNum">      52 </span>            :             auto it = std::find_if(begin(tags),</a>
+<span class="lineNum">      53 </span>            :                                    end(tags),
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :                                    [] (std::string const&amp; tag) {return tag.front() == '#'; });</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :             if (it != tags.end())</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :                 return it-&gt;substr(1);</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :             return std::string();</span>
+<span class="lineNum">      58 </span>            :         }
+<a name="59"><span class="lineNum">      59 </span>            :     } // anonymous namespace</a>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :     JunitReporter::JunitReporter( ReporterConfig const&amp; _config )</span>
+<span class="lineNum">      62 </span>            :         :   CumulativeReporterBase( _config ),
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :             xml( _config.stream() )</span>
+<span class="lineNum">      64 </span>            :         {
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :             m_reporterPrefs.shouldRedirectStdOut = true;</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :             m_reporterPrefs.shouldReportAllAssertions = true;</span>
+<a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">      68 </span>            : 
+<a name="69"><span class="lineNum">      69 </span><span class="lineNoCov">          0 :     JunitReporter::~JunitReporter() {}</span></a>
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     std::string JunitReporter::getDescription() {</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :         return &quot;Reports test results in an XML format that looks like Ant's junitreport target&quot;;</span>
+<a name="73"><span class="lineNum">      73 </span>            :     }</a>
+<span class="lineNum">      74 </span>            : 
+<a name="75"><span class="lineNum">      75 </span><span class="lineNoCov">          0 :     void JunitReporter::noMatchingTestCases( std::string const&amp; /*spec*/ ) {}</span></a>
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     void JunitReporter::testRunStarting( TestRunInfo const&amp; runInfo )  {</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :         CumulativeReporterBase::testRunStarting( runInfo );</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :         xml.startElement( &quot;testsuites&quot; );</span>
+<a name="80"><span class="lineNum">      80 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :     void JunitReporter::testGroupStarting( GroupInfo const&amp; groupInfo ) {</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :         suiteTimer.start();</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         stdOutForSuite.clear();</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :         stdErrForSuite.clear();</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :         unexpectedExceptions = 0;</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         CumulativeReporterBase::testGroupStarting( groupInfo );</span>
+<a name="88"><span class="lineNum">      88 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     void JunitReporter::testCaseStarting( TestCaseInfo const&amp; testCaseInfo ) {</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :         m_okToFail = testCaseInfo.okToFail();</span>
+<a name="92"><span class="lineNum">      92 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     bool JunitReporter::assertionEnded( AssertionStats const&amp; assertionStats ) {</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :         if( assertionStats.assertionResult.getResultType() == ResultWas::ThrewException &amp;&amp; !m_okToFail )</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :             unexpectedExceptions++;</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :         return CumulativeReporterBase::assertionEnded( assertionStats );</span>
+<a name="98"><span class="lineNum">      98 </span>            :     }</a>
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :     void JunitReporter::testCaseEnded( TestCaseStats const&amp; testCaseStats ) {</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         stdOutForSuite += testCaseStats.stdOut;</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :         stdErrForSuite += testCaseStats.stdErr;</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         CumulativeReporterBase::testCaseEnded( testCaseStats );</span>
+<a name="104"><span class="lineNum">     104 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :     void JunitReporter::testGroupEnded( TestGroupStats const&amp; testGroupStats ) {</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         double suiteTime = suiteTimer.getElapsedSeconds();</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         CumulativeReporterBase::testGroupEnded( testGroupStats );</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         writeGroup( *m_testGroups.back(), suiteTime );</span>
+<a name="110"><span class="lineNum">     110 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     void JunitReporter::testRunEndedCumulative() {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         xml.endElement();</span>
+<a name="114"><span class="lineNum">     114 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     void JunitReporter::writeGroup( TestGroupNode const&amp; groupNode, double suiteTime ) {</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         XmlWriter::ScopedElement e = xml.scopedElement( &quot;testsuite&quot; );</span>
+<span class="lineNum">     118 </span>            : 
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         TestGroupStats const&amp; stats = groupNode.value;</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         xml.writeAttribute( &quot;name&quot;, stats.groupInfo.name );</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         xml.writeAttribute( &quot;errors&quot;, unexpectedExceptions );</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :         xml.writeAttribute( &quot;failures&quot;, stats.totals.assertions.failed-unexpectedExceptions );</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         xml.writeAttribute( &quot;tests&quot;, stats.totals.assertions.total() );</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         xml.writeAttribute( &quot;hostname&quot;, &quot;tbd&quot; ); // !TBD</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :         if( m_config-&gt;showDurations() == ShowDurations::Never )</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :             xml.writeAttribute( &quot;time&quot;, &quot;&quot; );</span>
+<span class="lineNum">     127 </span>            :         else
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :             xml.writeAttribute( &quot;time&quot;, suiteTime );</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         xml.writeAttribute( &quot;timestamp&quot;, getCurrentTimestamp() );</span>
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            :         // Write properties if there are any
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         if (m_config-&gt;hasTestFilters() || m_config-&gt;rngSeed() != 0) {</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :             auto properties = xml.scopedElement(&quot;properties&quot;);</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :             if (m_config-&gt;hasTestFilters()) {</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :                 xml.scopedElement(&quot;property&quot;)</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :                     .writeAttribute(&quot;name&quot;, &quot;filters&quot;)</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :                     .writeAttribute(&quot;value&quot;, serializeFilters(m_config-&gt;getTestsOrTags()));</span>
+<span class="lineNum">     138 </span>            :             }
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :             if (m_config-&gt;rngSeed() != 0) {</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :                 xml.scopedElement(&quot;property&quot;)</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :                     .writeAttribute(&quot;name&quot;, &quot;random-seed&quot;)</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :                     .writeAttribute(&quot;value&quot;, m_config-&gt;rngSeed());</span>
+<span class="lineNum">     143 </span>            :             }
+<span class="lineNum">     144 </span>            :         }
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span>            :         // Write test cases
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         for( auto const&amp; child : groupNode.children )</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :             writeTestCase( *child );</span>
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         xml.scopedElement( &quot;system-out&quot; ).writeText( trim( stdOutForSuite ), XmlFormatting::Newline );</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         xml.scopedElement( &quot;system-err&quot; ).writeText( trim( stdErrForSuite ), XmlFormatting::Newline );</span>
+<a name="152"><span class="lineNum">     152 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     void JunitReporter::writeTestCase( TestCaseNode const&amp; testCaseNode ) {</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :         TestCaseStats const&amp; stats = testCaseNode.value;</span>
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            :         // All test cases have exactly one section - which represents the
+<span class="lineNum">     158 </span>            :         // test case itself. That section may have 0-n nested sections
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         assert( testCaseNode.children.size() == 1 );</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :         SectionNode const&amp; rootSection = *testCaseNode.children.front();</span>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :         std::string className = stats.testInfo.className;</span>
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         if( className.empty() ) {</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :             className = fileNameTag(stats.testInfo.tags);</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :             if ( className.empty() )</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :                 className = &quot;global&quot;;</span>
+<span class="lineNum">     168 </span>            :         }
+<span class="lineNum">     169 </span>            : 
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         if ( !m_config-&gt;name().empty() )</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :             className = m_config-&gt;name() + &quot;.&quot; + className;</span>
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :         writeSection( className, &quot;&quot;, rootSection );</span>
+<a name="174"><span class="lineNum">     174 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :     void JunitReporter::writeSection(  std::string const&amp; className,</span>
+<span class="lineNum">     177 </span>            :                         std::string const&amp; rootName,
+<span class="lineNum">     178 </span>            :                         SectionNode const&amp; sectionNode ) {
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :         std::string name = trim( sectionNode.stats.sectionInfo.name );</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :         if( !rootName.empty() )</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :             name = rootName + '/' + name;</span>
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         if( !sectionNode.assertions.empty() ||</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :             !sectionNode.stdOut.empty() ||</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :             !sectionNode.stdErr.empty() ) {</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :             XmlWriter::ScopedElement e = xml.scopedElement( &quot;testcase&quot; );</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :             if( className.empty() ) {</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :                 xml.writeAttribute( &quot;classname&quot;, name );</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :                 xml.writeAttribute( &quot;name&quot;, &quot;root&quot; );</span>
+<span class="lineNum">     190 </span>            :             }
+<span class="lineNum">     191 </span>            :             else {
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :                 xml.writeAttribute( &quot;classname&quot;, className );</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                 xml.writeAttribute( &quot;name&quot;, name );</span>
+<span class="lineNum">     194 </span>            :             }
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :             xml.writeAttribute( &quot;time&quot;, ::Catch::Detail::stringify( sectionNode.stats.durationInSeconds ) );</span>
+<span class="lineNum">     196 </span>            : 
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :             writeAssertions( sectionNode );</span>
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :             if( !sectionNode.stdOut.empty() )</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :                 xml.scopedElement( &quot;system-out&quot; ).writeText( trim( sectionNode.stdOut ), XmlFormatting::Newline );</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :             if( !sectionNode.stdErr.empty() )</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :                 xml.scopedElement( &quot;system-err&quot; ).writeText( trim( sectionNode.stdErr ), XmlFormatting::Newline );</span>
+<span class="lineNum">     203 </span>            :         }
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         for( auto const&amp; childNode : sectionNode.childSections )</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :             if( className.empty() )</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                 writeSection( name, &quot;&quot;, *childNode );</span>
+<span class="lineNum">     207 </span>            :             else
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :                 writeSection( className, name, *childNode );</span>
+<a name="209"><span class="lineNum">     209 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     void JunitReporter::writeAssertions( SectionNode const&amp; sectionNode ) {</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :         for( auto const&amp; assertion : sectionNode.assertions )</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :             writeAssertion( assertion );</span>
+<a name="214"><span class="lineNum">     214 </span><span class="lineNoCov">          0 :     }</span></a>
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :     void JunitReporter::writeAssertion( AssertionStats const&amp; stats ) {</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         AssertionResult const&amp; result = stats.assertionResult;</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         if( !result.isOk() ) {</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :             std::string elementName;</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :             switch( result.getResultType() ) {</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :                 case ResultWas::ThrewException:</span>
+<span class="lineNum">     222 </span>            :                 case ResultWas::FatalErrorCondition:
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :                     elementName = &quot;error&quot;;</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :                 case ResultWas::ExplicitFailure:</span>
+<span class="lineNum">     226 </span>            :                 case ResultWas::ExpressionFailed:
+<span class="lineNum">     227 </span>            :                 case ResultWas::DidntThrowException:
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :                     elementName = &quot;failure&quot;;</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span>            :                 // We should never see these here:
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :                 case ResultWas::Info:</span>
+<span class="lineNum">     233 </span>            :                 case ResultWas::Warning:
+<span class="lineNum">     234 </span>            :                 case ResultWas::Ok:
+<span class="lineNum">     235 </span>            :                 case ResultWas::Unknown:
+<span class="lineNum">     236 </span>            :                 case ResultWas::FailureBit:
+<span class="lineNum">     237 </span>            :                 case ResultWas::Exception:
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :                     elementName = &quot;internalError&quot;;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     240 </span>            :             }
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :             XmlWriter::ScopedElement e = xml.scopedElement( elementName );</span>
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :             xml.writeAttribute( &quot;message&quot;, result.getExpression() );</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :             xml.writeAttribute( &quot;type&quot;, result.getTestMacroName() );</span>
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :             ReusableStringStream rss;</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :             if (stats.totals.assertions.total() &gt; 0) {</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :                 rss &lt;&lt; &quot;FAILED&quot; &lt;&lt; &quot;:\n&quot;;</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                 if (result.hasExpression()) {</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                     rss &lt;&lt; &quot;  &quot;;</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :                     rss &lt;&lt; result.getExpressionInMacro();</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :                     rss &lt;&lt; '\n';</span>
+<span class="lineNum">     254 </span>            :                 }
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :                 if (result.hasExpandedExpression()) {</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :                     rss &lt;&lt; &quot;with expansion:\n&quot;;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :                     rss &lt;&lt; Column(result.getExpandedExpression()).indent(2) &lt;&lt; '\n';</span>
+<span class="lineNum">     258 </span>            :                 }
+<span class="lineNum">     259 </span>            :             } else {
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :                 rss &lt;&lt; '\n';</span>
+<span class="lineNum">     261 </span>            :             }
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :             if( !result.getMessage().empty() )</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :                 rss &lt;&lt; result.getMessage() &lt;&lt; '\n';</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :             for( auto const&amp; msg : stats.infoMessages )</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :                 if( msg.type == ResultWas::Info )</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :                     rss &lt;&lt; msg.message &lt;&lt; '\n';</span>
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :             rss &lt;&lt; &quot;at &quot; &lt;&lt; result.getSourceInfo();</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :             xml.writeText( rss.str(), XmlFormatting::Newline );</span>
+<span class="lineNum">     271 </span>            :         }
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     273 </span>            : 
+<a name="274"><span class="lineNum">     274 </span><span class="lineCov">          3 :     CATCH_REGISTER_REPORTER( &quot;junit&quot;, JunitReporter )</span></a>
+<span class="lineNum">     275 </span>            : 
+<span class="lineNum">     276 </span><span class="lineCov">          9 : } // end namespace Catch</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
