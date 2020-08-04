@@ -1,0 +1,1344 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - external/clara.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">external</a> - clara.hpp<span style="font-size: 80%;"> (source / <a href="clara.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">142</td>
+            <td class="headerCovTableEntry">551</td>
+            <td class="headerCovTableEntryLo">25.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">164</td>
+            <td class="headerCovTableEntry">372</td>
+            <td class="headerCovTableEntryLo">44.1 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : // Copyright 2017 Two Blue Cubes Ltd. All rights reserved.</a>
+<span class="lineNum">       2 </span>            : //
+<span class="lineNum">       3 </span>            : // Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       4 </span>            : // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       5 </span>            : //
+<span class="lineNum">       6 </span>            : // See https://github.com/philsquared/Clara for more details
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : // Clara v1.1.5
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #ifndef CATCH_CLARA_HPP_INCLUDED
+<span class="lineNum">      11 </span>            : #define CATCH_CLARA_HPP_INCLUDED
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            : #ifndef CATCH_CLARA_CONFIG_CONSOLE_WIDTH
+<span class="lineNum">      14 </span>            : #define CATCH_CLARA_CONFIG_CONSOLE_WIDTH 80
+<span class="lineNum">      15 </span>            : #endif
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : #ifndef CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH
+<span class="lineNum">      18 </span>            : #define CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH CATCH_CLARA_CONFIG_CONSOLE_WIDTH
+<span class="lineNum">      19 </span>            : #endif
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            : #ifndef CLARA_CONFIG_OPTIONAL_TYPE
+<span class="lineNum">      22 </span>            : #ifdef __has_include
+<span class="lineNum">      23 </span>            : #if __has_include(&lt;optional&gt;) &amp;&amp; __cplusplus &gt;= 201703L
+<span class="lineNum">      24 </span>            : #include &lt;optional&gt;
+<span class="lineNum">      25 </span>            : #define CLARA_CONFIG_OPTIONAL_TYPE std::optional
+<span class="lineNum">      26 </span>            : #endif
+<span class="lineNum">      27 </span>            : #endif
+<span class="lineNum">      28 </span>            : #endif
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : // ----------- #included from clara_textflow.hpp -----------
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : // TextFlowCpp
+<span class="lineNum">      34 </span>            : //
+<span class="lineNum">      35 </span>            : // A single-header library for wrapping and laying out basic text, by Phil Nash
+<span class="lineNum">      36 </span>            : //
+<span class="lineNum">      37 </span>            : // Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">      38 </span>            : // file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">      39 </span>            : //
+<span class="lineNum">      40 </span>            : // This project is hosted at https://github.com/philsquared/textflowcpp
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : #ifndef CATCH_CLARA_TEXTFLOW_HPP_INCLUDED
+<span class="lineNum">      43 </span>            : #define CATCH_CLARA_TEXTFLOW_HPP_INCLUDED
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : #include &lt;cassert&gt;
+<span class="lineNum">      46 </span>            : #include &lt;ostream&gt;
+<span class="lineNum">      47 </span>            : #include &lt;sstream&gt;
+<span class="lineNum">      48 </span>            : #include &lt;vector&gt;
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span>            : #ifndef CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH
+<span class="lineNum">      51 </span>            : #define CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH 80
+<span class="lineNum">      52 </span>            : #endif
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            : namespace Catch {
+<span class="lineNum">      56 </span>            : namespace clara {
+<a name="57"><span class="lineNum">      57 </span>            : namespace TextFlow {</a>
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 : inline auto isWhitespace(char c) -&gt; bool {</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :         static std::string chars = &quot; \t\n\r&quot;;</span>
+<a name="61"><span class="lineNum">      61 </span><span class="lineNoCov">          0 :         return chars.find(c) != std::string::npos;</span></a>
+<span class="lineNum">      62 </span>            : }
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : inline auto isBreakableBefore(char c) -&gt; bool {</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         static std::string chars = &quot;[({&lt;|&quot;;</span>
+<a name="65"><span class="lineNum">      65 </span><span class="lineNoCov">          0 :         return chars.find(c) != std::string::npos;</span></a>
+<span class="lineNum">      66 </span>            : }
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 : inline auto isBreakableAfter(char c) -&gt; bool {</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         static std::string chars = &quot;])}&gt;.,:;*+-=&amp;/\\&quot;;</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         return chars.find(c) != std::string::npos;</span>
+<span class="lineNum">      70 </span>            : }
+<span class="lineNum">      71 </span>            : 
+<a name="72"><span class="lineNum">      72 </span>            : class Columns;</a>
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 : class Column {</span>
+<span class="lineNum">      75 </span>            :         std::vector&lt;std::string&gt; m_strings;
+<span class="lineNum">      76 </span>            :         size_t m_width = CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH;
+<span class="lineNum">      77 </span>            :         size_t m_indent = 0;
+<span class="lineNum">      78 </span>            :         size_t m_initialIndent = std::string::npos;
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            : public:
+<span class="lineNum">      81 </span>            :         class iterator {
+<span class="lineNum">      82 </span>            :                 friend Column;
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span>            :                 Column const&amp; m_column;
+<span class="lineNum">      85 </span>            :                 size_t m_stringIndex = 0;
+<span class="lineNum">      86 </span>            :                 size_t m_pos = 0;
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span>            :                 size_t m_len = 0;
+<span class="lineNum">      89 </span>            :                 size_t m_end = 0;
+<a name="90"><span class="lineNum">      90 </span>            :                 bool m_suffix = false;</a>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :                 iterator(Column const&amp; column, size_t stringIndex)</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :                         : m_column(column),</span>
+<a name="94"><span class="lineNum">      94 </span><span class="lineNoCov">          0 :                         m_stringIndex(stringIndex) {}</span></a>
+<span class="lineNum">      95 </span>            : 
+<a name="96"><span class="lineNum">      96 </span><span class="lineNoCov">          0 :                 auto line() const -&gt; std::string const&amp; { return m_column.m_strings[m_stringIndex]; }</span></a>
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :                 auto isBoundary(size_t at) const -&gt; bool {</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :                         assert(at &gt; 0);</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :                         assert(at &lt;= line().size());</span>
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :                         return at == line().size() ||</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :                                 (isWhitespace(line()[at]) &amp;&amp; !isWhitespace(line()[at - 1])) ||</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :                                 isBreakableBefore(line()[at]) ||</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :                                 isBreakableAfter(line()[at - 1]);</span>
+<a name="106"><span class="lineNum">     106 </span>            :                 }</a>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :                 void calcLength() {</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :                         assert(m_stringIndex &lt; m_column.m_strings.size());</span>
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :                         m_suffix = false;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :                         auto width = m_column.m_width - indent();</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :                         m_end = m_pos;</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :                         if (line()[m_pos] == '\n') {</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :                                 ++m_end;</span>
+<span class="lineNum">     116 </span>            :                         }
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :                         while (m_end &lt; line().size() &amp;&amp; line()[m_end] != '\n')</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :                                 ++m_end;</span>
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :                         if (m_end &lt; m_pos + width) {</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :                                 m_len = m_end - m_pos;</span>
+<span class="lineNum">     122 </span>            :                         } else {
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :                                 size_t len = width;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :                                 while (len &gt; 0 &amp;&amp; !isBoundary(m_pos + len))</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :                                         --len;</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :                                 while (len &gt; 0 &amp;&amp; isWhitespace(line()[m_pos + len - 1]))</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :                                         --len;</span>
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :                                 if (len &gt; 0) {</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :                                         m_len = len;</span>
+<span class="lineNum">     131 </span>            :                                 } else {
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :                                         m_suffix = true;</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :                                         m_len = width - 1;</span>
+<span class="lineNum">     134 </span>            :                                 }
+<span class="lineNum">     135 </span>            :                         }
+<a name="136"><span class="lineNum">     136 </span><span class="lineNoCov">          0 :                 }</span></a>
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :                 auto indent() const -&gt; size_t {</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :                         auto initial = m_pos == 0 &amp;&amp; m_stringIndex == 0 ? m_column.m_initialIndent : std::string::npos;</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :                         return initial == std::string::npos ? m_column.m_indent : initial;</span>
+<a name="141"><span class="lineNum">     141 </span>            :                 }</a>
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :                 auto addIndentAndSuffix(std::string const &amp;plain) const -&gt; std::string {</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :                         return std::string(indent(), ' ') + (m_suffix ? plain + &quot;-&quot; : plain);</span>
+<span class="lineNum">     145 </span>            :                 }
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span>            :         public:
+<span class="lineNum">     148 </span>            :                 using difference_type = std::ptrdiff_t;
+<span class="lineNum">     149 </span>            :                 using value_type = std::string;
+<span class="lineNum">     150 </span>            :                 using pointer = value_type * ;
+<span class="lineNum">     151 </span>            :                 using reference = value_type &amp; ;
+<a name="152"><span class="lineNum">     152 </span>            :                 using iterator_category = std::forward_iterator_tag;</a>
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :                 explicit iterator(Column const&amp; column) : m_column(column) {</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :                         assert(m_column.m_width &gt; m_column.m_indent);</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :                         assert(m_column.m_initialIndent == std::string::npos || m_column.m_width &gt; m_column.m_initialIndent);</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :                         calcLength();</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :                         if (m_len == 0)</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :                                 m_stringIndex++; // Empty string</span>
+<a name="160"><span class="lineNum">     160 </span><span class="lineNoCov">          0 :                 }</span></a>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :                 auto operator *() const -&gt; std::string {</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :                         assert(m_stringIndex &lt; m_column.m_strings.size());</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :                         assert(m_pos &lt;= m_end);</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :                         return addIndentAndSuffix(line().substr(m_pos, m_len));</span>
+<a name="166"><span class="lineNum">     166 </span>            :                 }</a>
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :                 auto operator ++() -&gt; iterator&amp; {</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :                         m_pos += m_len;</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :                         if (m_pos &lt; line().size() &amp;&amp; line()[m_pos] == '\n')</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :                                 m_pos += 1;</span>
+<span class="lineNum">     172 </span>            :                         else
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :                                 while (m_pos &lt; line().size() &amp;&amp; isWhitespace(line()[m_pos]))</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :                                         ++m_pos;</span>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :                         if (m_pos == line().size()) {</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :                                 m_pos = 0;</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :                                 ++m_stringIndex;</span>
+<span class="lineNum">     179 </span>            :                         }
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :                         if (m_stringIndex &lt; m_column.m_strings.size())</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :                                 calcLength();</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :                         return *this;</span>
+<span class="lineNum">     183 </span>            :                 }
+<span class="lineNum">     184 </span>            :                 auto operator ++(int) -&gt; iterator {
+<span class="lineNum">     185 </span>            :                         iterator prev(*this);
+<span class="lineNum">     186 </span>            :                         operator++();
+<span class="lineNum">     187 </span>            :                         return prev;
+<a name="188"><span class="lineNum">     188 </span>            :                 }</a>
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :                 auto operator ==(iterator const&amp; other) const -&gt; bool {</span>
+<span class="lineNum">     191 </span>            :                         return
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :                                 m_pos == other.m_pos &amp;&amp;</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                                 m_stringIndex == other.m_stringIndex &amp;&amp;</span>
+<a name="194"><span class="lineNum">     194 </span><span class="lineNoCov">          0 :                                 &amp;m_column == &amp;other.m_column;</span></a>
+<span class="lineNum">     195 </span>            :                 }
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :                 auto operator !=(iterator const&amp; other) const -&gt; bool {</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :                         return !operator==(other);</span>
+<span class="lineNum">     198 </span>            :                 }
+<span class="lineNum">     199 </span>            :         };
+<a name="200"><span class="lineNum">     200 </span>            :         using const_iterator = iterator;</a>
+<span class="lineNum">     201 </span>            : 
+<a name="202"><span class="lineNum">     202 </span><span class="lineNoCov">          0 :         explicit Column(std::string const&amp; text) { m_strings.push_back(text); }</span></a>
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         auto width(size_t newWidth) -&gt; Column&amp; {</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :                 assert(newWidth &gt; 0);</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                 m_width = newWidth;</span>
+<a name="207"><span class="lineNum">     207 </span><span class="lineNoCov">          0 :                 return *this;</span></a>
+<span class="lineNum">     208 </span>            :         }
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :         auto indent(size_t newIndent) -&gt; Column&amp; {</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :                 m_indent = newIndent;</span>
+<a name="211"><span class="lineNum">     211 </span><span class="lineNoCov">          0 :                 return *this;</span></a>
+<span class="lineNum">     212 </span>            :         }
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :         auto initialIndent(size_t newIndent) -&gt; Column&amp; {</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :                 m_initialIndent = newIndent;</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :                 return *this;</span>
+<a name="216"><span class="lineNum">     216 </span>            :         }</a>
+<a name="217"><span class="lineNum">     217 </span>            : </a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineNoCov">          0 :         auto width() const -&gt; size_t { return m_width; }</span></a>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         auto begin() const -&gt; iterator { return iterator(*this); }</span>
+<a name="220"><span class="lineNum">     220 </span><span class="lineNoCov">          0 :         auto end() const -&gt; iterator { return { *this, m_strings.size() }; }</span></a>
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :         inline friend std::ostream&amp; operator &lt;&lt; (std::ostream&amp; os, Column const&amp; col) {</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :                 bool first = true;</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :                 for (auto line : col) {</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :                         if (first)</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :                                 first = false;</span>
+<span class="lineNum">     227 </span>            :                         else
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :                                 os &lt;&lt; &quot;\n&quot;;</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :                         os &lt;&lt; line;</span>
+<span class="lineNum">     230 </span>            :                 }
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :                 return os;</span>
+<span class="lineNum">     232 </span>            :         }
+<span class="lineNum">     233 </span>            : 
+<span class="lineNum">     234 </span>            :         auto operator + (Column const&amp; other)-&gt;Columns;
+<span class="lineNum">     235 </span>            : 
+<span class="lineNum">     236 </span>            :         auto toString() const -&gt; std::string {
+<span class="lineNum">     237 </span>            :                 std::ostringstream oss;
+<span class="lineNum">     238 </span>            :                 oss &lt;&lt; *this;
+<span class="lineNum">     239 </span>            :                 return oss.str();
+<span class="lineNum">     240 </span>            :         }
+<a name="241"><span class="lineNum">     241 </span>            : };</a>
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 : class Spacer : public Column {</span>
+<a name="244"><span class="lineNum">     244 </span>            : </a>
+<span class="lineNum">     245 </span>            : public:
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         explicit Spacer(size_t spaceWidth) : Column(&quot;&quot;) {</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :                 width(spaceWidth);</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :         }</span>
+<a name="249"><span class="lineNum">     249 </span>            : };</a>
+<span class="lineNum">     250 </span>            : 
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 : class Columns {</span>
+<span class="lineNum">     252 </span>            :         std::vector&lt;Column&gt; m_columns;
+<span class="lineNum">     253 </span>            : 
+<a name="254"><span class="lineNum">     254 </span>            : public:</a>
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :         class iterator {</span>
+<span class="lineNum">     257 </span>            :                 friend Columns;
+<span class="lineNum">     258 </span>            :                 struct EndTag {};
+<span class="lineNum">     259 </span>            : 
+<span class="lineNum">     260 </span>            :                 std::vector&lt;Column&gt; const&amp; m_columns;
+<span class="lineNum">     261 </span>            :                 std::vector&lt;Column::iterator&gt; m_iterators;
+<a name="262"><span class="lineNum">     262 </span>            :                 size_t m_activeIterators;</a>
+<span class="lineNum">     263 </span>            : 
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :                 iterator(Columns const&amp; columns, EndTag)</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :                         : m_columns(columns.m_columns),</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :                         m_activeIterators(0) {</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :                         m_iterators.reserve(m_columns.size());</span>
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :                         for (auto const&amp; col : m_columns)</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :                                 m_iterators.push_back(col.end());</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :                 }</span>
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span>            :         public:
+<span class="lineNum">     274 </span>            :                 using difference_type = std::ptrdiff_t;
+<span class="lineNum">     275 </span>            :                 using value_type = std::string;
+<span class="lineNum">     276 </span>            :                 using pointer = value_type * ;
+<span class="lineNum">     277 </span>            :                 using reference = value_type &amp; ;
+<a name="278"><span class="lineNum">     278 </span>            :                 using iterator_category = std::forward_iterator_tag;</a>
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :                 explicit iterator(Columns const&amp; columns)</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :                         : m_columns(columns.m_columns),</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :                         m_activeIterators(m_columns.size()) {</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :                         m_iterators.reserve(m_columns.size());</span>
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :                         for (auto const&amp; col : m_columns)</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :                                 m_iterators.push_back(col.begin());</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :                 }</span>
+<span class="lineNum">     288 </span>            : 
+<span class="lineNum">     289 </span>            :                 auto operator ==(iterator const&amp; other) const -&gt; bool {
+<a name="290"><span class="lineNum">     290 </span>            :                         return m_iterators == other.m_iterators;</a>
+<span class="lineNum">     291 </span>            :                 }
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :                 auto operator !=(iterator const&amp; other) const -&gt; bool {</span>
+<a name="293"><span class="lineNum">     293 </span><span class="lineNoCov">          0 :                         return m_iterators != other.m_iterators;</span></a>
+<span class="lineNum">     294 </span>            :                 }
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :                 auto operator *() const -&gt; std::string {</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :                         std::string row, padding;</span>
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :                         for (size_t i = 0; i &lt; m_columns.size(); ++i) {</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :                                 auto width = m_columns[i].width();</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                                 if (m_iterators[i] != m_columns[i].end()) {</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :                                         std::string col = *m_iterators[i];</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :                                         row += padding + col;</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :                                         if (col.size() &lt; width)</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :                                                 padding = std::string(width - col.size(), ' ');</span>
+<span class="lineNum">     305 </span>            :                                         else
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :                                                 padding = &quot;&quot;;</span>
+<span class="lineNum">     307 </span>            :                                 } else {
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :                                         padding += std::string(width, ' ');</span>
+<span class="lineNum">     309 </span>            :                                 }
+<span class="lineNum">     310 </span>            :                         }
+<a name="311"><span class="lineNum">     311 </span><span class="lineNoCov">          0 :                         return row;</span></a>
+<span class="lineNum">     312 </span>            :                 }
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :                 auto operator ++() -&gt; iterator&amp; {</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :                         for (size_t i = 0; i &lt; m_columns.size(); ++i) {</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :                                 if (m_iterators[i] != m_columns[i].end())</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :                                         ++m_iterators[i];</span>
+<span class="lineNum">     317 </span>            :                         }
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :                         return *this;</span>
+<span class="lineNum">     319 </span>            :                 }
+<span class="lineNum">     320 </span>            :                 auto operator ++(int) -&gt; iterator {
+<span class="lineNum">     321 </span>            :                         iterator prev(*this);
+<span class="lineNum">     322 </span>            :                         operator++();
+<span class="lineNum">     323 </span>            :                         return prev;
+<span class="lineNum">     324 </span>            :                 }
+<span class="lineNum">     325 </span>            :         };
+<a name="326"><span class="lineNum">     326 </span>            :         using const_iterator = iterator;</a>
+<a name="327"><span class="lineNum">     327 </span>            : </a>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :         auto begin() const -&gt; iterator { return iterator(*this); }</span>
+<a name="329"><span class="lineNum">     329 </span><span class="lineNoCov">          0 :         auto end() const -&gt; iterator { return { *this, iterator::EndTag() }; }</span></a>
+<span class="lineNum">     330 </span>            : 
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :         auto operator += (Column const&amp; col) -&gt; Columns&amp; {</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :                 m_columns.push_back(col);</span>
+<a name="333"><span class="lineNum">     333 </span><span class="lineNoCov">          0 :                 return *this;</span></a>
+<span class="lineNum">     334 </span>            :         }
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :         auto operator + (Column const&amp; col) -&gt; Columns {</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :                 Columns combined = *this;</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :                 combined += col;</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :                 return combined;</span>
+<a name="339"><span class="lineNum">     339 </span>            :         }</a>
+<span class="lineNum">     340 </span>            : 
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         inline friend std::ostream&amp; operator &lt;&lt; (std::ostream&amp; os, Columns const&amp; cols) {</span>
+<span class="lineNum">     342 </span>            : 
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :                 bool first = true;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :                 for (auto line : cols) {</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :                         if (first)</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :                                 first = false;</span>
+<span class="lineNum">     347 </span>            :                         else
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :                                 os &lt;&lt; &quot;\n&quot;;</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :                         os &lt;&lt; line;</span>
+<span class="lineNum">     350 </span>            :                 }
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :                 return os;</span>
+<span class="lineNum">     352 </span>            :         }
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span>            :         auto toString() const -&gt; std::string {
+<span class="lineNum">     355 </span>            :                 std::ostringstream oss;
+<span class="lineNum">     356 </span>            :                 oss &lt;&lt; *this;
+<span class="lineNum">     357 </span>            :                 return oss.str();
+<span class="lineNum">     358 </span>            :         }
+<a name="359"><span class="lineNum">     359 </span>            : };</a>
+<span class="lineNum">     360 </span>            : 
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 : inline auto Column::operator + (Column const&amp; other) -&gt; Columns {</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :         Columns cols;</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :         cols += *this;</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :         cols += other;</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :         return cols;</span>
+<span class="lineNum">     366 </span>            : }
+<span class="lineNum">     367 </span>            : }
+<span class="lineNum">     368 </span>            : 
+<span class="lineNum">     369 </span>            : }
+<span class="lineNum">     370 </span>            : }
+<span class="lineNum">     371 </span>            : #endif // CATCH_CLARA_TEXTFLOW_HPP_INCLUDED
+<span class="lineNum">     372 </span>            : 
+<span class="lineNum">     373 </span>            : // ----------- end of #include from clara_textflow.hpp -----------
+<span class="lineNum">     374 </span>            : // ........... back in clara.hpp
+<span class="lineNum">     375 </span>            : 
+<span class="lineNum">     376 </span>            : #include &lt;cctype&gt;
+<span class="lineNum">     377 </span>            : #include &lt;string&gt;
+<span class="lineNum">     378 </span>            : #include &lt;memory&gt;
+<span class="lineNum">     379 </span>            : #include &lt;set&gt;
+<span class="lineNum">     380 </span>            : #include &lt;algorithm&gt;
+<span class="lineNum">     381 </span>            : 
+<span class="lineNum">     382 </span>            : #if !defined(CATCH_PLATFORM_WINDOWS) &amp;&amp; ( defined(WIN32) || defined(__WIN32__) || defined(_WIN32) || defined(_MSC_VER) )
+<span class="lineNum">     383 </span>            : #define CATCH_PLATFORM_WINDOWS
+<span class="lineNum">     384 </span>            : #endif
+<span class="lineNum">     385 </span>            : 
+<span class="lineNum">     386 </span>            : namespace Catch { namespace clara {
+<span class="lineNum">     387 </span>            : namespace detail {
+<span class="lineNum">     388 </span>            : 
+<span class="lineNum">     389 </span>            :     // Traits for extracting arg and return type of lambdas (for single argument lambdas)
+<span class="lineNum">     390 </span>            :     template&lt;typename L&gt;
+<span class="lineNum">     391 </span>            :     struct UnaryLambdaTraits : UnaryLambdaTraits&lt;decltype( &amp;L::operator() )&gt; {};
+<span class="lineNum">     392 </span>            : 
+<span class="lineNum">     393 </span>            :     template&lt;typename ClassT, typename ReturnT, typename... Args&gt;
+<span class="lineNum">     394 </span>            :     struct UnaryLambdaTraits&lt;ReturnT( ClassT::* )( Args... ) const&gt; {
+<span class="lineNum">     395 </span>            :         static const bool isValid = false;
+<span class="lineNum">     396 </span>            :     };
+<span class="lineNum">     397 </span>            : 
+<span class="lineNum">     398 </span>            :     template&lt;typename ClassT, typename ReturnT, typename ArgT&gt;
+<span class="lineNum">     399 </span>            :     struct UnaryLambdaTraits&lt;ReturnT( ClassT::* )( ArgT ) const&gt; {
+<span class="lineNum">     400 </span>            :         static const bool isValid = true;
+<span class="lineNum">     401 </span>            :         using ArgType = typename std::remove_const&lt;typename std::remove_reference&lt;ArgT&gt;::type&gt;::type;
+<span class="lineNum">     402 </span>            :         using ReturnType = ReturnT;
+<span class="lineNum">     403 </span>            :     };
+<span class="lineNum">     404 </span>            : 
+<span class="lineNum">     405 </span>            :     class TokenStream;
+<a name="406"><span class="lineNum">     406 </span>            : </a>
+<span class="lineNum">     407 </span>            :     // Transport for raw args (copied from main args, or supplied via init list for testing)
+<span class="lineNum">     408 </span><span class="lineCov">          3 :     class Args {</span>
+<span class="lineNum">     409 </span>            :         friend TokenStream;
+<span class="lineNum">     410 </span>            :         std::string m_exeName;
+<span class="lineNum">     411 </span>            :         std::vector&lt;std::string&gt; m_args;
+<a name="412"><span class="lineNum">     412 </span>            : </a>
+<span class="lineNum">     413 </span>            :     public:
+<span class="lineNum">     414 </span><span class="lineCov">          3 :         Args( int argc, char const* const* argv )</span>
+<span class="lineNum">     415 </span><span class="lineCov">          3 :             : m_exeName(argv[0]),</span>
+<span class="lineNum">     416 </span><span class="lineCov">          3 :               m_args(argv + 1, argv + argc) {}</span>
+<span class="lineNum">     417 </span>            : 
+<span class="lineNum">     418 </span>            :         Args( std::initializer_list&lt;std::string&gt; args )
+<span class="lineNum">     419 </span>            :         :   m_exeName( *args.begin() ),
+<span class="lineNum">     420 </span>            :             m_args( args.begin()+1, args.end() )
+<a name="421"><span class="lineNum">     421 </span>            :         {}</a>
+<span class="lineNum">     422 </span>            : 
+<span class="lineNum">     423 </span><span class="lineCov">          3 :         auto exeName() const -&gt; std::string {</span>
+<span class="lineNum">     424 </span><span class="lineCov">          3 :             return m_exeName;</span>
+<span class="lineNum">     425 </span>            :         }
+<span class="lineNum">     426 </span>            :     };
+<span class="lineNum">     427 </span>            : 
+<span class="lineNum">     428 </span>            :     // Wraps a token coming from a token stream. These may not directly correspond to strings as a single string
+<span class="lineNum">     429 </span>            :     // may encode an option + its argument if the : or = form is used
+<span class="lineNum">     430 </span>            :     enum class TokenType {
+<a name="431"><span class="lineNum">     431 </span>            :         Option, Argument</a>
+<span class="lineNum">     432 </span>            :     };
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :     struct Token {</span>
+<span class="lineNum">     434 </span>            :         TokenType type;
+<span class="lineNum">     435 </span>            :         std::string token;
+<a name="436"><span class="lineNum">     436 </span>            :     };</a>
+<span class="lineNum">     437 </span>            : 
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :     inline auto isOptPrefix( char c ) -&gt; bool {</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :         return c == '-'</span>
+<span class="lineNum">     440 </span>            : #ifdef CATCH_PLATFORM_WINDOWS
+<span class="lineNum">     441 </span>            :             || c == '/'
+<span class="lineNum">     442 </span>            : #endif
+<span class="lineNum">     443 </span>            :         ;
+<span class="lineNum">     444 </span>            :     }
+<a name="445"><span class="lineNum">     445 </span>            : </a>
+<span class="lineNum">     446 </span>            :     // Abstracts iterators into args as a stream of tokens, with option arguments uniformly handled
+<span class="lineNum">     447 </span><span class="lineCov">         27 :     class TokenStream {</span>
+<span class="lineNum">     448 </span>            :         using Iterator = std::vector&lt;std::string&gt;::const_iterator;
+<span class="lineNum">     449 </span>            :         Iterator it;
+<span class="lineNum">     450 </span>            :         Iterator itEnd;
+<a name="451"><span class="lineNum">     451 </span>            :         std::vector&lt;Token&gt; m_tokenBuffer;</a>
+<span class="lineNum">     452 </span>            : 
+<span class="lineNum">     453 </span><span class="lineCov">          3 :         void loadBuffer() {</span>
+<span class="lineNum">     454 </span><span class="lineCov">          3 :             m_tokenBuffer.resize( 0 );</span>
+<span class="lineNum">     455 </span>            : 
+<span class="lineNum">     456 </span>            :             // Skip any empty strings
+<span class="lineNum">     457 </span><span class="lineCov">          3 :             while( it != itEnd &amp;&amp; it-&gt;empty() )</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :                 ++it;</span>
+<span class="lineNum">     459 </span>            : 
+<span class="lineNum">     460 </span><span class="lineCov">          3 :             if( it != itEnd ) {</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :                 auto const &amp;next = *it;</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :                 if( isOptPrefix( next[0] ) ) {</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :                     auto delimiterPos = next.find_first_of( &quot; :=&quot; );</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :                     if( delimiterPos != std::string::npos ) {</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :                         m_tokenBuffer.push_back( { TokenType::Option, next.substr( 0, delimiterPos ) } );</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :                         m_tokenBuffer.push_back( { TokenType::Argument, next.substr( delimiterPos + 1 ) } );</span>
+<span class="lineNum">     467 </span>            :                     } else {
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :                         if( next[1] != '-' &amp;&amp; next.size() &gt; 2 ) {</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :                             std::string opt = &quot;- &quot;;</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :                             for( size_t i = 1; i &lt; next.size(); ++i ) {</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :                                 opt[1] = next[i];</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :                                 m_tokenBuffer.push_back( { TokenType::Option, opt } );</span>
+<span class="lineNum">     473 </span>            :                             }
+<span class="lineNum">     474 </span>            :                         } else {
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :                             m_tokenBuffer.push_back( { TokenType::Option, next } );</span>
+<span class="lineNum">     476 </span>            :                         }
+<span class="lineNum">     477 </span>            :                     }
+<span class="lineNum">     478 </span>            :                 } else {
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :                     m_tokenBuffer.push_back( { TokenType::Argument, next } );</span>
+<span class="lineNum">     480 </span>            :                 }
+<span class="lineNum">     481 </span>            :             }
+<span class="lineNum">     482 </span><span class="lineCov">          3 :         }</span>
+<a name="483"><span class="lineNum">     483 </span>            : </a>
+<span class="lineNum">     484 </span>            :     public:
+<a name="485"><span class="lineNum">     485 </span><span class="lineCov">          3 :         explicit TokenStream( Args const &amp;args ) : TokenStream( args.m_args.begin(), args.m_args.end() ) {}</span></a>
+<span class="lineNum">     486 </span>            : 
+<span class="lineNum">     487 </span><span class="lineCov">          3 :         TokenStream( Iterator it, Iterator itEnd ) : it( it ), itEnd( itEnd ) {</span>
+<span class="lineNum">     488 </span><span class="lineCov">          3 :             loadBuffer();</span>
+<a name="489"><span class="lineNum">     489 </span><span class="lineCov">          3 :         }</span></a>
+<span class="lineNum">     490 </span>            : 
+<span class="lineNum">     491 </span><span class="lineCov">          3 :         explicit operator bool() const {</span>
+<span class="lineNum">     492 </span><span class="lineCov">          3 :             return !m_tokenBuffer.empty() || it != itEnd;</span>
+<span class="lineNum">     493 </span>            :         }
+<span class="lineNum">     494 </span>            : 
+<a name="495"><span class="lineNum">     495 </span>            :         auto count() const -&gt; size_t { return m_tokenBuffer.size() + (itEnd - it); }</a>
+<span class="lineNum">     496 </span>            : 
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :         auto operator*() const -&gt; Token {</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :             assert( !m_tokenBuffer.empty() );</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :             return m_tokenBuffer.front();</span>
+<a name="500"><span class="lineNum">     500 </span>            :         }</a>
+<span class="lineNum">     501 </span>            : 
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :         auto operator-&gt;() const -&gt; Token const * {</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :             assert( !m_tokenBuffer.empty() );</span>
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :             return &amp;m_tokenBuffer.front();</span>
+<a name="505"><span class="lineNum">     505 </span>            :         }</a>
+<span class="lineNum">     506 </span>            : 
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :         auto operator++() -&gt; TokenStream &amp; {</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :             if( m_tokenBuffer.size() &gt;= 2 ) {</span>
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :                 m_tokenBuffer.erase( m_tokenBuffer.begin() );</span>
+<span class="lineNum">     510 </span>            :             } else {
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :                 if( it != itEnd )</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :                     ++it;</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :                 loadBuffer();</span>
+<span class="lineNum">     514 </span>            :             }
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :             return *this;</span>
+<span class="lineNum">     516 </span>            :         }
+<span class="lineNum">     517 </span>            :     };
+<a name="518"><span class="lineNum">     518 </span>            : </a>
+<span class="lineNum">     519 </span>            : 
+<span class="lineNum">     520 </span><span class="lineCov">          3 :     class ResultBase {</span>
+<span class="lineNum">     521 </span>            :     public:
+<span class="lineNum">     522 </span>            :         enum Type {
+<span class="lineNum">     523 </span>            :             Ok, LogicError, RuntimeError
+<span class="lineNum">     524 </span>            :         };
+<a name="525"><span class="lineNum">     525 </span>            : </a>
+<a name="526"><span class="lineNum">     526 </span>            :     protected:</a>
+<span class="lineNum">     527 </span><span class="lineCov">          6 :         ResultBase( Type type ) : m_type( type ) {}</span>
+<span class="lineNum">     528 </span><span class="lineCov">          9 :         virtual ~ResultBase() = default;</span>
+<span class="lineNum">     529 </span>            : 
+<span class="lineNum">     530 </span>            :         virtual void enforceOk() const = 0;
+<span class="lineNum">     531 </span>            : 
+<span class="lineNum">     532 </span>            :         Type m_type;
+<span class="lineNum">     533 </span>            :     };
+<span class="lineNum">     534 </span>            : 
+<span class="lineNum">     535 </span>            :     template&lt;typename T&gt;
+<a name="536"><span class="lineNum">     536 </span>            :     class ResultValueBase : public ResultBase {</a>
+<span class="lineNum">     537 </span>            :     public:
+<span class="lineNum">     538 </span><span class="lineCov">          3 :         auto value() const -&gt; T const &amp; {</span>
+<span class="lineNum">     539 </span><span class="lineCov">          3 :             enforceOk();</span>
+<span class="lineNum">     540 </span><span class="lineCov">          3 :             return m_value;</span>
+<span class="lineNum">     541 </span>            :         }
+<a name="542"><span class="lineNum">     542 </span>            : </a>
+<span class="lineNum">     543 </span>            :     protected:
+<a name="544"><span class="lineNum">     544 </span><span class="lineNoCov">          0 :         ResultValueBase( Type type ) : ResultBase( type ) {}</span></a>
+<span class="lineNum">     545 </span>            : 
+<span class="lineNum">     546 </span><span class="lineCov">          3 :         ResultValueBase( ResultValueBase const &amp;other ) : ResultBase( other ) {</span>
+<span class="lineNum">     547 </span><span class="lineCov">          3 :             if( m_type == ResultBase::Ok )</span>
+<span class="lineNum">     548 </span><span class="lineCov">          3 :                 new( &amp;m_value ) T( other.m_value );</span>
+<a name="549"><span class="lineNum">     549 </span><span class="lineCov">          3 :         }</span></a>
+<span class="lineNum">     550 </span>            : 
+<span class="lineNum">     551 </span><span class="lineCov">          6 :         ResultValueBase( Type, T const &amp;value ) : ResultBase( Ok ) {</span>
+<span class="lineNum">     552 </span><span class="lineCov">          6 :             new( &amp;m_value ) T( value );</span>
+<a name="553"><span class="lineNum">     553 </span><span class="lineCov">          6 :         }</span></a>
+<span class="lineNum">     554 </span>            : 
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :         auto operator=( ResultValueBase const &amp;other ) -&gt; ResultValueBase &amp; {</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :             if( m_type == ResultBase::Ok )</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :                 m_value.~T();</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :             ResultBase::operator=(other);</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :             if( m_type == ResultBase::Ok )</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :                 new( &amp;m_value ) T( other.m_value );</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :             return *this;</span>
+<a name="562"><span class="lineNum">     562 </span>            :         }</a>
+<span class="lineNum">     563 </span>            : 
+<span class="lineNum">     564 </span><span class="lineCov">          9 :         ~ResultValueBase() override {</span>
+<span class="lineNum">     565 </span><span class="lineCov">          9 :             if( m_type == Ok )</span>
+<span class="lineNum">     566 </span><span class="lineCov">          6 :                 m_value.~T();</span>
+<span class="lineNum">     567 </span><span class="lineCov">         18 :         }</span>
+<span class="lineNum">     568 </span>            : 
+<span class="lineNum">     569 </span>            :         union {
+<span class="lineNum">     570 </span>            :             T m_value;
+<span class="lineNum">     571 </span>            :         };
+<span class="lineNum">     572 </span>            :     };
+<a name="573"><span class="lineNum">     573 </span>            : </a>
+<span class="lineNum">     574 </span>            :     template&lt;&gt;
+<a name="575"><span class="lineNum">     575 </span><span class="lineNoCov">          0 :     class ResultValueBase&lt;void&gt; : public ResultBase {</span></a>
+<span class="lineNum">     576 </span>            :     protected:
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :         using ResultBase::ResultBase;</span>
+<span class="lineNum">     578 </span>            :     };
+<a name="579"><span class="lineNum">     579 </span>            : </a>
+<span class="lineNum">     580 </span>            :     template&lt;typename T = void&gt;
+<span class="lineNum">     581 </span><span class="lineCov">         12 :     class BasicResult : public ResultValueBase&lt;T&gt; {</span>
+<a name="582"><span class="lineNum">     582 </span>            :     public:</a>
+<span class="lineNum">     583 </span>            :         template&lt;typename U&gt;
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :         explicit BasicResult( BasicResult&lt;U&gt; const &amp;other )</span>
+<span class="lineNum">     585 </span>            :         :   ResultValueBase&lt;T&gt;( other.type() ),
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :             m_errorMessage( other.errorMessage() )</span>
+<span class="lineNum">     587 </span>            :         {
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :             assert( type() != ResultBase::Ok );</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :         }</span>
+<a name="590"><span class="lineNum">     590 </span>            : </a>
+<a name="591"><span class="lineNum">     591 </span>            :         template&lt;typename U&gt;</a>
+<a name="592"><span class="lineNum">     592 </span><span class="lineCov">          6 :         static auto ok( U const &amp;value ) -&gt; BasicResult { return { ResultBase::Ok, value }; }</span></a>
+<a name="593"><span class="lineNum">     593 </span><span class="lineNoCov">          0 :         static auto ok() -&gt; BasicResult { return { ResultBase::Ok }; }</span></a>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :         static auto logicError( std::string const &amp;message ) -&gt; BasicResult { return { ResultBase::LogicError, message }; }</span>
+<a name="595"><span class="lineNum">     595 </span><span class="lineNoCov">          0 :         static auto runtimeError( std::string const &amp;message ) -&gt; BasicResult { return { ResultBase::RuntimeError, message }; }</span></a>
+<a name="596"><span class="lineNum">     596 </span>            : </a>
+<a name="597"><span class="lineNum">     597 </span><span class="lineCov">          3 :         explicit operator bool() const { return m_type == ResultBase::Ok; }</span></a>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :         auto type() const -&gt; ResultBase::Type { return m_type; }</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :         auto errorMessage() const -&gt; std::string { return m_errorMessage; }</span>
+<a name="600"><span class="lineNum">     600 </span>            : </a>
+<span class="lineNum">     601 </span>            :     protected:
+<span class="lineNum">     602 </span><span class="lineCov">          3 :         void enforceOk() const override {</span>
+<span class="lineNum">     603 </span>            : 
+<span class="lineNum">     604 </span>            :             // Errors shouldn't reach this point, but if they do
+<span class="lineNum">     605 </span>            :             // the actual error message will be in m_errorMessage
+<span class="lineNum">     606 </span><span class="lineCov">          3 :             assert( m_type != ResultBase::LogicError );</span>
+<span class="lineNum">     607 </span><span class="lineCov">          3 :             assert( m_type != ResultBase::RuntimeError );</span>
+<span class="lineNum">     608 </span><span class="lineCov">          3 :             if( m_type != ResultBase::Ok )</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :                 std::abort();</span>
+<span class="lineNum">     610 </span><span class="lineCov">          3 :         }</span>
+<span class="lineNum">     611 </span>            : 
+<a name="612"><span class="lineNum">     612 </span>            :         std::string m_errorMessage; // Only populated if resultType is an error</a>
+<span class="lineNum">     613 </span>            : 
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :         BasicResult( ResultBase::Type type, std::string const &amp;message )</span>
+<span class="lineNum">     615 </span>            :         :   ResultValueBase&lt;T&gt;(type),
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :             m_errorMessage(message)</span>
+<span class="lineNum">     617 </span>            :         {
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :             assert( m_type != ResultBase::Ok );</span>
+<a name="619"><span class="lineNum">     619 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">     620 </span>            : 
+<span class="lineNum">     621 </span><span class="lineCov">          6 :         using ResultValueBase&lt;T&gt;::ResultValueBase;</span>
+<span class="lineNum">     622 </span>            :         using ResultBase::m_type;
+<span class="lineNum">     623 </span>            :     };
+<span class="lineNum">     624 </span>            : 
+<span class="lineNum">     625 </span>            :     enum class ParseResultType {
+<span class="lineNum">     626 </span>            :         Matched, NoMatch, ShortCircuitAll, ShortCircuitSame
+<a name="627"><span class="lineNum">     627 </span>            :     };</a>
+<span class="lineNum">     628 </span>            : 
+<span class="lineNum">     629 </span><span class="lineCov">         15 :     class ParseState {</span>
+<a name="630"><span class="lineNum">     630 </span>            :     public:</a>
+<span class="lineNum">     631 </span>            : 
+<span class="lineNum">     632 </span><span class="lineCov">          3 :         ParseState( ParseResultType type, TokenStream const &amp;remainingTokens )</span>
+<span class="lineNum">     633 </span><span class="lineCov">          3 :         : m_type(type),</span>
+<span class="lineNum">     634 </span><span class="lineCov">          3 :           m_remainingTokens( remainingTokens )</span>
+<a name="635"><span class="lineNum">     635 </span><span class="lineCov">          3 :         {}</span></a>
+<a name="636"><span class="lineNum">     636 </span>            : </a>
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :         auto type() const -&gt; ParseResultType { return m_type; }</span>
+<span class="lineNum">     638 </span><span class="lineCov">          3 :         auto remainingTokens() const -&gt; TokenStream { return m_remainingTokens; }</span>
+<span class="lineNum">     639 </span>            : 
+<span class="lineNum">     640 </span>            :     private:
+<span class="lineNum">     641 </span>            :         ParseResultType m_type;
+<span class="lineNum">     642 </span>            :         TokenStream m_remainingTokens;
+<span class="lineNum">     643 </span>            :     };
+<span class="lineNum">     644 </span>            : 
+<span class="lineNum">     645 </span>            :     using Result = BasicResult&lt;void&gt;;
+<span class="lineNum">     646 </span>            :     using ParserResult = BasicResult&lt;ParseResultType&gt;;
+<a name="647"><span class="lineNum">     647 </span>            :     using InternalParseResult = BasicResult&lt;ParseState&gt;;</a>
+<span class="lineNum">     648 </span>            : 
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :     struct HelpColumns {</span>
+<span class="lineNum">     650 </span>            :         std::string left;
+<span class="lineNum">     651 </span>            :         std::string right;
+<span class="lineNum">     652 </span>            :     };
+<a name="653"><span class="lineNum">     653 </span>            : </a>
+<span class="lineNum">     654 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :     inline auto convertInto( std::string const &amp;source, T&amp; target ) -&gt; ParserResult {</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :         std::stringstream ss;</span>
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 :         ss &lt;&lt; source;</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :         ss &gt;&gt; target;</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :         if( ss.fail() )</span>
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :             return ParserResult::runtimeError( &quot;Unable to convert '&quot; + source + &quot;' to destination type&quot; );</span>
+<span class="lineNum">     661 </span>            :         else
+<a name="662"><span class="lineNum">     662 </span><span class="lineNoCov">          0 :             return ParserResult::ok( ParseResultType::Matched );</span></a>
+<span class="lineNum">     663 </span>            :     }
+<span class="lineNum">     664 </span><span class="lineCov">          3 :     inline auto convertInto( std::string const &amp;source, std::string&amp; target ) -&gt; ParserResult {</span>
+<span class="lineNum">     665 </span><span class="lineCov">          3 :         target = source;</span>
+<a name="666"><span class="lineNum">     666 </span><span class="lineCov">          3 :         return ParserResult::ok( ParseResultType::Matched );</span></a>
+<span class="lineNum">     667 </span>            :     }
+<a name="668"><span class="lineNum">     668 </span><span class="lineNoCov">          0 :     inline auto convertInto( std::string const &amp;source, bool &amp;target ) -&gt; ParserResult {</span></a>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :         std::string srcLC = source;</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :         std::transform( srcLC.begin(), srcLC.end(), srcLC.begin(), []( char c ) { return static_cast&lt;char&gt;( std::tolower(c) ); } );</span>
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 :         if (srcLC == &quot;y&quot; || srcLC == &quot;1&quot; || srcLC == &quot;true&quot; || srcLC == &quot;yes&quot; || srcLC == &quot;on&quot;)</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :             target = true;</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :         else if (srcLC == &quot;n&quot; || srcLC == &quot;0&quot; || srcLC == &quot;false&quot; || srcLC == &quot;no&quot; || srcLC == &quot;off&quot;)</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :             target = false;</span>
+<span class="lineNum">     675 </span>            :         else
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :             return ParserResult::runtimeError( &quot;Expected a boolean value but did not recognise: '&quot; + source + &quot;'&quot; );</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :         return ParserResult::ok( ParseResultType::Matched );</span>
+<span class="lineNum">     678 </span>            :     }
+<span class="lineNum">     679 </span>            : #ifdef CLARA_CONFIG_OPTIONAL_TYPE
+<span class="lineNum">     680 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     681 </span>            :     inline auto convertInto( std::string const &amp;source, CLARA_CONFIG_OPTIONAL_TYPE&lt;T&gt;&amp; target ) -&gt; ParserResult {
+<span class="lineNum">     682 </span>            :         T temp;
+<span class="lineNum">     683 </span>            :         auto result = convertInto( source, temp );
+<span class="lineNum">     684 </span>            :         if( result )
+<span class="lineNum">     685 </span>            :             target = std::move(temp);
+<span class="lineNum">     686 </span>            :         return result;
+<span class="lineNum">     687 </span>            :     }
+<span class="lineNum">     688 </span>            : #endif // CLARA_CONFIG_OPTIONAL_TYPE
+<span class="lineNum">     689 </span>            : 
+<span class="lineNum">     690 </span>            :     struct NonCopyable {
+<span class="lineNum">     691 </span>            :         NonCopyable() = default;
+<span class="lineNum">     692 </span>            :         NonCopyable( NonCopyable const &amp; ) = delete;
+<span class="lineNum">     693 </span>            :         NonCopyable( NonCopyable &amp;&amp; ) = delete;
+<span class="lineNum">     694 </span>            :         NonCopyable &amp;operator=( NonCopyable const &amp; ) = delete;
+<span class="lineNum">     695 </span>            :         NonCopyable &amp;operator=( NonCopyable &amp;&amp; ) = delete;
+<a name="696"><span class="lineNum">     696 </span>            :     };</a>
+<a name="697"><span class="lineNum">     697 </span>            : </a>
+<a name="698"><span class="lineNum">     698 </span><span class="lineCov">         96 :     struct BoundRef : NonCopyable {</span></a>
+<a name="699"><span class="lineNum">     699 </span><span class="lineCov">         96 :         virtual ~BoundRef() = default;</span></a>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :         virtual auto isContainer() const -&gt; bool { return false; }</span>
+<a name="701"><span class="lineNum">     701 </span><span class="lineNoCov">          0 :         virtual auto isFlag() const -&gt; bool { return false; }</span></a>
+<span class="lineNum">     702 </span>            :     };
+<span class="lineNum">     703 </span><span class="lineCov">        114 :     struct BoundValueRefBase : BoundRef {</span>
+<a name="704"><span class="lineNum">     704 </span>            :         virtual auto setValue( std::string const &amp;arg ) -&gt; ParserResult = 0;</a>
+<span class="lineNum">     705 </span>            :     };
+<a name="706"><span class="lineNum">     706 </span><span class="lineCov">         78 :     struct BoundFlagRefBase : BoundRef {</span></a>
+<span class="lineNum">     707 </span>            :         virtual auto setFlag( bool flag ) -&gt; ParserResult = 0;
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 :         virtual auto isFlag() const -&gt; bool { return true; }</span>
+<span class="lineNum">     709 </span>            :     };
+<a name="710"><span class="lineNum">     710 </span>            : </a>
+<span class="lineNum">     711 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     712 </span><span class="lineCov">         21 :     struct BoundValueRef : BoundValueRefBase {</span>
+<a name="713"><span class="lineNum">     713 </span>            :         T &amp;m_ref;</a>
+<span class="lineNum">     714 </span>            : 
+<a name="715"><span class="lineNum">     715 </span><span class="lineCov">         21 :         explicit BoundValueRef( T &amp;ref ) : m_ref( ref ) {}</span></a>
+<span class="lineNum">     716 </span>            : 
+<span class="lineNum">     717 </span><span class="lineCov">          3 :         auto setValue( std::string const &amp;arg ) -&gt; ParserResult override {</span>
+<span class="lineNum">     718 </span><span class="lineCov">          3 :             return convertInto( arg, m_ref );</span>
+<span class="lineNum">     719 </span>            :         }
+<span class="lineNum">     720 </span>            :     };
+<a name="721"><span class="lineNum">     721 </span>            : </a>
+<span class="lineNum">     722 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     723 </span><span class="lineCov">          6 :     struct BoundValueRef&lt;std::vector&lt;T&gt;&gt; : BoundValueRefBase {</span>
+<a name="724"><span class="lineNum">     724 </span>            :         std::vector&lt;T&gt; &amp;m_ref;</a>
+<span class="lineNum">     725 </span>            : 
+<a name="726"><span class="lineNum">     726 </span><span class="lineCov">          6 :         explicit BoundValueRef( std::vector&lt;T&gt; &amp;ref ) : m_ref( ref ) {}</span></a>
+<span class="lineNum">     727 </span>            : 
+<a name="728"><span class="lineNum">     728 </span><span class="lineNoCov">          0 :         auto isContainer() const -&gt; bool override { return true; }</span></a>
+<span class="lineNum">     729 </span>            : 
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :         auto setValue( std::string const &amp;arg ) -&gt; ParserResult override {</span>
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 :             T temp;</span>
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :             auto result = convertInto( arg, temp );</span>
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :             if( result )</span>
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :                 m_ref.push_back( temp );</span>
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :             return result;</span>
+<span class="lineNum">     736 </span>            :         }
+<a name="737"><span class="lineNum">     737 </span>            :     };</a>
+<span class="lineNum">     738 </span>            : 
+<span class="lineNum">     739 </span><span class="lineCov">         33 :     struct BoundFlagRef : BoundFlagRefBase {</span>
+<a name="740"><span class="lineNum">     740 </span>            :         bool &amp;m_ref;</a>
+<span class="lineNum">     741 </span>            : 
+<a name="742"><span class="lineNum">     742 </span><span class="lineCov">         33 :         explicit BoundFlagRef( bool &amp;ref ) : m_ref( ref ) {}</span></a>
+<span class="lineNum">     743 </span>            : 
+<span class="lineNum">     744 </span><span class="lineNoCov">          0 :         auto setFlag( bool flag ) -&gt; ParserResult override {</span>
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :             m_ref = flag;</span>
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :             return ParserResult::ok( ParseResultType::Matched );</span>
+<span class="lineNum">     747 </span>            :         }
+<span class="lineNum">     748 </span>            :     };
+<span class="lineNum">     749 </span>            : 
+<span class="lineNum">     750 </span>            :     template&lt;typename ReturnType&gt;
+<span class="lineNum">     751 </span>            :     struct LambdaInvoker {
+<span class="lineNum">     752 </span>            :         static_assert( std::is_same&lt;ReturnType, ParserResult&gt;::value, &quot;Lambda must return void or clara::ParserResult&quot; );
+<a name="753"><span class="lineNum">     753 </span>            : </a>
+<span class="lineNum">     754 </span>            :         template&lt;typename L, typename ArgType&gt;
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :         static auto invoke( L const &amp;lambda, ArgType const &amp;arg ) -&gt; ParserResult {</span>
+<span class="lineNum">     756 </span><span class="lineNoCov">          0 :             return lambda( arg );</span>
+<span class="lineNum">     757 </span>            :         }
+<span class="lineNum">     758 </span>            :     };
+<span class="lineNum">     759 </span>            : 
+<span class="lineNum">     760 </span>            :     template&lt;&gt;
+<a name="761"><span class="lineNum">     761 </span>            :     struct LambdaInvoker&lt;void&gt; {</a>
+<span class="lineNum">     762 </span>            :         template&lt;typename L, typename ArgType&gt;
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :         static auto invoke( L const &amp;lambda, ArgType const &amp;arg ) -&gt; ParserResult {</span>
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 :             lambda( arg );</span>
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 :             return ParserResult::ok( ParseResultType::Matched );</span>
+<span class="lineNum">     766 </span>            :         }
+<span class="lineNum">     767 </span>            :     };
+<a name="768"><span class="lineNum">     768 </span>            : </a>
+<span class="lineNum">     769 </span>            :     template&lt;typename ArgType, typename L&gt;
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :     inline auto invokeLambda( L const &amp;lambda, std::string const &amp;arg ) -&gt; ParserResult {</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :         ArgType temp{};</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :         auto result = convertInto( arg, temp );</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :         return !result</span>
+<span class="lineNum">     774 </span>            :            ? result
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :            : LambdaInvoker&lt;typename UnaryLambdaTraits&lt;L&gt;::ReturnType&gt;::invoke( lambda, temp );</span>
+<span class="lineNum">     776 </span>            :     }
+<span class="lineNum">     777 </span>            : 
+<a name="778"><span class="lineNum">     778 </span>            : </a>
+<span class="lineNum">     779 </span>            :     template&lt;typename L&gt;
+<span class="lineNum">     780 </span><span class="lineCov">         30 :     struct BoundLambda : BoundValueRefBase {</span>
+<span class="lineNum">     781 </span>            :         L m_lambda;
+<a name="782"><span class="lineNum">     782 </span>            : </a>
+<span class="lineNum">     783 </span>            :         static_assert( UnaryLambdaTraits&lt;L&gt;::isValid, &quot;Supplied lambda must take exactly one argument&quot; );
+<a name="784"><span class="lineNum">     784 </span><span class="lineCov">         30 :         explicit BoundLambda( L const &amp;lambda ) : m_lambda( lambda ) {}</span></a>
+<span class="lineNum">     785 </span>            : 
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :         auto setValue( std::string const &amp;arg ) -&gt; ParserResult override {</span>
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :             return invokeLambda&lt;typename UnaryLambdaTraits&lt;L&gt;::ArgType&gt;( m_lambda, arg );</span>
+<span class="lineNum">     788 </span>            :         }
+<span class="lineNum">     789 </span>            :     };
+<a name="790"><span class="lineNum">     790 </span>            : </a>
+<span class="lineNum">     791 </span>            :     template&lt;typename L&gt;
+<span class="lineNum">     792 </span><span class="lineCov">          6 :     struct BoundFlagLambda : BoundFlagRefBase {</span>
+<span class="lineNum">     793 </span>            :         L m_lambda;
+<span class="lineNum">     794 </span>            : 
+<span class="lineNum">     795 </span>            :         static_assert( UnaryLambdaTraits&lt;L&gt;::isValid, &quot;Supplied lambda must take exactly one argument&quot; );
+<a name="796"><span class="lineNum">     796 </span>            :         static_assert( std::is_same&lt;typename UnaryLambdaTraits&lt;L&gt;::ArgType, bool&gt;::value, &quot;flags must be boolean&quot; );</a>
+<span class="lineNum">     797 </span>            : 
+<a name="798"><span class="lineNum">     798 </span><span class="lineCov">          6 :         explicit BoundFlagLambda( L const &amp;lambda ) : m_lambda( lambda ) {}</span></a>
+<span class="lineNum">     799 </span>            : 
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :         auto setFlag( bool flag ) -&gt; ParserResult override {</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :             return LambdaInvoker&lt;typename UnaryLambdaTraits&lt;L&gt;::ReturnType&gt;::invoke( m_lambda, flag );</span>
+<span class="lineNum">     802 </span>            :         }
+<span class="lineNum">     803 </span>            :     };
+<span class="lineNum">     804 </span>            : 
+<span class="lineNum">     805 </span>            :     enum class Optionality { Optional, Required };
+<span class="lineNum">     806 </span>            : 
+<a name="807"><span class="lineNum">     807 </span>            :     struct Parser;</a>
+<span class="lineNum">     808 </span>            : 
+<a name="809"><span class="lineNum">     809 </span><span class="lineCov">       4782 :     class ParserBase {</span></a>
+<a name="810"><span class="lineNum">     810 </span>            :     public:</a>
+<span class="lineNum">     811 </span><span class="lineCov">       4773 :         virtual ~ParserBase() = default;</span>
+<a name="812"><span class="lineNum">     812 </span><span class="lineNoCov">          0 :         virtual auto validate() const -&gt; Result { return Result::ok(); }</span></a>
+<span class="lineNum">     813 </span>            :         virtual auto parse( std::string const&amp; exeName, TokenStream const &amp;tokens) const -&gt; InternalParseResult  = 0;
+<a name="814"><span class="lineNum">     814 </span><span class="lineNoCov">          0 :         virtual auto cardinality() const -&gt; size_t { return 1; }</span></a>
+<span class="lineNum">     815 </span>            : 
+<span class="lineNum">     816 </span><span class="lineCov">          3 :         auto parse( Args const &amp;args ) const -&gt; InternalParseResult {</span>
+<span class="lineNum">     817 </span><span class="lineCov">          3 :             return parse( args.exeName(), TokenStream( args ) );</span>
+<span class="lineNum">     818 </span>            :         }
+<span class="lineNum">     819 </span>            :     };
+<a name="820"><span class="lineNum">     820 </span>            : </a>
+<span class="lineNum">     821 </span>            :     template&lt;typename DerivedT&gt;
+<span class="lineNum">     822 </span><span class="lineCov">       9156 :     class ComposableParserImpl : public ParserBase {</span>
+<span class="lineNum">     823 </span>            :     public:
+<span class="lineNum">     824 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">     825 </span>            :         auto operator|( T const &amp;other ) const -&gt; Parser;
+<span class="lineNum">     826 </span>            : 
+<span class="lineNum">     827 </span>            :                 template&lt;typename T&gt;
+<span class="lineNum">     828 </span>            :         auto operator+( T const &amp;other ) const -&gt; Parser;
+<span class="lineNum">     829 </span>            :     };
+<span class="lineNum">     830 </span>            : 
+<a name="831"><span class="lineNum">     831 </span>            :     // Common code and state for Args and Opts</a>
+<span class="lineNum">     832 </span>            :     template&lt;typename DerivedT&gt;
+<span class="lineNum">     833 </span><span class="lineCov">       8655 :     class ParserRefImpl : public ComposableParserImpl&lt;DerivedT&gt; {</span>
+<span class="lineNum">     834 </span>            :     protected:
+<span class="lineNum">     835 </span>            :         Optionality m_optionality = Optionality::Optional;
+<span class="lineNum">     836 </span>            :         std::shared_ptr&lt;BoundRef&gt; m_ref;
+<span class="lineNum">     837 </span>            :         std::string m_hint;
+<a name="838"><span class="lineNum">     838 </span>            :         std::string m_description;</a>
+<span class="lineNum">     839 </span>            : 
+<span class="lineNum">     840 </span><span class="lineCov">         39 :         explicit ParserRefImpl( std::shared_ptr&lt;BoundRef&gt; const &amp;ref ) : m_ref( ref ) {}</span>
+<span class="lineNum">     841 </span>            : 
+<a name="842"><span class="lineNum">     842 </span>            :     public:</a>
+<span class="lineNum">     843 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">     844 </span><span class="lineCov">         24 :         ParserRefImpl( T &amp;ref, std::string const &amp;hint )</span>
+<span class="lineNum">     845 </span>            :         :   m_ref( std::make_shared&lt;BoundValueRef&lt;T&gt;&gt;( ref ) ),
+<span class="lineNum">     846 </span><span class="lineCov">         24 :             m_hint( hint )</span>
+<span class="lineNum">     847 </span><span class="lineCov">         24 :         {}</span>
+<a name="848"><span class="lineNum">     848 </span>            : </a>
+<span class="lineNum">     849 </span>            :         template&lt;typename LambdaT&gt;
+<span class="lineNum">     850 </span><span class="lineCov">         30 :         ParserRefImpl( LambdaT const &amp;ref, std::string const &amp;hint )</span>
+<span class="lineNum">     851 </span>            :         :   m_ref( std::make_shared&lt;BoundLambda&lt;LambdaT&gt;&gt;( ref ) ),
+<span class="lineNum">     852 </span><span class="lineCov">         30 :             m_hint(hint)</span>
+<a name="853"><span class="lineNum">     853 </span><span class="lineCov">         30 :         {}</span></a>
+<span class="lineNum">     854 </span>            : 
+<span class="lineNum">     855 </span><span class="lineCov">         93 :         auto operator()( std::string const &amp;description ) -&gt; DerivedT &amp; {</span>
+<span class="lineNum">     856 </span><span class="lineCov">         93 :             m_description = description;</span>
+<span class="lineNum">     857 </span><span class="lineCov">         93 :             return static_cast&lt;DerivedT &amp;&gt;( *this );</span>
+<a name="858"><span class="lineNum">     858 </span>            :         }</a>
+<span class="lineNum">     859 </span>            : 
+<span class="lineNum">     860 </span><span class="lineCov">          3 :         auto optional() -&gt; DerivedT &amp; {</span>
+<span class="lineNum">     861 </span><span class="lineCov">          3 :             m_optionality = Optionality::Optional;</span>
+<span class="lineNum">     862 </span><span class="lineCov">          3 :             return static_cast&lt;DerivedT &amp;&gt;( *this );</span>
+<span class="lineNum">     863 </span>            :         };
+<span class="lineNum">     864 </span>            : 
+<span class="lineNum">     865 </span>            :         auto required() -&gt; DerivedT &amp; {
+<span class="lineNum">     866 </span>            :             m_optionality = Optionality::Required;
+<span class="lineNum">     867 </span>            :             return static_cast&lt;DerivedT &amp;&gt;( *this );
+<a name="868"><span class="lineNum">     868 </span>            :         };</a>
+<span class="lineNum">     869 </span>            : 
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :         auto isOptional() const -&gt; bool {</span>
+<span class="lineNum">     871 </span><span class="lineNoCov">          0 :             return m_optionality == Optionality::Optional;</span>
+<a name="872"><span class="lineNum">     872 </span>            :         }</a>
+<span class="lineNum">     873 </span>            : 
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :         auto cardinality() const -&gt; size_t override {</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :             if( m_ref-&gt;isContainer() )</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :                 return 0;</span>
+<span class="lineNum">     877 </span>            :             else
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :                 return 1;</span>
+<a name="879"><span class="lineNum">     879 </span>            :         }</a>
+<span class="lineNum">     880 </span>            : 
+<span class="lineNum">     881 </span><span class="lineNoCov">          0 :         auto hint() const -&gt; std::string { return m_hint; }</span>
+<a name="882"><span class="lineNum">     882 </span>            :     };</a>
+<span class="lineNum">     883 </span>            : 
+<span class="lineNum">     884 </span><span class="lineCov">        399 :     class ExeName : public ComposableParserImpl&lt;ExeName&gt; {</span>
+<span class="lineNum">     885 </span>            :         std::shared_ptr&lt;std::string&gt; m_name;
+<span class="lineNum">     886 </span>            :         std::shared_ptr&lt;BoundValueRefBase&gt; m_ref;
+<span class="lineNum">     887 </span>            : 
+<span class="lineNum">     888 </span>            :         template&lt;typename LambdaT&gt;
+<span class="lineNum">     889 </span>            :         static auto makeRef(LambdaT const &amp;lambda) -&gt; std::shared_ptr&lt;BoundValueRefBase&gt; {
+<span class="lineNum">     890 </span>            :             return std::make_shared&lt;BoundLambda&lt;LambdaT&gt;&gt;( lambda) ;
+<span class="lineNum">     891 </span>            :         }
+<a name="892"><span class="lineNum">     892 </span>            : </a>
+<span class="lineNum">     893 </span>            :     public:
+<a name="894"><span class="lineNum">     894 </span><span class="lineCov">          9 :         ExeName() : m_name( std::make_shared&lt;std::string&gt;( &quot;&lt;executable&gt;&quot; ) ) {}</span></a>
+<span class="lineNum">     895 </span>            : 
+<span class="lineNum">     896 </span><span class="lineCov">          3 :         explicit ExeName( std::string &amp;ref ) : ExeName() {</span>
+<span class="lineNum">     897 </span><span class="lineCov">          3 :             m_ref = std::make_shared&lt;BoundValueRef&lt;std::string&gt;&gt;( ref );</span>
+<span class="lineNum">     898 </span><span class="lineCov">          3 :         }</span>
+<span class="lineNum">     899 </span>            : 
+<span class="lineNum">     900 </span>            :         template&lt;typename LambdaT&gt;
+<span class="lineNum">     901 </span>            :         explicit ExeName( LambdaT const&amp; lambda ) : ExeName() {
+<span class="lineNum">     902 </span>            :             m_ref = std::make_shared&lt;BoundLambda&lt;LambdaT&gt;&gt;( lambda );
+<span class="lineNum">     903 </span>            :         }
+<a name="904"><span class="lineNum">     904 </span>            : </a>
+<span class="lineNum">     905 </span>            :         // The exe name is not parsed out of the normal tokens, but is handled specially
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :         auto parse( std::string const&amp;, TokenStream const &amp;tokens ) const -&gt; InternalParseResult override {</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :             return InternalParseResult::ok( ParseState( ParseResultType::NoMatch, tokens ) );</span>
+<a name="908"><span class="lineNum">     908 </span>            :         }</a>
+<a name="909"><span class="lineNum">     909 </span>            : </a>
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :         auto name() const -&gt; std::string { return *m_name; }</span>
+<span class="lineNum">     911 </span><span class="lineCov">          3 :         auto set( std::string const&amp; newName ) -&gt; ParserResult {</span>
+<span class="lineNum">     912 </span>            : 
+<span class="lineNum">     913 </span><span class="lineCov">          3 :             auto lastSlash = newName.find_last_of( &quot;\\/&quot; );</span>
+<span class="lineNum">     914 </span>            :             auto filename = ( lastSlash == std::string::npos )
+<span class="lineNum">     915 </span>            :                     ? newName
+<span class="lineNum">     916 </span><span class="lineCov">          6 :                     : newName.substr( lastSlash+1 );</span>
+<span class="lineNum">     917 </span>            : 
+<span class="lineNum">     918 </span><span class="lineCov">          3 :             *m_name = filename;</span>
+<span class="lineNum">     919 </span><span class="lineCov">          3 :             if( m_ref )</span>
+<span class="lineNum">     920 </span><span class="lineCov">          3 :                 return m_ref-&gt;setValue( filename );</span>
+<span class="lineNum">     921 </span>            :             else
+<span class="lineNum">     922 </span><span class="lineNoCov">          0 :                 return ParserResult::ok( ParseResultType::Matched );</span>
+<span class="lineNum">     923 </span>            :         }
+<a name="924"><span class="lineNum">     924 </span>            :     };</a>
+<span class="lineNum">     925 </span>            : 
+<a name="926"><span class="lineNum">     926 </span><span class="lineCov">         15 :     class Arg : public ParserRefImpl&lt;Arg&gt; {</span></a>
+<span class="lineNum">     927 </span>            :     public:
+<a name="928"><span class="lineNum">     928 </span><span class="lineCov">          3 :         using ParserRefImpl::ParserRefImpl;</span></a>
+<span class="lineNum">     929 </span>            : 
+<span class="lineNum">     930 </span><span class="lineNoCov">          0 :         auto parse( std::string const &amp;, TokenStream const &amp;tokens ) const -&gt; InternalParseResult override {</span>
+<span class="lineNum">     931 </span><span class="lineNoCov">          0 :             auto validationResult = validate();</span>
+<span class="lineNum">     932 </span><span class="lineNoCov">          0 :             if( !validationResult )</span>
+<span class="lineNum">     933 </span><span class="lineNoCov">          0 :                 return InternalParseResult( validationResult );</span>
+<span class="lineNum">     934 </span>            : 
+<span class="lineNum">     935 </span><span class="lineNoCov">          0 :             auto remainingTokens = tokens;</span>
+<span class="lineNum">     936 </span><span class="lineNoCov">          0 :             auto const &amp;token = *remainingTokens;</span>
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 :             if( token.type != TokenType::Argument )</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :                 return InternalParseResult::ok( ParseState( ParseResultType::NoMatch, remainingTokens ) );</span>
+<span class="lineNum">     939 </span>            : 
+<span class="lineNum">     940 </span><span class="lineNoCov">          0 :             assert( !m_ref-&gt;isFlag() );</span>
+<span class="lineNum">     941 </span><span class="lineNoCov">          0 :             auto valueRef = static_cast&lt;detail::BoundValueRefBase*&gt;( m_ref.get() );</span>
+<span class="lineNum">     942 </span>            : 
+<span class="lineNum">     943 </span><span class="lineNoCov">          0 :             auto result = valueRef-&gt;setValue( remainingTokens-&gt;token );</span>
+<span class="lineNum">     944 </span><span class="lineNoCov">          0 :             if( !result )</span>
+<span class="lineNum">     945 </span><span class="lineNoCov">          0 :                 return InternalParseResult( result );</span>
+<span class="lineNum">     946 </span>            :             else
+<span class="lineNum">     947 </span><span class="lineNoCov">          0 :                 return InternalParseResult::ok( ParseState( ParseResultType::Matched, ++remainingTokens ) );</span>
+<span class="lineNum">     948 </span>            :         }
+<a name="949"><span class="lineNum">     949 </span>            :     };</a>
+<span class="lineNum">     950 </span>            : 
+<span class="lineNum">     951 </span><span class="lineNoCov">          0 :     inline auto normaliseOpt( std::string const &amp;optName ) -&gt; std::string {</span>
+<span class="lineNum">     952 </span>            : #ifdef CATCH_PLATFORM_WINDOWS
+<span class="lineNum">     953 </span>            :         if( optName[0] == '/' )
+<span class="lineNum">     954 </span>            :             return &quot;-&quot; + optName.substr( 1 );
+<span class="lineNum">     955 </span>            :         else
+<span class="lineNum">     956 </span>            : #endif
+<span class="lineNum">     957 </span><span class="lineNoCov">          0 :             return optName;</span>
+<a name="958"><span class="lineNum">     958 </span>            :     }</a>
+<span class="lineNum">     959 </span>            : 
+<span class="lineNum">     960 </span><span class="lineCov">       8640 :     class Opt : public ParserRefImpl&lt;Opt&gt; {</span>
+<span class="lineNum">     961 </span>            :     protected:
+<span class="lineNum">     962 </span>            :         std::vector&lt;std::string&gt; m_optNames;
+<span class="lineNum">     963 </span>            : 
+<a name="964"><span class="lineNum">     964 </span>            :     public:</a>
+<span class="lineNum">     965 </span>            :         template&lt;typename LambdaT&gt;
+<a name="966"><span class="lineNum">     966 </span><span class="lineCov">          6 :         explicit Opt( LambdaT const &amp;ref ) : ParserRefImpl( std::make_shared&lt;BoundFlagLambda&lt;LambdaT&gt;&gt;( ref ) ) {}</span></a>
+<span class="lineNum">     967 </span>            : 
+<span class="lineNum">     968 </span><span class="lineCov">         33 :         explicit Opt( bool &amp;ref ) : ParserRefImpl( std::make_shared&lt;BoundFlagRef&gt;( ref ) ) {}</span>
+<a name="969"><span class="lineNum">     969 </span>            : </a>
+<span class="lineNum">     970 </span>            :         template&lt;typename LambdaT&gt;
+<span class="lineNum">     971 </span><span class="lineCov">         30 :         Opt( LambdaT const &amp;ref, std::string const &amp;hint ) : ParserRefImpl( ref, hint ) {}</span>
+<a name="972"><span class="lineNum">     972 </span>            : </a>
+<span class="lineNum">     973 </span>            :         template&lt;typename T&gt;
+<a name="974"><span class="lineNum">     974 </span><span class="lineCov">         21 :         Opt( T &amp;ref, std::string const &amp;hint ) : ParserRefImpl( ref, hint ) {}</span></a>
+<span class="lineNum">     975 </span>            : 
+<span class="lineNum">     976 </span><span class="lineCov">        147 :         auto operator[]( std::string const &amp;optName ) -&gt; Opt &amp; {</span>
+<span class="lineNum">     977 </span><span class="lineCov">        147 :             m_optNames.push_back( optName );</span>
+<span class="lineNum">     978 </span><span class="lineCov">        147 :             return *this;</span>
+<a name="979"><span class="lineNum">     979 </span>            :         }</a>
+<span class="lineNum">     980 </span>            : 
+<span class="lineNum">     981 </span><span class="lineNoCov">          0 :         auto getHelpColumns() const -&gt; std::vector&lt;HelpColumns&gt; {</span>
+<span class="lineNum">     982 </span><span class="lineNoCov">          0 :             std::ostringstream oss;</span>
+<span class="lineNum">     983 </span><span class="lineNoCov">          0 :             bool first = true;</span>
+<span class="lineNum">     984 </span><span class="lineNoCov">          0 :             for( auto const &amp;opt : m_optNames ) {</span>
+<span class="lineNum">     985 </span><span class="lineNoCov">          0 :                 if (first)</span>
+<span class="lineNum">     986 </span><span class="lineNoCov">          0 :                     first = false;</span>
+<span class="lineNum">     987 </span>            :                 else
+<span class="lineNum">     988 </span><span class="lineNoCov">          0 :                     oss &lt;&lt; &quot;, &quot;;</span>
+<span class="lineNum">     989 </span><span class="lineNoCov">          0 :                 oss &lt;&lt; opt;</span>
+<span class="lineNum">     990 </span>            :             }
+<span class="lineNum">     991 </span><span class="lineNoCov">          0 :             if( !m_hint.empty() )</span>
+<span class="lineNum">     992 </span><span class="lineNoCov">          0 :                 oss &lt;&lt; &quot; &lt;&quot; &lt;&lt; m_hint &lt;&lt; &quot;&gt;&quot;;</span>
+<span class="lineNum">     993 </span><span class="lineNoCov">          0 :             return { { oss.str(), m_description } };</span>
+<a name="994"><span class="lineNum">     994 </span>            :         }</a>
+<span class="lineNum">     995 </span>            : 
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :         auto isMatch( std::string const &amp;optToken ) const -&gt; bool {</span>
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :             auto normalisedToken = normaliseOpt( optToken );</span>
+<span class="lineNum">     998 </span><span class="lineNoCov">          0 :             for( auto const &amp;name : m_optNames ) {</span>
+<span class="lineNum">     999 </span><span class="lineNoCov">          0 :                 if( normaliseOpt( name ) == normalisedToken )</span>
+<span class="lineNum">    1000 </span><span class="lineNoCov">          0 :                     return true;</span>
+<span class="lineNum">    1001 </span>            :             }
+<span class="lineNum">    1002 </span><span class="lineNoCov">          0 :             return false;</span>
+<span class="lineNum">    1003 </span>            :         }
+<span class="lineNum">    1004 </span>            : 
+<a name="1005"><span class="lineNum">    1005 </span>            :         using ParserBase::parse;</a>
+<span class="lineNum">    1006 </span>            : 
+<span class="lineNum">    1007 </span><span class="lineNoCov">          0 :         auto parse( std::string const&amp;, TokenStream const &amp;tokens ) const -&gt; InternalParseResult override {</span>
+<span class="lineNum">    1008 </span><span class="lineNoCov">          0 :             auto validationResult = validate();</span>
+<span class="lineNum">    1009 </span><span class="lineNoCov">          0 :             if( !validationResult )</span>
+<span class="lineNum">    1010 </span><span class="lineNoCov">          0 :                 return InternalParseResult( validationResult );</span>
+<span class="lineNum">    1011 </span>            : 
+<span class="lineNum">    1012 </span><span class="lineNoCov">          0 :             auto remainingTokens = tokens;</span>
+<span class="lineNum">    1013 </span><span class="lineNoCov">          0 :             if( remainingTokens &amp;&amp; remainingTokens-&gt;type == TokenType::Option ) {</span>
+<span class="lineNum">    1014 </span><span class="lineNoCov">          0 :                 auto const &amp;token = *remainingTokens;</span>
+<span class="lineNum">    1015 </span><span class="lineNoCov">          0 :                 if( isMatch(token.token ) ) {</span>
+<span class="lineNum">    1016 </span><span class="lineNoCov">          0 :                     if( m_ref-&gt;isFlag() ) {</span>
+<span class="lineNum">    1017 </span><span class="lineNoCov">          0 :                         auto flagRef = static_cast&lt;detail::BoundFlagRefBase*&gt;( m_ref.get() );</span>
+<span class="lineNum">    1018 </span><span class="lineNoCov">          0 :                         auto result = flagRef-&gt;setFlag( true );</span>
+<span class="lineNum">    1019 </span><span class="lineNoCov">          0 :                         if( !result )</span>
+<span class="lineNum">    1020 </span><span class="lineNoCov">          0 :                             return InternalParseResult( result );</span>
+<span class="lineNum">    1021 </span><span class="lineNoCov">          0 :                         if( result.value() == ParseResultType::ShortCircuitAll )</span>
+<span class="lineNum">    1022 </span><span class="lineNoCov">          0 :                             return InternalParseResult::ok( ParseState( result.value(), remainingTokens ) );</span>
+<span class="lineNum">    1023 </span>            :                     } else {
+<span class="lineNum">    1024 </span><span class="lineNoCov">          0 :                         auto valueRef = static_cast&lt;detail::BoundValueRefBase*&gt;( m_ref.get() );</span>
+<span class="lineNum">    1025 </span><span class="lineNoCov">          0 :                         ++remainingTokens;</span>
+<span class="lineNum">    1026 </span><span class="lineNoCov">          0 :                         if( !remainingTokens )</span>
+<span class="lineNum">    1027 </span><span class="lineNoCov">          0 :                             return InternalParseResult::runtimeError( &quot;Expected argument following &quot; + token.token );</span>
+<span class="lineNum">    1028 </span><span class="lineNoCov">          0 :                         auto const &amp;argToken = *remainingTokens;</span>
+<span class="lineNum">    1029 </span><span class="lineNoCov">          0 :                         if( argToken.type != TokenType::Argument )</span>
+<span class="lineNum">    1030 </span><span class="lineNoCov">          0 :                             return InternalParseResult::runtimeError( &quot;Expected argument following &quot; + token.token );</span>
+<span class="lineNum">    1031 </span><span class="lineNoCov">          0 :                         auto result = valueRef-&gt;setValue( argToken.token );</span>
+<span class="lineNum">    1032 </span><span class="lineNoCov">          0 :                         if( !result )</span>
+<span class="lineNum">    1033 </span><span class="lineNoCov">          0 :                             return InternalParseResult( result );</span>
+<span class="lineNum">    1034 </span><span class="lineNoCov">          0 :                         if( result.value() == ParseResultType::ShortCircuitAll )</span>
+<span class="lineNum">    1035 </span><span class="lineNoCov">          0 :                             return InternalParseResult::ok( ParseState( result.value(), remainingTokens ) );</span>
+<span class="lineNum">    1036 </span>            :                     }
+<span class="lineNum">    1037 </span><span class="lineNoCov">          0 :                     return InternalParseResult::ok( ParseState( ParseResultType::Matched, ++remainingTokens ) );</span>
+<span class="lineNum">    1038 </span>            :                 }
+<span class="lineNum">    1039 </span>            :             }
+<span class="lineNum">    1040 </span><span class="lineNoCov">          0 :             return InternalParseResult::ok( ParseState( ParseResultType::NoMatch, remainingTokens ) );</span>
+<a name="1041"><span class="lineNum">    1041 </span>            :         }</a>
+<span class="lineNum">    1042 </span>            : 
+<span class="lineNum">    1043 </span><span class="lineNoCov">          0 :         auto validate() const -&gt; Result override {</span>
+<span class="lineNum">    1044 </span><span class="lineNoCov">          0 :             if( m_optNames.empty() )</span>
+<span class="lineNum">    1045 </span><span class="lineNoCov">          0 :                 return Result::logicError( &quot;No options supplied to Opt&quot; );</span>
+<span class="lineNum">    1046 </span><span class="lineNoCov">          0 :             for( auto const &amp;name : m_optNames ) {</span>
+<span class="lineNum">    1047 </span><span class="lineNoCov">          0 :                 if( name.empty() )</span>
+<span class="lineNum">    1048 </span><span class="lineNoCov">          0 :                     return Result::logicError( &quot;Option name cannot be empty&quot; );</span>
+<span class="lineNum">    1049 </span>            : #ifdef CATCH_PLATFORM_WINDOWS
+<span class="lineNum">    1050 </span>            :                 if( name[0] != '-' &amp;&amp; name[0] != '/' )
+<span class="lineNum">    1051 </span>            :                     return Result::logicError( &quot;Option name must begin with '-' or '/'&quot; );
+<span class="lineNum">    1052 </span>            : #else
+<span class="lineNum">    1053 </span><span class="lineNoCov">          0 :                 if( name[0] != '-' )</span>
+<span class="lineNum">    1054 </span><span class="lineNoCov">          0 :                     return Result::logicError( &quot;Option name must begin with '-'&quot; );</span>
+<span class="lineNum">    1055 </span>            : #endif
+<span class="lineNum">    1056 </span>            :             }
+<span class="lineNum">    1057 </span><span class="lineNoCov">          0 :             return ParserRefImpl::validate();</span>
+<span class="lineNum">    1058 </span>            :         }
+<a name="1059"><span class="lineNum">    1059 </span>            :     };</a>
+<a name="1060"><span class="lineNum">    1060 </span>            : </a>
+<a name="1061"><span class="lineNum">    1061 </span><span class="lineCov">          3 :     struct Help : Opt {</span></a>
+<span class="lineNum">    1062 </span><span class="lineCov">          3 :         Help( bool &amp;showHelpFlag )</span>
+<span class="lineNum">    1063 </span><span class="lineCov">          3 :         :   Opt([&amp;]( bool flag ) {</span>
+<span class="lineNum">    1064 </span><span class="lineNoCov">          0 :                 showHelpFlag = flag;</span>
+<span class="lineNum">    1065 </span><span class="lineNoCov">          0 :                 return ParserResult::ok( ParseResultType::ShortCircuitAll );</span>
+<span class="lineNum">    1066 </span><span class="lineCov">          3 :             })</span>
+<span class="lineNum">    1067 </span>            :         {
+<span class="lineNum">    1068 </span>            :             static_cast&lt;Opt &amp;&gt;( *this )
+<span class="lineNum">    1069 </span><span class="lineCov">          6 :                     (&quot;display usage information&quot;)</span>
+<span class="lineNum">    1070 </span><span class="lineCov">          9 :                     [&quot;-?&quot;][&quot;-h&quot;][&quot;--help&quot;]</span>
+<span class="lineNum">    1071 </span><span class="lineCov">          3 :                     .optional();</span>
+<span class="lineNum">    1072 </span><span class="lineCov">          3 :         }</span>
+<span class="lineNum">    1073 </span>            :     };
+<a name="1074"><span class="lineNum">    1074 </span>            : </a>
+<span class="lineNum">    1075 </span>            : 
+<span class="lineNum">    1076 </span><span class="lineCov">        399 :     struct Parser : ParserBase {</span>
+<span class="lineNum">    1077 </span>            : 
+<span class="lineNum">    1078 </span>            :         mutable ExeName m_exeName;
+<span class="lineNum">    1079 </span>            :         std::vector&lt;Opt&gt; m_options;
+<a name="1080"><span class="lineNum">    1080 </span>            :         std::vector&lt;Arg&gt; m_args;</a>
+<span class="lineNum">    1081 </span>            : 
+<span class="lineNum">    1082 </span><span class="lineCov">          3 :         auto operator|=( ExeName const &amp;exeName ) -&gt; Parser &amp; {</span>
+<span class="lineNum">    1083 </span><span class="lineCov">          3 :             m_exeName = exeName;</span>
+<span class="lineNum">    1084 </span><span class="lineCov">          3 :             return *this;</span>
+<a name="1085"><span class="lineNum">    1085 </span>            :         }</a>
+<span class="lineNum">    1086 </span>            : 
+<span class="lineNum">    1087 </span><span class="lineCov">          3 :         auto operator|=( Arg const &amp;arg ) -&gt; Parser &amp; {</span>
+<span class="lineNum">    1088 </span><span class="lineCov">          3 :             m_args.push_back(arg);</span>
+<span class="lineNum">    1089 </span><span class="lineCov">          3 :             return *this;</span>
+<a name="1090"><span class="lineNum">    1090 </span>            :         }</a>
+<span class="lineNum">    1091 </span>            : 
+<span class="lineNum">    1092 </span><span class="lineCov">         90 :         auto operator|=( Opt const &amp;opt ) -&gt; Parser &amp; {</span>
+<span class="lineNum">    1093 </span><span class="lineCov">         90 :             m_options.push_back(opt);</span>
+<span class="lineNum">    1094 </span><span class="lineCov">         90 :             return *this;</span>
+<span class="lineNum">    1095 </span>            :         }
+<span class="lineNum">    1096 </span>            : 
+<span class="lineNum">    1097 </span>            :         auto operator|=( Parser const &amp;other ) -&gt; Parser &amp; {
+<span class="lineNum">    1098 </span>            :             m_options.insert(m_options.end(), other.m_options.begin(), other.m_options.end());
+<span class="lineNum">    1099 </span>            :             m_args.insert(m_args.end(), other.m_args.begin(), other.m_args.end());
+<span class="lineNum">    1100 </span>            :             return *this;
+<span class="lineNum">    1101 </span>            :         }
+<a name="1102"><span class="lineNum">    1102 </span>            : </a>
+<span class="lineNum">    1103 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">    1104 </span><span class="lineCov">         96 :         auto operator|( T const &amp;other ) const -&gt; Parser {</span>
+<span class="lineNum">    1105 </span><span class="lineCov">         96 :             return Parser( *this ) |= other;</span>
+<span class="lineNum">    1106 </span>            :         }
+<span class="lineNum">    1107 </span>            : 
+<span class="lineNum">    1108 </span>            :         // Forward deprecated interface with '+' instead of '|'
+<span class="lineNum">    1109 </span>            :         template&lt;typename T&gt;
+<span class="lineNum">    1110 </span>            :         auto operator+=( T const &amp;other ) -&gt; Parser &amp; { return operator|=( other ); }
+<span class="lineNum">    1111 </span>            :         template&lt;typename T&gt;
+<a name="1112"><span class="lineNum">    1112 </span>            :         auto operator+( T const &amp;other ) const -&gt; Parser { return operator|( other ); }</a>
+<span class="lineNum">    1113 </span>            : 
+<span class="lineNum">    1114 </span><span class="lineNoCov">          0 :         auto getHelpColumns() const -&gt; std::vector&lt;HelpColumns&gt; {</span>
+<span class="lineNum">    1115 </span><span class="lineNoCov">          0 :             std::vector&lt;HelpColumns&gt; cols;</span>
+<span class="lineNum">    1116 </span><span class="lineNoCov">          0 :             for (auto const &amp;o : m_options) {</span>
+<span class="lineNum">    1117 </span><span class="lineNoCov">          0 :                 auto childCols = o.getHelpColumns();</span>
+<span class="lineNum">    1118 </span><span class="lineNoCov">          0 :                 cols.insert( cols.end(), childCols.begin(), childCols.end() );</span>
+<span class="lineNum">    1119 </span>            :             }
+<span class="lineNum">    1120 </span><span class="lineNoCov">          0 :             return cols;</span>
+<a name="1121"><span class="lineNum">    1121 </span>            :         }</a>
+<span class="lineNum">    1122 </span>            : 
+<span class="lineNum">    1123 </span><span class="lineNoCov">          0 :         void writeToStream( std::ostream &amp;os ) const {</span>
+<span class="lineNum">    1124 </span><span class="lineNoCov">          0 :             if (!m_exeName.name().empty()) {</span>
+<span class="lineNum">    1125 </span><span class="lineNoCov">          0 :                 os &lt;&lt; &quot;usage:\n&quot; &lt;&lt; &quot;  &quot; &lt;&lt; m_exeName.name() &lt;&lt; &quot; &quot;;</span>
+<span class="lineNum">    1126 </span><span class="lineNoCov">          0 :                 bool required = true, first = true;</span>
+<span class="lineNum">    1127 </span><span class="lineNoCov">          0 :                 for( auto const &amp;arg : m_args ) {</span>
+<span class="lineNum">    1128 </span><span class="lineNoCov">          0 :                     if (first)</span>
+<span class="lineNum">    1129 </span><span class="lineNoCov">          0 :                         first = false;</span>
+<span class="lineNum">    1130 </span>            :                     else
+<span class="lineNum">    1131 </span><span class="lineNoCov">          0 :                         os &lt;&lt; &quot; &quot;;</span>
+<span class="lineNum">    1132 </span><span class="lineNoCov">          0 :                     if( arg.isOptional() &amp;&amp; required ) {</span>
+<span class="lineNum">    1133 </span><span class="lineNoCov">          0 :                         os &lt;&lt; &quot;[&quot;;</span>
+<span class="lineNum">    1134 </span><span class="lineNoCov">          0 :                         required = false;</span>
+<span class="lineNum">    1135 </span>            :                     }
+<span class="lineNum">    1136 </span><span class="lineNoCov">          0 :                     os &lt;&lt; &quot;&lt;&quot; &lt;&lt; arg.hint() &lt;&lt; &quot;&gt;&quot;;</span>
+<span class="lineNum">    1137 </span><span class="lineNoCov">          0 :                     if( arg.cardinality() == 0 )</span>
+<span class="lineNum">    1138 </span><span class="lineNoCov">          0 :                         os &lt;&lt; &quot; ... &quot;;</span>
+<span class="lineNum">    1139 </span>            :                 }
+<span class="lineNum">    1140 </span><span class="lineNoCov">          0 :                 if( !required )</span>
+<span class="lineNum">    1141 </span><span class="lineNoCov">          0 :                     os &lt;&lt; &quot;]&quot;;</span>
+<span class="lineNum">    1142 </span><span class="lineNoCov">          0 :                 if( !m_options.empty() )</span>
+<span class="lineNum">    1143 </span><span class="lineNoCov">          0 :                     os &lt;&lt; &quot; options&quot;;</span>
+<span class="lineNum">    1144 </span><span class="lineNoCov">          0 :                 os &lt;&lt; &quot;\n\nwhere options are:&quot; &lt;&lt; std::endl;</span>
+<span class="lineNum">    1145 </span>            :             }
+<span class="lineNum">    1146 </span>            : 
+<span class="lineNum">    1147 </span><span class="lineNoCov">          0 :             auto rows = getHelpColumns();</span>
+<span class="lineNum">    1148 </span><span class="lineNoCov">          0 :             size_t consoleWidth = CATCH_CLARA_CONFIG_CONSOLE_WIDTH;</span>
+<span class="lineNum">    1149 </span><span class="lineNoCov">          0 :             size_t optWidth = 0;</span>
+<span class="lineNum">    1150 </span><span class="lineNoCov">          0 :             for( auto const &amp;cols : rows )</span>
+<span class="lineNum">    1151 </span><span class="lineNoCov">          0 :                 optWidth = (std::max)(optWidth, cols.left.size() + 2);</span>
+<span class="lineNum">    1152 </span>            : 
+<span class="lineNum">    1153 </span><span class="lineNoCov">          0 :             optWidth = (std::min)(optWidth, consoleWidth/2);</span>
+<span class="lineNum">    1154 </span>            : 
+<span class="lineNum">    1155 </span><span class="lineNoCov">          0 :             for( auto const &amp;cols : rows ) {</span>
+<span class="lineNum">    1156 </span>            :                 auto row =
+<span class="lineNum">    1157 </span><span class="lineNoCov">          0 :                         TextFlow::Column( cols.left ).width( optWidth ).indent( 2 ) +</span>
+<span class="lineNum">    1158 </span><span class="lineNoCov">          0 :                         TextFlow::Spacer(4) +</span>
+<span class="lineNum">    1159 </span><span class="lineNoCov">          0 :                         TextFlow::Column( cols.right ).width( consoleWidth - 7 - optWidth );</span>
+<span class="lineNum">    1160 </span><span class="lineNoCov">          0 :                 os &lt;&lt; row &lt;&lt; std::endl;</span>
+<span class="lineNum">    1161 </span>            :             }
+<a name="1162"><span class="lineNum">    1162 </span><span class="lineNoCov">          0 :         }</span></a>
+<span class="lineNum">    1163 </span>            : 
+<span class="lineNum">    1164 </span><span class="lineNoCov">          0 :         friend auto operator&lt;&lt;( std::ostream &amp;os, Parser const &amp;parser ) -&gt; std::ostream&amp; {</span>
+<span class="lineNum">    1165 </span><span class="lineNoCov">          0 :             parser.writeToStream( os );</span>
+<span class="lineNum">    1166 </span><span class="lineNoCov">          0 :             return os;</span>
+<a name="1167"><span class="lineNum">    1167 </span>            :         }</a>
+<span class="lineNum">    1168 </span>            : 
+<span class="lineNum">    1169 </span><span class="lineNoCov">          0 :         auto validate() const -&gt; Result override {</span>
+<span class="lineNum">    1170 </span><span class="lineNoCov">          0 :             for( auto const &amp;opt : m_options ) {</span>
+<span class="lineNum">    1171 </span><span class="lineNoCov">          0 :                 auto result = opt.validate();</span>
+<span class="lineNum">    1172 </span><span class="lineNoCov">          0 :                 if( !result )</span>
+<span class="lineNum">    1173 </span><span class="lineNoCov">          0 :                     return result;</span>
+<span class="lineNum">    1174 </span>            :             }
+<span class="lineNum">    1175 </span><span class="lineNoCov">          0 :             for( auto const &amp;arg : m_args ) {</span>
+<span class="lineNum">    1176 </span><span class="lineNoCov">          0 :                 auto result = arg.validate();</span>
+<span class="lineNum">    1177 </span><span class="lineNoCov">          0 :                 if( !result )</span>
+<span class="lineNum">    1178 </span><span class="lineNoCov">          0 :                     return result;</span>
+<span class="lineNum">    1179 </span>            :             }
+<span class="lineNum">    1180 </span><span class="lineNoCov">          0 :             return Result::ok();</span>
+<span class="lineNum">    1181 </span>            :         }
+<span class="lineNum">    1182 </span>            : 
+<a name="1183"><span class="lineNum">    1183 </span>            :         using ParserBase::parse;</a>
+<span class="lineNum">    1184 </span>            : 
+<span class="lineNum">    1185 </span><span class="lineCov">          3 :         auto parse( std::string const&amp; exeName, TokenStream const &amp;tokens ) const -&gt; InternalParseResult override {</span>
+<span class="lineNum">    1186 </span>            : 
+<span class="lineNum">    1187 </span>            :             struct ParserInfo {
+<span class="lineNum">    1188 </span>            :                 ParserBase const* parser = nullptr;
+<span class="lineNum">    1189 </span>            :                 size_t count = 0;
+<span class="lineNum">    1190 </span>            :             };
+<span class="lineNum">    1191 </span><span class="lineCov">          3 :             const size_t totalParsers = m_options.size() + m_args.size();</span>
+<span class="lineNum">    1192 </span><span class="lineCov">          3 :             assert( totalParsers &lt; 512 );</span>
+<span class="lineNum">    1193 </span>            :             // ParserInfo parseInfos[totalParsers]; // &lt;-- this is what we really want to do
+<span class="lineNum">    1194 </span><span class="lineCov">          3 :             ParserInfo parseInfos[512];</span>
+<span class="lineNum">    1195 </span>            : 
+<span class="lineNum">    1196 </span>            :             {
+<span class="lineNum">    1197 </span><span class="lineCov">          3 :                 size_t i = 0;</span>
+<span class="lineNum">    1198 </span><span class="lineCov">          3 :                 for (auto const &amp;opt : m_options) parseInfos[i++].parser = &amp;opt;</span>
+<span class="lineNum">    1199 </span><span class="lineCov">          3 :                 for (auto const &amp;arg : m_args) parseInfos[i++].parser = &amp;arg;</span>
+<span class="lineNum">    1200 </span>            :             }
+<span class="lineNum">    1201 </span>            : 
+<span class="lineNum">    1202 </span><span class="lineCov">          3 :             m_exeName.set( exeName );</span>
+<span class="lineNum">    1203 </span>            : 
+<span class="lineNum">    1204 </span><span class="lineCov">          6 :             auto result = InternalParseResult::ok( ParseState( ParseResultType::NoMatch, tokens ) );</span>
+<span class="lineNum">    1205 </span><span class="lineCov">          3 :             while( result.value().remainingTokens() ) {</span>
+<span class="lineNum">    1206 </span><span class="lineNoCov">          0 :                 bool tokenParsed = false;</span>
+<span class="lineNum">    1207 </span>            : 
+<span class="lineNum">    1208 </span><span class="lineNoCov">          0 :                 for( size_t i = 0; i &lt; totalParsers; ++i ) {</span>
+<span class="lineNum">    1209 </span><span class="lineNoCov">          0 :                     auto&amp;  parseInfo = parseInfos[i];</span>
+<span class="lineNum">    1210 </span><span class="lineNoCov">          0 :                     if( parseInfo.parser-&gt;cardinality() == 0 || parseInfo.count &lt; parseInfo.parser-&gt;cardinality() ) {</span>
+<span class="lineNum">    1211 </span><span class="lineNoCov">          0 :                         result = parseInfo.parser-&gt;parse(exeName, result.value().remainingTokens());</span>
+<span class="lineNum">    1212 </span><span class="lineNoCov">          0 :                         if (!result)</span>
+<span class="lineNum">    1213 </span><span class="lineNoCov">          0 :                             return result;</span>
+<span class="lineNum">    1214 </span><span class="lineNoCov">          0 :                         if (result.value().type() != ParseResultType::NoMatch) {</span>
+<span class="lineNum">    1215 </span><span class="lineNoCov">          0 :                             tokenParsed = true;</span>
+<span class="lineNum">    1216 </span><span class="lineNoCov">          0 :                             ++parseInfo.count;</span>
+<span class="lineNum">    1217 </span><span class="lineNoCov">          0 :                             break;</span>
+<span class="lineNum">    1218 </span>            :                         }
+<span class="lineNum">    1219 </span>            :                     }
+<span class="lineNum">    1220 </span>            :                 }
+<span class="lineNum">    1221 </span>            : 
+<span class="lineNum">    1222 </span><span class="lineNoCov">          0 :                 if( result.value().type() == ParseResultType::ShortCircuitAll )</span>
+<span class="lineNum">    1223 </span><span class="lineNoCov">          0 :                     return result;</span>
+<span class="lineNum">    1224 </span><span class="lineNoCov">          0 :                 if( !tokenParsed )</span>
+<span class="lineNum">    1225 </span><span class="lineNoCov">          0 :                     return InternalParseResult::runtimeError( &quot;Unrecognised token: &quot; + result.value().remainingTokens()-&gt;token );</span>
+<span class="lineNum">    1226 </span>            :             }
+<span class="lineNum">    1227 </span>            :             // !TBD Check missing required options
+<span class="lineNum">    1228 </span><span class="lineCov">          3 :             return result;</span>
+<span class="lineNum">    1229 </span>            :         }
+<span class="lineNum">    1230 </span>            :     };
+<span class="lineNum">    1231 </span>            : 
+<a name="1232"><span class="lineNum">    1232 </span>            :     template&lt;typename DerivedT&gt;</a>
+<span class="lineNum">    1233 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">    1234 </span><span class="lineCov">          3 :     auto ComposableParserImpl&lt;DerivedT&gt;::operator|( T const &amp;other ) const -&gt; Parser {</span>
+<span class="lineNum">    1235 </span><span class="lineCov">          3 :         return Parser() | static_cast&lt;DerivedT const &amp;&gt;( *this ) | other;</span>
+<span class="lineNum">    1236 </span>            :     }
+<span class="lineNum">    1237 </span>            : } // namespace detail
+<span class="lineNum">    1238 </span>            : 
+<span class="lineNum">    1239 </span>            : 
+<span class="lineNum">    1240 </span>            : // A Combined parser
+<span class="lineNum">    1241 </span>            : using detail::Parser;
+<span class="lineNum">    1242 </span>            : 
+<span class="lineNum">    1243 </span>            : // A parser for options
+<span class="lineNum">    1244 </span>            : using detail::Opt;
+<span class="lineNum">    1245 </span>            : 
+<span class="lineNum">    1246 </span>            : // A parser for arguments
+<span class="lineNum">    1247 </span>            : using detail::Arg;
+<span class="lineNum">    1248 </span>            : 
+<span class="lineNum">    1249 </span>            : // Wrapper for argc, argv from main()
+<span class="lineNum">    1250 </span>            : using detail::Args;
+<span class="lineNum">    1251 </span>            : 
+<span class="lineNum">    1252 </span>            : // Specifies the name of the executable
+<span class="lineNum">    1253 </span>            : using detail::ExeName;
+<span class="lineNum">    1254 </span>            : 
+<span class="lineNum">    1255 </span>            : // Convenience wrapper for option parser that specifies the help option
+<span class="lineNum">    1256 </span>            : using detail::Help;
+<span class="lineNum">    1257 </span>            : 
+<span class="lineNum">    1258 </span>            : // enum of result types from a parse
+<span class="lineNum">    1259 </span>            : using detail::ParseResultType;
+<span class="lineNum">    1260 </span>            : 
+<span class="lineNum">    1261 </span>            : // Result type for parser operation
+<span class="lineNum">    1262 </span>            : using detail::ParserResult;
+<span class="lineNum">    1263 </span>            : 
+<span class="lineNum">    1264 </span>            : 
+<span class="lineNum">    1265 </span>            : }} // namespace Catch::clara
+<span class="lineNum">    1266 </span>            : 
+<span class="lineNum">    1267 </span>            : 
+<span class="lineNum">    1268 </span>            : #endif // CATCH_CLARA_HPP_INCLUDED
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
