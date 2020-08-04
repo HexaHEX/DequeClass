@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - report.info - internal/catch_test_case_info.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">internal</a> - catch_test_case_info.cpp<span style="font-size: 80%;"> (source / <a href="catch_test_case_info.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">report.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">63</td>
+            <td class="headerCovTableEntry">96</td>
+            <td class="headerCovTableEntryLo">65.6 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-07-31 16:47:17</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntryLo">70.6 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            :  *  Created by Phil on 14/08/2012.
+<span class="lineNum">       3 </span>            :  *  Copyright 2012 Two Blue Cubes Ltd. All rights reserved.
+<span class="lineNum">       4 </span>            :  *
+<span class="lineNum">       5 </span>            :  *  Distributed under the Boost Software License, Version 1.0. (See accompanying
+<span class="lineNum">       6 </span>            :  *  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+<span class="lineNum">       7 </span>            :  */
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &quot;catch_test_case_info.h&quot;
+<span class="lineNum">      10 </span>            : #include &quot;catch_enforce.h&quot;
+<span class="lineNum">      11 </span>            : #include &quot;catch_test_spec.h&quot;
+<span class="lineNum">      12 </span>            : #include &quot;catch_interfaces_testcase.h&quot;
+<span class="lineNum">      13 </span>            : #include &quot;catch_string_manip.h&quot;
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : #include &lt;cctype&gt;
+<span class="lineNum">      16 </span>            : #include &lt;exception&gt;
+<span class="lineNum">      17 </span>            : #include &lt;algorithm&gt;
+<span class="lineNum">      18 </span>            : #include &lt;sstream&gt;
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : namespace Catch {
+<a name="21"><span class="lineNum">      21 </span>            : </a>
+<span class="lineNum">      22 </span>            :     namespace {
+<span class="lineNum">      23 </span><span class="lineCov">         27 :         TestCaseInfo::SpecialProperties parseSpecialTag( std::string const&amp; tag ) {</span>
+<span class="lineNum">      24 </span><span class="lineCov">         54 :             if( startsWith( tag, '.' ) ||</span>
+<span class="lineNum">      25 </span><span class="lineCov">         27 :                 tag == &quot;!hide&quot; )</span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :                 return TestCaseInfo::IsHidden;</span>
+<span class="lineNum">      27 </span><span class="lineCov">         27 :             else if( tag == &quot;!throws&quot; )</span>
+<span class="lineNum">      28 </span><span class="lineNoCov">          0 :                 return TestCaseInfo::Throws;</span>
+<span class="lineNum">      29 </span><span class="lineCov">         27 :             else if( tag == &quot;!shouldfail&quot; )</span>
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :                 return TestCaseInfo::ShouldFail;</span>
+<span class="lineNum">      31 </span><span class="lineCov">         27 :             else if( tag == &quot;!mayfail&quot; )</span>
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :                 return TestCaseInfo::MayFail;</span>
+<span class="lineNum">      33 </span><span class="lineCov">         27 :             else if( tag == &quot;!nonportable&quot; )</span>
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :                 return TestCaseInfo::NonPortable;</span>
+<span class="lineNum">      35 </span><span class="lineCov">         27 :             else if( tag == &quot;!benchmark&quot; )</span>
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :                 return static_cast&lt;TestCaseInfo::SpecialProperties&gt;( TestCaseInfo::Benchmark | TestCaseInfo::IsHidden );</span>
+<span class="lineNum">      37 </span>            :             else
+<a name="38"><span class="lineNum">      38 </span><span class="lineCov">         27 :                 return TestCaseInfo::None;</span></a>
+<span class="lineNum">      39 </span>            :         }
+<span class="lineNum">      40 </span><span class="lineCov">          9 :         bool isReservedTag( std::string const&amp; tag ) {</span>
+<a name="41"><span class="lineNum">      41 </span><span class="lineCov">          9 :             return parseSpecialTag( tag ) == TestCaseInfo::None &amp;&amp; tag.size() &gt; 0 &amp;&amp; !std::isalnum( static_cast&lt;unsigned char&gt;(tag[0]) );</span></a>
+<span class="lineNum">      42 </span>            :         }
+<span class="lineNum">      43 </span><span class="lineCov">          9 :         void enforceNotReservedTag( std::string const&amp; tag, SourceLineInfo const&amp; _lineInfo ) {</span>
+<span class="lineNum">      44 </span><span class="lineCov">          9 :             CATCH_ENFORCE( !isReservedTag(tag),</span>
+<span class="lineNum">      45 </span>            :                           &quot;Tag name: [&quot; &lt;&lt; tag &lt;&lt; &quot;] is not allowed.\n&quot;
+<span class="lineNum">      46 </span>            :                           &lt;&lt; &quot;Tag names starting with non alphanumeric characters are reserved\n&quot;
+<span class="lineNum">      47 </span>            :                           &lt;&lt; _lineInfo );
+<span class="lineNum">      48 </span><span class="lineCov">          9 :         }</span>
+<a name="49"><span class="lineNum">      49 </span>            :     }</a>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineCov">          9 :     TestCase makeTestCase(  ITestInvoker* _testCase,</span>
+<span class="lineNum">      52 </span>            :                             std::string const&amp; _className,
+<span class="lineNum">      53 </span>            :                             NameAndTags const&amp; nameAndTags,
+<span class="lineNum">      54 </span>            :                             SourceLineInfo const&amp; _lineInfo )
+<span class="lineNum">      55 </span>            :     {
+<span class="lineNum">      56 </span><span class="lineCov">          9 :         bool isHidden = false;</span>
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            :         // Parse out tags
+<span class="lineNum">      59 </span><span class="lineCov">         18 :         std::vector&lt;std::string&gt; tags;</span>
+<span class="lineNum">      60 </span><span class="lineCov">         18 :         std::string desc, tag;</span>
+<span class="lineNum">      61 </span><span class="lineCov">          9 :         bool inTag = false;</span>
+<span class="lineNum">      62 </span><span class="lineCov">         93 :         for (char c : nameAndTags.tags) {</span>
+<span class="lineNum">      63 </span><span class="lineCov">         84 :             if( !inTag ) {</span>
+<span class="lineNum">      64 </span><span class="lineCov">          9 :                 if( c == '[' )</span>
+<span class="lineNum">      65 </span><span class="lineCov">          9 :                     inTag = true;</span>
+<span class="lineNum">      66 </span>            :                 else
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :                     desc += c;</span>
+<span class="lineNum">      68 </span>            :             }
+<span class="lineNum">      69 </span>            :             else {
+<span class="lineNum">      70 </span><span class="lineCov">         75 :                 if( c == ']' ) {</span>
+<span class="lineNum">      71 </span><span class="lineCov">          9 :                     TestCaseInfo::SpecialProperties prop = parseSpecialTag( tag );</span>
+<span class="lineNum">      72 </span><span class="lineCov">          9 :                     if( ( prop &amp; TestCaseInfo::IsHidden ) != 0 )</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :                         isHidden = true;</span>
+<span class="lineNum">      74 </span><span class="lineCov">          9 :                     else if( prop == TestCaseInfo::None )</span>
+<span class="lineNum">      75 </span><span class="lineCov">          9 :                         enforceNotReservedTag( tag, _lineInfo );</span>
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            :                     // Merged hide tags like `[.approvals]` should be added as
+<span class="lineNum">      78 </span>            :                     // `[.][approvals]`. The `[.]` is added at later point, so
+<span class="lineNum">      79 </span>            :                     // we only strip the prefix
+<span class="lineNum">      80 </span><span class="lineCov">          9 :                     if (startsWith(tag, '.') &amp;&amp; tag.size() &gt; 1) {</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :                         tag.erase(0, 1);</span>
+<span class="lineNum">      82 </span>            :                     }
+<span class="lineNum">      83 </span><span class="lineCov">          9 :                     tags.push_back( tag );</span>
+<span class="lineNum">      84 </span><span class="lineCov">          9 :                     tag.clear();</span>
+<span class="lineNum">      85 </span><span class="lineCov">          9 :                     inTag = false;</span>
+<span class="lineNum">      86 </span>            :                 }
+<span class="lineNum">      87 </span>            :                 else
+<span class="lineNum">      88 </span><span class="lineCov">         66 :                     tag += c;</span>
+<span class="lineNum">      89 </span>            :             }
+<span class="lineNum">      90 </span>            :         }
+<span class="lineNum">      91 </span><span class="lineCov">          9 :         if( isHidden ) {</span>
+<span class="lineNum">      92 </span>            :             // Add all &quot;hidden&quot; tags to make them behave identically
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :             tags.insert( tags.end(), { &quot;.&quot;, &quot;!hide&quot; } );</span>
+<span class="lineNum">      94 </span>            :         }
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineCov">         18 :         TestCaseInfo info( static_cast&lt;std::string&gt;(nameAndTags.name), _className, desc, tags, _lineInfo );</span>
+<span class="lineNum">      97 </span><span class="lineCov">         18 :         return TestCase( _testCase, std::move(info) );</span>
+<a name="98"><span class="lineNum">      98 </span>            :     }</a>
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span><span class="lineCov">          9 :     void setTags( TestCaseInfo&amp; testCaseInfo, std::vector&lt;std::string&gt; tags ) {</span>
+<span class="lineNum">     101 </span><span class="lineCov">          9 :         std::sort(begin(tags), end(tags));</span>
+<span class="lineNum">     102 </span><span class="lineCov">          9 :         tags.erase(std::unique(begin(tags), end(tags)), end(tags));</span>
+<span class="lineNum">     103 </span><span class="lineCov">          9 :         testCaseInfo.lcaseTags.clear();</span>
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span><span class="lineCov">         18 :         for( auto const&amp; tag : tags ) {</span>
+<span class="lineNum">     106 </span><span class="lineCov">         18 :             std::string lcaseTag = toLower( tag );</span>
+<span class="lineNum">     107 </span><span class="lineCov">          9 :             testCaseInfo.properties = static_cast&lt;TestCaseInfo::SpecialProperties&gt;( testCaseInfo.properties | parseSpecialTag( lcaseTag ) );</span>
+<span class="lineNum">     108 </span><span class="lineCov">          9 :             testCaseInfo.lcaseTags.push_back( lcaseTag );</span>
+<span class="lineNum">     109 </span>            :         }
+<span class="lineNum">     110 </span><span class="lineCov">          9 :         testCaseInfo.tags = std::move(tags);</span>
+<a name="111"><span class="lineNum">     111 </span><span class="lineCov">          9 :     }</span></a>
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span><span class="lineCov">          9 :     TestCaseInfo::TestCaseInfo( std::string const&amp; _name,</span>
+<span class="lineNum">     114 </span>            :                                 std::string const&amp; _className,
+<span class="lineNum">     115 </span>            :                                 std::string const&amp; _description,
+<span class="lineNum">     116 </span>            :                                 std::vector&lt;std::string&gt; const&amp; _tags,
+<span class="lineNum">     117 </span><span class="lineCov">          9 :                                 SourceLineInfo const&amp; _lineInfo )</span>
+<span class="lineNum">     118 </span>            :     :   name( _name ),
+<span class="lineNum">     119 </span>            :         className( _className ),
+<span class="lineNum">     120 </span>            :         description( _description ),
+<span class="lineNum">     121 </span>            :         lineInfo( _lineInfo ),
+<span class="lineNum">     122 </span><span class="lineCov">          9 :         properties( None )</span>
+<span class="lineNum">     123 </span>            :     {
+<span class="lineNum">     124 </span><span class="lineCov">          9 :         setTags( *this, _tags );</span>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">          9 :     }</span></a>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineCov">          9 :     bool TestCaseInfo::isHidden() const {</span>
+<a name="128"><span class="lineNum">     128 </span><span class="lineCov">          9 :         return ( properties &amp; IsHidden ) != 0;</span></a>
+<span class="lineNum">     129 </span>            :     }
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     bool TestCaseInfo::throws() const {</span>
+<a name="131"><span class="lineNum">     131 </span><span class="lineNoCov">          0 :         return ( properties &amp; Throws ) != 0;</span></a>
+<span class="lineNum">     132 </span>            :     }
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     bool TestCaseInfo::okToFail() const {</span>
+<a name="134"><span class="lineNum">     134 </span><span class="lineNoCov">          0 :         return ( properties &amp; (ShouldFail | MayFail ) ) != 0;</span></a>
+<span class="lineNum">     135 </span>            :     }
+<span class="lineNum">     136 </span><span class="lineCov">          9 :     bool TestCaseInfo::expectedToFail() const {</span>
+<span class="lineNum">     137 </span><span class="lineCov">          9 :         return ( properties &amp; (ShouldFail ) ) != 0;</span>
+<a name="138"><span class="lineNum">     138 </span>            :     }</a>
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     std::string TestCaseInfo::tagsAsString() const {</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         std::string ret;</span>
+<span class="lineNum">     142 </span>            :         // '[' and ']' per tag
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :         std::size_t full_size = 2 * tags.size();</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :         for (const auto&amp; tag : tags) {</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :             full_size += tag.size();</span>
+<span class="lineNum">     146 </span>            :         }
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         ret.reserve(full_size);</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         for (const auto&amp; tag : tags) {</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :             ret.push_back('[');</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :             ret.append(tag);</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :             ret.push_back(']');</span>
+<span class="lineNum">     152 </span>            :         }
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :         return ret;</span>
+<span class="lineNum">     155 </span>            :     }
+<a name="156"><span class="lineNum">     156 </span>            : </a>
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span><span class="lineCov">          9 :     TestCase::TestCase( ITestInvoker* testCase, TestCaseInfo&amp;&amp; info ) : TestCaseInfo( std::move(info) ), test( testCase ) {}</span>
+<a name="159"><span class="lineNum">     159 </span>            : </a>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :     TestCase TestCase::withName( std::string const&amp; _newName ) const {</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :         TestCase other( *this );</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :         other.name = _newName;</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         return other;</span>
+<a name="165"><span class="lineNum">     165 </span>            :     }</a>
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span><span class="lineCov">         75 :     void TestCase::invoke() const {</span>
+<span class="lineNum">     168 </span><span class="lineCov">         75 :         test-&gt;invoke();</span>
+<a name="169"><span class="lineNum">     169 </span><span class="lineCov">         75 :     }</span></a>
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :     bool TestCase::operator == ( TestCase const&amp; other ) const {</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :         return  test.get() == other.test.get() &amp;&amp;</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :                 name == other.name &amp;&amp;</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :                 className == other.className;</span>
+<a name="175"><span class="lineNum">     175 </span>            :     }</a>
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span><span class="lineCov">         15 :     bool TestCase::operator &lt; ( TestCase const&amp; other ) const {</span>
+<span class="lineNum">     178 </span><span class="lineCov">         15 :         return name &lt; other.name;</span>
+<a name="179"><span class="lineNum">     179 </span>            :     }</a>
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span><span class="lineCov">         93 :     TestCaseInfo const&amp; TestCase::getTestCaseInfo() const</span>
+<span class="lineNum">     182 </span>            :     {
+<span class="lineNum">     183 </span><span class="lineCov">         93 :         return *this;</span>
+<span class="lineNum">     184 </span>            :     }
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span>            : } // end namespace Catch
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
